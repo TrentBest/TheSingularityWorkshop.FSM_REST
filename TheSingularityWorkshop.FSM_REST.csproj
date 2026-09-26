@@ -4,6 +4,14 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+
+    <AssemblyName>TheSingularityWorkshop.FSM_REST</AssemblyName>
+    <RootNamespace>TheSingularityWorkshop.FSM_REST</RootNamespace>
+    <Authors>Trent Best</Authors>
+    <Company>The Singularity Workshop</Company>
+    <Description>ASP.NET Core hosting boundary for communicating with the FSM ecosystem.</Description>
+    <RepositoryUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
   </PropertyGroup>
 
 </Project>
