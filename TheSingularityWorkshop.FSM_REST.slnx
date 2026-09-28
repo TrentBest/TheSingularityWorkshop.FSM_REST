@@ -1,3 +1,5 @@
 <Solution>
   <Project Path="TheSingularityWorkshop.FSM_REST.csproj" />
+  <Project Path="src/FSM_REST/FSM_REST.csproj" />
+  <Project Path="tests/FSM_REST.Tests/FSM_REST.Tests.csproj" />
 </Solution>
