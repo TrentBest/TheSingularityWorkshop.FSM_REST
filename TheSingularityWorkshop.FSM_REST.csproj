@@ -1,17 +1,18 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
-
-    <AssemblyName>TheSingularityWorkshop.FSM_REST</AssemblyName>
-    <RootNamespace>TheSingularityWorkshop.FSM_REST</RootNamespace>
+    <AssemblyName>TheSingularityWorkshop.FSM_REST.Host</AssemblyName>
+    <RootNamespace>TheSingularityWorkshop.FSM_REST.Host</RootNamespace>
     <Authors>Trent Best</Authors>
     <Company>The Singularity Workshop</Company>
-    <Description>ASP.NET Core hosting boundary for communicating with the FSM ecosystem.</Description>
+    <Description>ASP.NET Core experimental host for the FSM_REST transport boundary.</Description>
     <RepositoryUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
+    <IsPackable>false</IsPackable>
   </PropertyGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="src\FSM_REST\FSM_REST.csproj" />
+  </ItemGroup>
 </Project>
