@@ -18,7 +18,8 @@ public static class OpenApiRestReflector
         var root = json.RootElement;
 
         if (!root.TryGetProperty("openapi", out var versionElement) ||
-            !versionElement.GetString()?.StartsWith("3.", StringComparison.Ordinal) == true)
+            versionElement.ValueKind != JsonValueKind.String ||
+            !versionElement.GetString()!.StartsWith("3.", StringComparison.Ordinal))
             throw new ArgumentException("FSM_REST currently reflects OpenAPI 3.x documents.", nameof(document));
 
         var info = root.TryGetProperty("info", out var infoElement) ? infoElement : default;
