@@ -4,7 +4,7 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
-    <PackageId>TheSingularityWorkshop.FSM_REST</PackageId>
+    <PackageId>TheSingularityWorkshop.FSM_Rest</PackageId>
     <Version>0.1.0-alpha.1</Version>
     <Authors>Trent Best</Authors>
     <Company>The Singularity Workshop</Company>
