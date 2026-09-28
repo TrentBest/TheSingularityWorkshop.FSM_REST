@@ -48,7 +48,7 @@ That is the beginning of the **REST → reflection → GUI** pipeline.
 
 ## Alpha package
 
-The initial package is **TheSingularityWorkshop.FSM_REST 0.1.0-alpha.1**.
+The initial package is **TheSingularityWorkshop.FSM_Rest 0.1.0-alpha.1**.
 
 The package is framework-agnostic .NET and contains the reflection descriptors and OpenAPI reflector.
 
@@ -198,7 +198,7 @@ MIT. See LICENSE.txt.
 
 - **Unity Asset Store:** [FSM_API for Unity](https://assetstore.unity.com/packages/slug/332450)
 - **Core NuGet:** [TheSingularityWorkshop.FSM_API](https://www.nuget.org/packages/TheSingularityWorkshop.FSM_API)
-- **This Package:** [TheSingularityWorkshop.FSM_REST](https://www.nuget.org/packages/TheSingularityWorkshop.FSM_REST)
+- **This Package:** [TheSingularityWorkshop.FSM_Rest](https://www.nuget.org/packages/TheSingularityWorkshop.FSM_Rest)
 - **Source Code:** [TheSingularityWorkshop.FSM_REST on GitHub](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST)
 
 ### 💖 Support The Singularity Workshop
