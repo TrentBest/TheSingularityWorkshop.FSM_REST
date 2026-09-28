@@ -1,175 +1,131 @@
 # FSM_REST Theory
 
-## The transport principle
+## Form before implementation
 
-A distributed FSM ecosystem needs a boundary between semantic execution and communication.
+FSM_REST exists to provide the reusable form through which REST capabilities can enter the FSM ecosystem.
 
-FSM_REST occupies that boundary.
+It should not become the place where every REST technology is implemented.
 
-It should be possible to replace browser communication with a desktop client, WebPage hosting with a dedicated server, or HTTP with another transport adapter without redefining the Experience model.
+This is the same composition principle used by MicroBundleDomain:
 
-## Reflection before execution
+> the foundation describes and hosts composition; concrete capabilities arrive separately.
 
-FSM_REST has two related but distinct responsibilities:
+## Protocol descriptions are participants
 
-1. describe the capabilities exposed by a REST service;
-2. provide the transport boundary through which those capabilities may later be invoked.
+OpenAPI is useful because it can describe REST APIs.
 
-The first responsibility is reflection.
+That does not make OpenAPI part of REST itself, nor does it make OpenAPI a permanent dependency of FSM_REST.
 
-~~~text
-REST description
-      |
-      v
-    reflect
-      |
-      v
-capability descriptor
-      |
-      v
-GUI manifestation
-      |
-      v
-behavior assignment
-      |
-      v
-execute
-~~~
-
-Reflection must not require execution.
-
-This allows a GUI to inspect an API before a request is made and allows the same reflected capability to be manifested differently in different experiences.
-
-## The Postman-like model
-
-Traditional API tooling presents a human with an API surface and asks the human to construct requests.
-
-FSM_REST can take the next conceptual step:
+The intended architecture is:
 
 ~~~text
-API URL
-  |
-  v
-discover description
-  |
-  v
-reflect API
-  |
-  v
-generate capability palette
-  |
-  v
-assign GUI behavior
-  |
-  v
-execute capability
+OpenAPI MicroBundle
+       |
+       v
+ IProvider<OpenAPI>
+       |
+       v
+   FSM_REST
+       |
+       v
+ REST capability
 ~~~
 
-The goal is not to reproduce a conventional API client.
+The OpenAPI MicroBundle owns OpenAPI semantics.
 
-The goal is to turn an external API into material from which an Experience can be composed.
+FSM_REST owns the neutral REST surface.
 
-A REST endpoint can therefore become a GUI capability without the GUI author writing a bespoke integration for that endpoint.
+This prevents the core package from accumulating protocol-specific assumptions.
 
-## Request and response are observations
+## MicroBundles provide meaning
 
-A REST request is an observation or request against an FSM ecosystem, not a definition of the ecosystem itself.
+A MicroBundle can bring together:
+
+- a description format;
+- a provider;
+- executable behavior;
+- dependencies;
+- optional GUI support;
+- optional transport policy.
+
+FSM_REST should consume those capabilities rather than trying to manufacture them internally.
+
+## Transport principle
+
+A distributed FSM ecosystem needs a boundary between semantic capability and communication.
+
+IRestTransport is that boundary.
 
 ~~~text
-Request
-  -> identify
-  -> retrieve
-  -> resolve
-  -> execute
-  -> mutate
-  -> serialize
-  -> respond
+capability
+    |
+    v
+RestRequest
+    |
+    v
+IRestTransport
+    |
+    v
+RestResponse
 ~~~
 
-The transport layer coordinates these steps but does not own their meaning.
+HTTP is one implementation of that boundary, not the definition of the boundary.
 
-## Stateless transport, persistent reality
-
-HTTP requests are transient. Experiences are not required to be.
-
-- transport state belongs to the communication mechanism;
-- runtime state belongs to FSM execution;
-- persistent state belongs to FSM_Memory;
-- serialized representation belongs to FSM_Serialization;
-- domain meaning belongs to MicroBundle/domain packages.
-
-A request may therefore be short-lived while the digital reality it addresses persists.
-
-## Identity before interpretation
-
-The transport layer should prefer stable identifiers and opaque payloads over domain-specific assumptions.
-
-For reflected APIs, operationId is preferred when the API supplies it. Path and HTTP method provide a deterministic fallback when it does not.
-
-The reflector should describe what exists without pretending to understand why the remote service exists.
-
-## GUI is a downstream manifestation
+## GUI is downstream
 
 FSM_REST should never decide that an operation is a button, form, card, table action, or workflow node.
 
-It should provide enough structured information for another layer to make that decision.
+It provides enough structured information for a downstream layer to make that decision.
 
 ~~~text
-RestOperationDescriptor
-        |
-        +-- method
-        +-- path
-        +-- identity
-        +-- parameters
-        +-- request body
-        |
-        v
-       GUI
+REST capability
+      |
+      +---- GUI manifestation
+      |
+      +---- FSM behavior
+      |
+      +---- serialization
+      |
+      +---- composition
+      |
+      v
+  Experience
 ~~~
 
-This is what makes the reflection model reusable.
+## Domain ownership remains external
 
-## Remote execution is an option
+A concrete service should not be baked into FSM_REST.
 
-The architecture permits:
+A concrete service can instead arrive as a REST MicroBundle whose implementation references the FSM_REST package.
 
-1. local execution with remote persistence;
-2. local execution with remote retrieval and synchronization;
-3. remote execution with the client acting primarily as a manifestation surface.
-
-The semantic model remains the same in all three arrangements.
-
-## Migration invariant
-
-A successful infrastructure migration preserves:
+That produces the dependency direction we want:
 
 ~~~text
-Identity
-Composition
-Version
-Lineage
-State
-Behavior
+FSM_REST
+   ^
+   |
+REST MicroBundle
+   ^
+   |
+host / experience
 ~~~
 
-while allowing the host, transport implementation, storage implementation, and execution placement to change.
-
-That is the central hosting invariant for the FSM ecosystem.
+The substrate stays reusable while capabilities remain independently loadable.
 
 ## Current alpha boundary
 
-The first alpha intentionally reflects OpenAPI 3.x JSON.
+Alpha 2 establishes:
 
-It does not yet attempt to solve:
+- neutral REST capability descriptors;
+- request and response forms;
+- a transport abstraction;
+- an HttpClient adapter;
+- unit coverage around the boundary.
 
-- YAML parsing;
-- reference resolution;
-- complete schema reflection;
-- authentication configuration;
-- URL discovery;
-- arbitrary HTTP execution;
-- automatic GUI generation.
+It intentionally does not establish an OpenAPI implementation.
 
-Those capabilities can be layered on without changing the central distinction:
+The next architectural step is therefore **not** to add OpenAPI back into FSM_REST. It is to create the separate OpenAPI MicroBundle that consumes this substrate and exposes its own provider.
 
-**reflection describes a capability; execution performs a capability; GUI manifests a capability.**
+## Core invariant
+
+**FSM_REST is the form. MicroBundles are the things composed through the form.**

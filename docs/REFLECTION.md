@@ -1,130 +1,145 @@
-# REST Reflection Model
+# REST Capability Model
 
-FSM_REST treats a REST API description as a source of capabilities.
+FSM_REST describes the **shape of a REST capability** without claiming ownership of the format that originally described it.
 
-The reflection layer converts protocol-oriented metadata into a framework-agnostic model that another system can manifest.
+That distinction is fundamental.
 
-## Pipeline
+## The boundary
 
 ~~~text
-OpenAPI document
-      |
-      v
-OpenApiRestReflector
-      |
-      v
-RestApiDescriptor
-      |
-      +---- RestOperationDescriptor
-      |          |
-      |          +---- parameters
-      |          +---- request body
-      |
-      v
-GUI capability palette
+description MicroBundle
+        |
+        v
+ provider / adapter
+        |
+        v
+ RestApiDescriptor
+        |
+        +---- RestOperationDescriptor
+        |          |
+        |          +---- parameters
+        |          +---- request body
+        |          +---- responses
+        |
+        v
+ GUI / FSM / Experience
 ~~~
 
-The reflector does not execute requests. That is deliberate.
+The description format is external.
 
-Reflection answers:
+OpenAPI is one possible MicroBundle. Another format could provide the same REST capability surface without requiring FSM_REST to know that format exists.
 
-> What can this API do?
+## Descriptor semantics
+
+RestApiDescriptor describes a collection of REST operations.
+
+RestOperationDescriptor identifies an operation using:
+
+- HTTP method;
+- path;
+- operation identity;
+- optional summary and description;
+- parameter metadata;
+- request-body metadata;
+- response metadata.
+
+The descriptor does not execute anything.
+
+## Parameters
+
+The neutral parameter model supports:
+
+- path;
+- query;
+- header;
+- cookie.
+
+The source format is responsible for translating its own parameter semantics into this neutral representation.
+
+## Request and response bodies
+
+RestRequestBodyDescriptor records basic request-body information.
+
+RestResponseDescriptor records:
+
+- status-code identity;
+- description;
+- media types;
+- basic schema type;
+- basic schema format.
+
+These are deliberately shallow contracts. A protocol MicroBundle may carry richer schemas without forcing that schema model into FSM_REST.
+
+## Stable identity
+
+OperationId is the preferred identity when a source format provides one.
+
+When no source-defined identity exists, a provider can derive a deterministic identity from the method and path.
+
+FSM_REST does not require that identity to come from OpenAPI.
+
+## Transport is separate
+
+Provider work answers:
+
+> What capability exists?
 
 Transport answers:
 
 > How do we communicate with it?
 
-GUI answers:
-
-> How should that capability appear to a person?
-
-FSM behavior can eventually answer:
-
-> What should happen when that capability is invoked?
-
-## Why descriptors?
-
-A GUI should not have to understand OpenAPI directly.
-
-For example, an operation such as:
+IRestTransport makes that distinction explicit.
 
 ~~~text
-POST /users
-operationId = createUser
-request body = application/json
+provider
+   |
+   v
+REST capability
+   |
+   v
+RestRequest
+   |
+   v
+IRestTransport
+   |
+   v
+RestResponse
 ~~~
 
-can become a REST operation descriptor.
+A host can replace HttpClientRestTransport with another adapter without changing the capability descriptors.
 
-The GUI can then decide whether that descriptor becomes a button, form, card, table action, node in a visual workflow, or another GUI primitive.
-
-The REST layer has no opinion about that visual representation.
-
-## Stable identity
-
-OperationId is preferred when supplied by the API description. When it is absent, FSM_REST currently creates a deterministic fallback from HTTP method and path.
-
-This is an alpha behavior and may become more formalized as the serialization and GUI layers mature.
-
-## Parameters
-
-The alpha reflector recognizes the OpenAPI parameter locations:
-
-- path
-- query
-- header
-- cookie
-
-Path-level parameters and operation-level parameters are both considered. Operation-level definitions override a path-level definition with the same location/name identity.
-
-## Request bodies
-
-The alpha reflector records:
-
-- whether the request body is required;
-- supported media types;
-- basic schema type;
-- basic schema format.
-
-Full schema reflection is intentionally deferred.
-
-## Deliberate boundary
+## Deliberate non-responsibilities
 
 FSM_REST does not:
 
-- interpret business meaning;
-- execute arbitrary remote URLs;
-- resolve credentials;
-- persist API state;
+- parse OpenAPI;
+- parse YAML;
+- resolve format-specific references;
+- discover credentials;
 - generate GUI controls;
-- create FSM transitions automatically.
+- define concrete remote services;
+- own domain-specific MicroBundles.
 
-Those are separate concerns.
+Those concerns belong in separately composable packages.
 
-The eventual system can compose them:
+## Composition invariant
+
+The architecture should remain:
 
 ~~~text
-REST reflection
-      +
-GUI manifestation
-      +
-FSM behavior
-      +
-FSM serialization
-      +
-FSM_COS composition
-      =
-dynamic application surface
+format/domain package
+        |
+        v
+provider
+        |
+        v
+FSM_REST
+        |
+        +---- transport
+        +---- capability model
+        |
+        v
+FSM_COS / GUI / FSM_API
 ~~~
 
-## Next reflection increments
-
-1. response-schema reflection;
-2. reusable schema descriptors;
-3. OpenAPI reference resolution;
-4. authentication/security descriptors;
-5. safe URL-based discovery;
-6. a REST execution abstraction;
-7. GUI palette projection.
-
-Each increment should preserve the separation between describing a capability and executing it.
+The REST package is therefore a **form**, not a warehouse of implementations.

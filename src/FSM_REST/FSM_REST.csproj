@@ -5,17 +5,17 @@
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <PackageId>TheSingularityWorkshop.FSM_Rest</PackageId>
-    <Version>0.1.0-alpha.1</Version>
+    <Version>0.1.0-alpha.2</Version>
     <Authors>Trent Best</Authors>
     <Company>The Singularity Workshop</Company>
-    <Description>Framework-agnostic REST API reflection and transport descriptors for the FSM ecosystem.</Description>
-    <PackageTags>REST;OpenAPI;API;reflection;GUI;FSM;TheSingularityWorkshop</PackageTags>
+    <Description>Framework-agnostic REST capability descriptors and transport boundary for the FSM ecosystem.</Description>
+    <PackageTags>REST;API;reflection;transport;GUI;FSM;TheSingularityWorkshop</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Initial alpha: REST descriptors and OpenAPI 3.x JSON reflection foundation for dynamic GUI integration.</PackageReleaseNotes>
+    <PackageReleaseNotes>Alpha 2: REST capability descriptors plus a transport-neutral request/response boundary and HttpClient adapter. Protocol description formats remain external composition bundles.</PackageReleaseNotes>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>

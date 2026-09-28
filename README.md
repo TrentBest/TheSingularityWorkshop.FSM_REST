@@ -1,190 +1,204 @@
 # TheSingularityWorkshop.FSM_REST
 
-**REST reflection and transport boundary for the FSM ecosystem.**
+**REST capability and transport substrate for the FSM ecosystem.**
 
-FSM_REST is the layer that lets a REST API become something the Singularity Workshop can reason about, reflect, and eventually manifest through the GUI.
+FSM_REST is intentionally **not an implementation of a REST API**, and it is not a container for every REST description format.
 
-The important distinction is:
+It provides the reusable forms from which REST capabilities can be composed:
 
 ~~~text
-External REST API
-        |
-        v
- API description / discovery
-        |
-        v
-     FSM_REST
-        |
-        v
- capability descriptors
-        |
-        v
-       GUI
-        |
-        v
- behavior assignment
-        |
-        v
-     Experience
+REST MicroBundle / external description
+            |
+            v
+        FSM_REST
+            |
+     +------+------+
+     |             |
+ capability     transport
+ descriptors    boundary
+     |             |
+     +------+------+
+            |
+            v
+     GUI / FSM / Experience
 ~~~
 
-The first alpha establishes the reusable reflection model. The ASP.NET Core application in this repository remains a thin experimental host for transport work.
+The important architectural rule is:
 
-## The core idea
+> **FSM_REST provides the composition surface. Domain and protocol-specific MicroBundles provide the things composed through it.**
 
-A REST API already exposes a vocabulary of capabilities:
+## What belongs in FSM_REST
 
-- resources;
-- operations;
-- paths;
-- parameters;
-- request bodies;
-- response contracts;
-- authentication requirements.
+The package owns the protocol-neutral REST vocabulary needed by the hosting ecosystem:
 
-FSM_REST should make that vocabulary available as structured data without requiring the GUI to understand OpenAPI, ASP.NET Core, or the implementation details of the remote service.
+- RestApiDescriptor — a collection of REST operations.
+- RestOperationDescriptor — an operation that can become a capability.
+- RestParameterDescriptor — parameter metadata.
+- RestRequestBodyDescriptor — request-body metadata.
+- RestResponseDescriptor — response metadata.
+- RestRequest — an executable transport request.
+- RestResponse — an observed transport response.
+- IRestTransport — the transport boundary.
+- HttpClientRestTransport — the default .NET HTTP adapter.
 
-That is the beginning of the **REST → reflection → GUI** pipeline.
+These types deliberately do not require ASP.NET Core, OpenAPI, a GUI framework, or a particular domain.
 
-## Alpha package
+## What does *not* belong here
 
-The initial package is **TheSingularityWorkshop.FSM_Rest 0.1.0-alpha.1**.
+A description format is a participant in the ecosystem, not the ecosystem itself.
 
-The package is framework-agnostic .NET and contains the reflection descriptors and OpenAPI reflector.
+For example, **OpenAPI is not a citizen of FSM_REST**.
 
-### Core types
+An OpenAPI MicroBundle can be supplied separately. That bundle can understand OpenAPI documents, expose an OpenAPI provider, and translate the OpenAPI-specific representation into the neutral REST capability forms supplied by FSM_REST.
 
-- RestApiDescriptor — the reflected API as a whole.
-- RestOperationDescriptor — an HTTP operation that can become a GUI capability.
-- RestParameterDescriptor — path, query, header, or cookie input metadata.
-- RestRequestBodyDescriptor — request-body media types and basic schema metadata.
-- OpenApiRestReflector — converts an OpenAPI 3.x JSON description into the descriptor model.
-
-The core library does not execute HTTP requests and does not depend on ASP.NET Core.
-
-## The Postman-like direction
-
-The long-term experience is intentionally dynamic:
+Conceptually:
 
 ~~~text
-                    REST API URL
-                         |
-                         v
-                discover description
-                         |
-                         v
-                  reflect API surface
-                         |
-                         v
-                +------------------+
-                |   GUI PALETTE    |
-                |                  |
-                | GET  /users      |
-                | POST /users      |
-                | GET  /users/{id} |
-                | DELETE /users/id |
-                +------------------+
-                         |
-                         v
-                 configure inputs
-                         |
-                         v
-                  assign behavior
-                         |
-                         v
-                  compose GUI
-                         |
-                         v
-                     execute
+             MicroBundleDomain
+                    |
+                    v
+             OpenAPI MicroBundle
+                    |
+             IProvider<OpenAPI>
+                    |
+                    v
+                FSM_REST
+                    |
+          RestApiDescriptor
+          RestOperationDescriptor
+                    |
+          +---------+---------+
+          |                   |
+        GUI                  FSM
+          |                   |
+          +---------+---------+
+                    |
+                Experience
 ~~~
 
-The critical architectural move is that **reflection produces capabilities; GUI produces manifestation**.
+The same pattern applies to other description formats or REST capability families. They should arrive as separately loadable MicroBundles rather than becoming permanent dependencies of the REST substrate.
 
-That means the same REST operation could eventually become a button, form, card, table action, workflow node, FSM transition, or another GUI primitive.
+## REST MicroBundles
 
-The REST API does not need to know which one.
+A concrete REST MicroBundle is where a particular capability belongs.
 
-## Why OpenAPI first?
+A bundle might provide:
 
-OpenAPI already describes the structural information needed for the first reflection layer: paths, operations, parameters, request bodies, responses, and related metadata. OpenAPI also defines operation identifiers for tooling to identify operations.
+- a remote service;
+- a family of REST operations;
+- an API description adapter;
+- authentication behavior;
+- domain-specific request construction;
+- GUI manifestation providers.
 
-FSM_REST therefore starts with OpenAPI rather than trying to infer an entire API by blindly probing arbitrary URLs.
+The hosting environment loads the MicroBundle and supplies the composition/runtime infrastructure. FSM_REST supplies the REST-specific forms the bundle can use.
 
-A future discovery layer can accept a URL, locate an API description, retrieve it, validate it, and pass the resulting document to OpenApiRestReflector.
-
-Discovery, reflection, execution, and GUI manifestation remain separate stages.
-
-## Architecture
+This keeps the dependency direction clean:
 
 ~~~text
-src/FSM_REST
+MicroBundle
     |
-    +-- REST descriptors
-    +-- OpenAPI reflection
+    +---- MicroBundleDomain
+    +---- FSM_COS
+    +---- FSM_REST
     |
     v
-TheSingularityWorkshop.FSM_REST
-    |
-    +-- reusable package
-    |
-    +-- no ASP.NET dependency
-
-TheSingularityWorkshop.FSM_REST.csproj
-    |
-    v
-ASP.NET Core experimental host
+concrete REST capability
 ~~~
 
-This separation matters because a desktop application, WebPage, Unity integration, or another host should be able to consume the reflection model without becoming an ASP.NET application.
+FSM_REST should never grow upward into a catalog of concrete REST services.
+
+## Transport boundary
+
+The package provides a minimal executable boundary:
+
+~~~csharp
+var request = new RestRequest(
+    "POST",
+    new Uri("https://example.test/users"),
+    new Dictionary<string, string>
+    {
+        ["X-Trace"] = "trace-123"
+    },
+    "{\"name\":\"Ada\"}");
+
+IRestTransport transport = new HttpClientRestTransport(httpClient);
+
+RestResponse response = await transport.SendAsync(request);
+~~~
+
+IRestTransport is the important boundary. HttpClientRestTransport is merely one adapter.
+
+That means a host can replace the HTTP implementation without changing the capability model.
+
+## The operational theater
+
+The intended direction is larger than an API client:
+
+~~~text
+external capability
+        |
+        v
+MicroBundle / provider
+        |
+        v
+   REST capability
+        |
+        +----------------+
+        |                |
+        v                v
+      GUI              FSM behavior
+        |                |
+        +-------+--------+
+                |
+                v
+           Experience
+~~~
+
+A REST operation might ultimately manifest as a button, form, table action, workflow node, FSM transition, automated behavior, or another composition primitive.
+
+FSM_REST does not choose the manifestation.
 
 ## Relationship to the ecosystem
 
 | Project | Responsibility |
 |---|---|
 | FSM_API | state-machine execution |
-| FSM_REST | REST reflection and transport boundary |
+| MicroBundleDomain | domain-side MicroBundle description |
+| FSM_COS | runtime MicroBundle composition |
+| FSM_REST | REST capability and transport substrate |
 | FSM_Serialization | serialized representation |
-| FSM_COS | runtime composition |
-| GUI | visual manifestation and interaction |
-| MicroBundleDomain | domain capabilities and composition |
+| GUI | visual manifestation |
 
-FSM_REST should not absorb the responsibilities of these projects.
+Concrete protocol/domain packages remain separately owned and publishable.
 
-## Alpha limitations
+## Alpha 2 boundary
 
-- OpenAPI 3.x JSON is supported.
-- OpenAPI YAML is not yet parsed.
-- $ref resolution is not yet implemented.
-- Response schemas are not yet fully reflected.
-- Authentication discovery/configuration is not yet modeled.
-- URL discovery is not yet implemented.
-- HTTP execution is not yet part of the core package.
-- GUI generation is intentionally downstream.
+**TheSingularityWorkshop.FSM_Rest 0.1.0-alpha.2**
 
-These limitations define the next increments rather than hidden requirements.
+Alpha 2 establishes the protocol-neutral REST transport boundary and keeps description formats outside the core package.
 
-## Documentation
+The current package intentionally does **not** include:
 
-- REST reflection model: docs/REFLECTION.md
-- Transport theory: docs/THEORY.md
+- OpenAPI parsing;
+- OpenAPI $ref resolution;
+- YAML parsing;
+- authentication implementations;
+- URL discovery;
+- GUI generation;
+- concrete REST services;
+- domain-specific MicroBundles.
+
+Those are composition opportunities for separate packages.
 
 ## Development
-
-Build and test the complete solution:
 
 ~~~bash
 dotnet restore TheSingularityWorkshop.FSM_REST.slnx
 dotnet build TheSingularityWorkshop.FSM_REST.slnx --configuration Release
 dotnet test tests/FSM_REST.Tests/FSM_REST.Tests.csproj --configuration Release
-~~~
-
-Pack the alpha package:
-
-~~~bash
 dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --output ./artifacts
 ~~~
-
-The GitHub verification workflow is manual-only while the ecosystem is being stabilized.
 
 ## License
 
