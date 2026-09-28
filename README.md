@@ -198,6 +198,7 @@ MIT. See LICENSE.txt.
 
 - **Unity Asset Store:** [FSM_API for Unity](https://assetstore.unity.com/packages/slug/332450)
 - **Core NuGet:** [TheSingularityWorkshop.FSM_API](https://www.nuget.org/packages/TheSingularityWorkshop.FSM_API)
+- **This Package:** [TheSingularityWorkshop.FSM_REST](https://www.nuget.org/packages/TheSingularityWorkshop.FSM_REST)
 - **Source Code:** [TheSingularityWorkshop.FSM_REST on GitHub](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST)
 
 ### 💖 Support The Singularity Workshop
