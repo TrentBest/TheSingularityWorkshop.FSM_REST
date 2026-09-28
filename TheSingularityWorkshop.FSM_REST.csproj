@@ -3,6 +3,7 @@
     <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <EnableDefaultCompileItems>false</EnableDefaultCompileItems>
     <AssemblyName>TheSingularityWorkshop.FSM_REST.Host</AssemblyName>
     <RootNamespace>TheSingularityWorkshop.FSM_REST.Host</RootNamespace>
     <Authors>Trent Best</Authors>
@@ -13,6 +14,7 @@
     <IsPackable>false</IsPackable>
   </PropertyGroup>
   <ItemGroup>
+    <Compile Include="Program.cs" />
     <ProjectReference Include="src\FSM_REST\FSM_REST.csproj" />
   </ItemGroup>
 </Project>
