@@ -1,74 +1,190 @@
 # TheSingularityWorkshop.FSM_REST
 
-**REST transport boundary for the FSM ecosystem.**
+**REST reflection and transport boundary for the FSM ecosystem.**
 
-FSM_REST defines the boundary through which an FSM-backed runtime can communicate with WebPage, AnyApp, remote clients, and future dedicated hosting infrastructure.
+FSM_REST is the layer that lets a REST API become something the Singularity Workshop can reason about, reflect, and eventually manifest through the GUI.
 
-## Purpose
-
-FSM_REST is a **transport boundary**, not a persistence engine, domain model, or MicroBundle implementation.
+The important distinction is:
 
 ~~~text
-Client / WebPage / AnyApp
+External REST API
+        |
+        v
+ API description / discovery
         |
         v
      FSM_REST
         |
         v
- FSM ecosystem
-   |    |    |
- Memory Serialization MicroBundles
+ capability descriptors
         |
         v
-      FSM_COS
+       GUI
         |
         v
-   Experience
+ behavior assignment
+        |
+        v
+     Experience
 ~~~
 
-REST answers **how a runtime communicates across a process or network boundary**.
+The first alpha establishes the reusable reflection model. The ASP.NET Core application in this repository remains a thin experimental host for transport work.
 
-It does not define what an Experience means, how a MicroBundle implements its domain, where durable state is stored, or how a GUI manifests a capability.
+## The core idea
 
-## Hosting theory
+A REST API already exposes a vocabulary of capabilities:
 
-The first implementation may run as an ordinary ASP.NET Core host and may be hosted by Azure or another web-capable environment.
+- resources;
+- operations;
+- paths;
+- parameters;
+- request bodies;
+- response contracts;
+- authentication requirements.
 
-That host is replaceable. A later migration to dedicated infrastructure centered around FSM_COS should change where communication is handled, not what an Experience or MicroBundle means.
+FSM_REST should make that vocabulary available as structured data without requiring the GUI to understand OpenAPI, ASP.NET Core, or the implementation details of the remote service.
 
-## Design principles
+That is the beginning of the **REST → reflection → GUI** pipeline.
 
-### Transport is not semantics
+## Alpha package
 
-REST carries identifiers, manifests, serialized representations, commands, and results. It should not need to understand the domain semantics of the objects it transports.
+The initial package is **TheSingularityWorkshop.FSM_REST 0.1.0-alpha.1**.
 
-### WebPage is a proving ground
+The package is framework-agnostic .NET and contains the reflection descriptors and OpenAPI reflector.
 
-WebPage can exercise this boundary while the ecosystem is developed. FSM_REST must remain usable by other clients and hosts.
+### Core types
 
-### Local execution remains possible
+- RestApiDescriptor — the reflected API as a whole.
+- RestOperationDescriptor — an HTTP operation that can become a GUI capability.
+- RestParameterDescriptor — path, query, header, or cookie input metadata.
+- RestRequestBodyDescriptor — request-body media types and basic schema metadata.
+- OpenApiRestReflector — converts an OpenAPI 3.x JSON description into the descriptor model.
 
-A client may execute an Experience locally through AnyApp or another runtime. REST should support remote retrieval and synchronization without making network execution mandatory.
+The core library does not execute HTTP requests and does not depend on ASP.NET Core.
 
-### Hosting is replaceable
+## The Postman-like direction
 
-Azure, a WebPage-hosted service, and future dedicated FSM_COS infrastructure are hosting choices. They should expose the same conceptual runtime boundary.
-
-## Current status
-
-This repository is presently a minimal ASP.NET Core host. The HTTP surface is intentionally small while ecosystem contracts are established.
-
-The first useful vertical slice is:
+The long-term experience is intentionally dynamic:
 
 ~~~text
-retrieve -> manifest -> interact -> mutate -> persist
+                    REST API URL
+                         |
+                         v
+                discover description
+                         |
+                         v
+                  reflect API surface
+                         |
+                         v
+                +------------------+
+                |   GUI PALETTE    |
+                |                  |
+                | GET  /users      |
+                | POST /users      |
+                | GET  /users/{id} |
+                | DELETE /users/id |
+                +------------------+
+                         |
+                         v
+                 configure inputs
+                         |
+                         v
+                  assign behavior
+                         |
+                         v
+                  compose GUI
+                         |
+                         v
+                     execute
 ~~~
 
-without embedding domain-specific logic here.
+The critical architectural move is that **reflection produces capabilities; GUI produces manifestation**.
 
-## Packaging
+That means the same REST operation could eventually become a button, form, card, table action, workflow node, FSM transition, or another GUI primitive.
 
-FSM_REST is currently a **host/service project**, not a NuGet package. A package becomes appropriate when reusable REST contracts, clients, or transport abstractions exist independently of the ASP.NET Core host.
+The REST API does not need to know which one.
+
+## Why OpenAPI first?
+
+OpenAPI already describes the structural information needed for the first reflection layer: paths, operations, parameters, request bodies, responses, and related metadata. OpenAPI also defines operation identifiers for tooling to identify operations.
+
+FSM_REST therefore starts with OpenAPI rather than trying to infer an entire API by blindly probing arbitrary URLs.
+
+A future discovery layer can accept a URL, locate an API description, retrieve it, validate it, and pass the resulting document to OpenApiRestReflector.
+
+Discovery, reflection, execution, and GUI manifestation remain separate stages.
+
+## Architecture
+
+~~~text
+src/FSM_REST
+    |
+    +-- REST descriptors
+    +-- OpenAPI reflection
+    |
+    v
+TheSingularityWorkshop.FSM_REST
+    |
+    +-- reusable package
+    |
+    +-- no ASP.NET dependency
+
+TheSingularityWorkshop.FSM_REST.csproj
+    |
+    v
+ASP.NET Core experimental host
+~~~
+
+This separation matters because a desktop application, WebPage, Unity integration, or another host should be able to consume the reflection model without becoming an ASP.NET application.
+
+## Relationship to the ecosystem
+
+| Project | Responsibility |
+|---|---|
+| FSM_API | state-machine execution |
+| FSM_REST | REST reflection and transport boundary |
+| FSM_Serialization | serialized representation |
+| FSM_COS | runtime composition |
+| GUI | visual manifestation and interaction |
+| MicroBundleDomain | domain capabilities and composition |
+
+FSM_REST should not absorb the responsibilities of these projects.
+
+## Alpha limitations
+
+- OpenAPI 3.x JSON is supported.
+- OpenAPI YAML is not yet parsed.
+- $ref resolution is not yet implemented.
+- Response schemas are not yet fully reflected.
+- Authentication discovery/configuration is not yet modeled.
+- URL discovery is not yet implemented.
+- HTTP execution is not yet part of the core package.
+- GUI generation is intentionally downstream.
+
+These limitations define the next increments rather than hidden requirements.
+
+## Documentation
+
+- REST reflection model: docs/REFLECTION.md
+- Transport theory: docs/THEORY.md
+
+## Development
+
+Build and test the complete solution:
+
+~~~bash
+dotnet restore TheSingularityWorkshop.FSM_REST.slnx
+dotnet build TheSingularityWorkshop.FSM_REST.slnx --configuration Release
+dotnet test tests/FSM_REST.Tests/FSM_REST.Tests.csproj --configuration Release
+~~~
+
+Pack the alpha package:
+
+~~~bash
+dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --output ./artifacts
+~~~
+
+The GitHub verification workflow is manual-only while the ecosystem is being stabilized.
 
 ## License
 
