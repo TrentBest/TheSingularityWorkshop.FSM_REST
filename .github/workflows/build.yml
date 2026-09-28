@@ -1,4 +1,4 @@
-name: Pack and publish
+name: Package FSM REST
 
 on:
   push:
@@ -76,7 +76,7 @@ jobs:
   publish_nuget:
     needs: build-and-test
     runs-on: ubuntu-24.04
-    if: ${{ github.event_name == 'push' || github.event_name == 'workflow_dispatch' }}
+    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
     permissions:
       contents: read
       id-token: write
@@ -92,7 +92,7 @@ jobs:
         uses: NuGet/login@v1
         id: login
         with:
-          user: TrentBest
+          user: TheSingularityWorkshop
 
       - name: Publish package to NuGet.org
         run: dotnet nuget push "./artifacts/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --skip-duplicate
