@@ -22,5 +22,27 @@ jobs:
       - name: Build
         run: dotnet build TheSingularityWorkshop.FSM_REST.slnx --configuration Release --no-restore
 
-      - name: Test
-        run: dotnet test TheSingularityWorkshop.FSM_REST.slnx --configuration Release --no-build --verbosity normal
+      - name: Test with coverage
+        run: >
+          dotnet test tests/FSM_REST.Tests/FSM_REST.Tests.csproj
+          --configuration Release
+          --no-build
+          --verbosity normal
+          --collect:"XPlat Code Coverage;Format=cobertura"
+          --results-directory ./TestResults
+          --logger "trx;LogFileName=testresults.trx"
+
+      - name: Pack
+        run: dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --no-build --output ./artifacts
+
+      - name: Upload package
+        uses: actions/upload-artifact@v7
+        with:
+          name: fsm-rest-nuget-package
+          path: ./artifacts/*.nupkg
+
+      - name: Upload test results
+        uses: actions/upload-artifact@v7
+        with:
+          name: fsm-rest-test-results
+          path: ./TestResults/*
