@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <PackageId>TheSingularityWorkshop.FSM_Rest</PackageId>
-    <Version>0.1.0-alpha.2</Version>
+    <Version>0.1.0-alpha.3</Version>
     <Authors>Trent Best</Authors>
     <Company>The Singularity Workshop</Company>
     <Description>Framework-agnostic REST capability descriptors and transport boundary for the FSM ecosystem.</Description>
@@ -15,7 +15,7 @@
     <PackageProjectUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Alpha 2: REST capability descriptors plus a transport-neutral request/response boundary and HttpClient adapter. Protocol description formats remain external composition bundles.</PackageReleaseNotes>
+    <PackageReleaseNotes>Alpha 3: documented the public REST contract, strengthened transport boundary coverage, and clarified capability-versus-transport ownership.</PackageReleaseNotes>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
