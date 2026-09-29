@@ -1,0 +1,24 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 560">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07111f"/><stop offset="1" stop-color="#121a2a"/></linearGradient>
+ <linearGradient id="line" x1="0" y1="0" x2="1" y2="0"><stop stop-color="#45e8ff"/><stop offset="1" stop-color="#8c7cff"/></linearGradient>
+</defs>
+<rect width="1200" height="560" rx="34" fill="url(#bg)"/>
+<text x="65" y="72" fill="#fff" font-family="Segoe UI,Arial" font-size="38" font-weight="700">Describe once. Bind at runtime. Execute at the edge.</text>
+<text x="65" y="108" fill="#9fb2c8" font-family="Segoe UI,Arial" font-size="19">The execution path is intentionally separate from the capability description.</text>
+<g font-family="Segoe UI,Arial">
+ <g fill="#10263a" stroke="#4be5ff" stroke-width="2">
+  <rect x="70" y="205" width="205" height="135" rx="22"/><rect x="350" y="205" width="205" height="135" rx="22"/>
+ </g>
+ <g fill="#111d35" stroke="#8c7cff" stroke-width="2"><rect x="630" y="205" width="205" height="135" rx="22"/></g>
+ <g fill="#172617" stroke="#6ae994" stroke-width="2"><rect x="910" y="205" width="220" height="135" rx="22"/></g>
+ <text x="112" y="247" fill="#62eaff" font-size="17" font-weight="700">REUSABLE</text><text x="102" y="280" fill="#fff" font-size="24" font-weight="700">Operation</text><text x="101" y="309" fill="#aebdd1" font-size="15">method • path • params</text>
+ <text x="398" y="247" fill="#62eaff" font-size="17" font-weight="700">BIND</text><text x="392" y="280" fill="#fff" font-size="24" font-weight="700">RequestFactory</text><text x="390" y="309" fill="#aebdd1" font-size="15">runtime values → URI</text>
+ <text x="694" y="247" fill="#a99cff" font-size="17" font-weight="700">BOUNDARY</text><text x="680" y="280" fill="#fff" font-size="24" font-weight="700">IRestTransport</text><text x="678" y="309" fill="#aebdd1" font-size="15">communication policy</text>
+ <text x="973" y="247" fill="#76f19e" font-size="17" font-weight="700">REMOTE</text><text x="965" y="280" fill="#fff" font-size="24" font-weight="700">Current Data</text><text x="956" y="309" fill="#aebdd1" font-size="15">response is transient</text>
+ <path d="M275 272H350M555 272H630M835 272H910" stroke="url(#line)" stroke-width="5"/>
+ <text x="70" y="420" fill="#b8c9da" font-size="19">Capability recipe</text><path d="M250 413H1120" stroke="#2a4058" stroke-width="2"/>
+ <text x="70" y="470" fill="#b8c9da" font-size="19">Execution data</text><path d="M250 463H1120" stroke="#8c7cff" stroke-width="3"/>
+ <text x="70" y="505" fill="#7f95ad" font-size="16">Authentication, caching, retries, telemetry, and interpretation remain host/provider concerns.</text>
+</g>
+</svg>

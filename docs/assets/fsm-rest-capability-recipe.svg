@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 620">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07111f"/><stop offset="1" stop-color="#101c31"/></linearGradient>
+ <linearGradient id="cyan" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#48e6ff"/><stop offset="1" stop-color="#8a7dff"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="7" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="1200" height="620" rx="34" fill="url(#bg)"/>
+<text x="70" y="82" fill="#fff" font-family="Segoe UI,Arial" font-size="38" font-weight="700">A REST capability is a recipe, not the result</text>
+<text x="70" y="119" fill="#9fb2c8" font-family="Segoe UI,Arial" font-size="19">FSM_REST describes how a capability can be used; the remote system owns the changing data.</text>
+<g font-family="Segoe UI,Arial">
+ <rect x="70" y="175" width="310" height="300" rx="24" fill="#0d2033" stroke="#3bdcff" stroke-width="2"/>
+ <text x="105" y="220" fill="#55e8ff" font-size="18" font-weight="700">CAPABILITY RECIPE</text>
+ <text x="105" y="264" fill="#fff" font-size="25" font-weight="700">REST MicroBundle</text>
+ <g fill="#b8c9da" font-size="18">
+  <text x="105" y="306">API identity</text><text x="105" y="339">operation identity</text><text x="105" y="372">method + path</text>
+  <text x="105" y="405">parameters + request rules</text><text x="105" y="438">response metadata</text>
+ </g>
+ <rect x="445" y="225" width="265" height="105" rx="20" fill="#111f39" stroke="#8a7dff" stroke-width="2"/>
+ <text x="477" y="268" fill="#fff" font-size="21" font-weight="700">RestOperation</text><text x="477" y="297" fill="#aebdd1" font-size="17">reusable description</text>
+ <rect x="445" y="390" width="265" height="105" rx="20" fill="#111f39" stroke="#8a7dff" stroke-width="2"/>
+ <text x="477" y="433" fill="#fff" font-size="21" font-weight="700">RestRequest</text><text x="477" y="462" fill="#aebdd1" font-size="17">one concrete execution</text>
+ <rect x="775" y="225" width="350" height="270" rx="24" fill="#172414" stroke="#63e68b" stroke-width="2"/>
+ <text x="815" y="270" fill="#72f09a" font-size="18" font-weight="700">RUNTIME WORLD</text>
+ <text x="815" y="313" fill="#fff" font-size="25" font-weight="700">Remote API</text>
+ <text x="815" y="352" fill="#b8c9da" font-size="18">current catalog</text><text x="815" y="383" fill="#b8c9da" font-size="18">current inventory</text><text x="815" y="414" fill="#b8c9da" font-size="18">current prices</text><text x="815" y="445" fill="#b8c9da" font-size="18">user-specific results</text>
+ <path d="M380 325H445M710 325H775" stroke="#55e8ff" stroke-width="4" marker-end="url(#arrow)"/><path d="M577 330V390" stroke="#8a7dff" stroke-width="4" marker-end="url(#arrow)"/>
+</g>
+<defs><marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto"><path d="M0,0 L10,5 L0,10Z" fill="#55e8ff"/></marker></defs>
+<text x="70" y="555" fill="#7f95ad" font-family="Segoe UI,Arial" font-size="18">The bundle can remain stable while the remote response changes every second.</text>
+</svg>

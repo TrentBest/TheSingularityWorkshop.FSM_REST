@@ -2,6 +2,12 @@
 
 **REST capability and transport substrate for the FSM ecosystem.**
 
+[![NuGet](https://img.shields.io/nuget/v/TheSingularityWorkshop.FSM_Rest?style=flat-square&logo=nuget&logoColor=white)](https://www.nuget.org/packages/TheSingularityWorkshop.FSM_Rest)
+[![NuGet downloads](https://img.shields.io/nuget/dt/TheSingularityWorkshop.FSM_Rest?style=flat-square&logo=nuget&logoColor=white)](https://www.nuget.org/packages/TheSingularityWorkshop.FSM_Rest)
+[![Build](https://img.shields.io/github/actions/workflow/status/TrentBest/TheSingularityWorkshop.FSM_REST/build.yml?branch=master&style=flat-square&logo=github)](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/workflows/build.yml)
+[![Coverage](https://codecov.io/gh/TrentBest/TheSingularityWorkshop.FSM_REST/graph/badge.svg)](https://codecov.io/gh/TrentBest/TheSingularityWorkshop.FSM_REST)
+[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE.txt)
+
 FSM_REST is intentionally **not an implementation of a REST API**, and it is not a container for every REST description format.
 
 It provides the reusable forms from which REST capabilities can be composed:
@@ -27,127 +33,206 @@ The important architectural rule is:
 
 > **FSM_REST provides the composition surface. Domain and protocol-specific MicroBundles provide the things composed through it.**
 
+<p align="center">
+  <img src="docs/assets/fsm-rest-capability-recipe.svg" alt="REST capability recipe flowing from a MicroBundle into a request and current remote data" width="900">
+</p>
+
 ## If you only have a minute
 
 FSM_REST answers one question:
 
 > **How does a REST capability enter the Workshop without bringing its entire description format, GUI, domain, or transport policy with it?**
 
-The answer is a small set of neutral forms:
-
-```text
-description/provider
-       |
-       v
-RestApiDescriptor
-       |
-       v
-RestOperationDescriptor
-       |
-       +----> GUI / FSM / Experience
-       |
-       v
-RestRequest
-       |
-       v
-IRestTransport
-       |
-       v
-RestResponse
-```
-
-**Still interested?** Read [What belongs here](#what-belongs-in-fsm_rest).
-
-**Still interested?** Read [How to use the transport](#transport-boundary).
-
-**Still interested?** Read [Why OpenAPI stays outside](docs/THEORY.md#protocol-descriptions-are-participants).
-
-**Still interested?** Read the full [theory](docs/THEORY.md).
+The answer is a small neutral vocabulary for capability description, request construction, and transport.
 
 ---
 
-## What belongs in FSM_REST
+## The capability recipe
 
-The package owns the protocol-neutral REST vocabulary needed by the hosting ecosystem:
+The useful trick is that a REST API can be enormous at runtime while being small as a capability description.
 
-- RestApiDescriptor — a collection of REST operations.
-- RestOperationDescriptor — an operation that can become a capability.
-- RestParameterDescriptor — parameter metadata.
-- RestRequestBodyDescriptor — request-body metadata.
-- RestResponseDescriptor — response metadata.
-- RestRequest — an executable transport request.
-- RestResponse — an observed transport response.
-- IRestTransport — the transport boundary.
-- HttpClientRestTransport — the default .NET HTTP adapter.
-
-These types deliberately do not require ASP.NET Core, OpenAPI, a GUI framework, or a particular domain.
-
-## What does *not* belong here
-
-A description format is a participant in the ecosystem, not the ecosystem itself.
-
-For example, **OpenAPI is not a citizen of FSM_REST**.
-
-An OpenAPI MicroBundle can be supplied separately. That bundle can understand OpenAPI documents, expose an OpenAPI provider, and translate the OpenAPI-specific representation into the neutral REST capability forms supplied by FSM_REST.
-
-Conceptually:
+**The MicroBundle stores what is needed to obtain the capability—not the remote payload itself.**
 
 ~~~text
-             MicroBundleDomain
-                    |
-                    v
-             OpenAPI MicroBundle
-                    |
-             IProvider<OpenAPI>
-                    |
-                    v
-                FSM_REST
-                    |
-          RestApiDescriptor
-          RestOperationDescriptor
-                    |
-          +---------+---------+
-          |                   |
-        GUI                  FSM
-          |                   |
-          +---------+---------+
-                    |
-                Experience
+CAPABILITY RECIPE
+      │
+      ▼
+RestOperationDescriptor
+      │
+      │ bind runtime values
+      ▼
+RestRequest
+      │
+      ▼
+IRestTransport
+      │
+      ▼
+REMOTE API
+      │
+      │ current / user-specific data
+      ▼
+RestResponse
+      │
+      ▼
+GUI / FSM / Experience
 ~~~
 
-The same pattern applies to other description formats or REST capability families. They should arrive as separately loadable MicroBundles rather than becoming permanent dependencies of the REST substrate.
+For a storefront, the bundle can carry the API identity, operation identity, method, path, parameter definitions, request rules, response metadata, and provider-specific behavior.
 
-## REST MicroBundles
+The current catalog, inventory, prices, user-specific results, and other changing payloads remain runtime data.
 
-A concrete REST MicroBundle is where a particular capability belongs.
+| Capability recipe | Runtime result |
+|---|---|
+| method + path | current records |
+| parameters | current prices |
+| request rules | current inventory |
+| response metadata | current response |
+| provider behavior | transient transport data |
 
-A bundle might provide:
+**The response is runtime data. The MicroBundle is the capability recipe.**
 
-- a remote service;
-- a family of REST operations;
-- an API description adapter;
-- authentication behavior;
-- domain-specific request construction;
-- GUI manifestation providers.
+This means an endpoint can be cheap to describe, distribute, compose, and replace without copying the dataset it exposes.
 
-The hosting environment loads the MicroBundle and supplies the composition/runtime infrastructure. FSM_REST supplies the REST-specific forms the bundle can use.
+## Build a capability
 
-This keeps the dependency direction clean:
+The smallest useful REST capability is just an operation description:
+
+~~~csharp
+var operation = new RestOperationDescriptor(
+    "GET",
+    "/products",
+    "listProducts",
+    "List products",
+    "Returns the current product catalog.",
+    [
+        new RestParameterDescriptor(
+            "page", "query", false, "integer", null, "Page number.")
+    ],
+    null,
+    [
+        new RestResponseDescriptor(
+            "200", "Product collection.",
+            ["application/json"], "array", null)
+    ]);
+
+var api = new RestApiDescriptor(
+    "Store Catalog",
+    "1.0",
+    [operation]);
+~~~
+
+Nothing has been fetched, cached, or rendered.
+
+You have described a capability that can now participate in the Workshop.
+
+## Execute the capability
+
+When an experience needs the data, the capability becomes a request:
+
+~~~csharp
+using var httpClient = new HttpClient();
+IRestTransport transport = new HttpClientRestTransport(httpClient);
+
+var request = new RestRequest(
+    "GET",
+    new Uri("https://example.test/products?page=1"));
+
+RestResponse response = await transport.SendAsync(request);
+
+if (response.IsSuccessStatusCode)
+{
+    Console.WriteLine(response.Body);
+}
+~~~
+
+The transport communicates.
+
+It does not decide what the response means. Interpretation remains downstream.
+
+<p align="center">
+  <img src="docs/assets/fsm-rest-execution-flow.svg" alt="REST execution flow from reusable operation through request construction and transport to current remote data" width="900">
+</p>
+
+## REST endpoint → MicroBundle
+
+A provider can translate an external description into the neutral FSM_REST vocabulary and carry that capability as MicroBundle data.
 
 ~~~text
-MicroBundle
-    |
-    +---- MicroBundleDomain
-    +---- FSM_COS
-    +---- FSM_REST
-    |
-    v
-concrete REST capability
+external description
+        │
+        ▼
+provider / adapter
+        │
+        ▼
+RestApiDescriptor
+        │
+   ┌────┼────┐
+   ▼    ▼    ▼
+ op A  op B  op C
+   └────┼────┘
+        ▼
+ REST MicroBundle
+        │
+        ▼
+    FSM_COS / host
+        │
+   ┌────┴────┐
+   ▼         ▼
+  GUI       FSM
+   └────┬────┘
+        ▼
+    Experience
 ~~~
 
-FSM_REST should never grow upward into a catalog of concrete REST services.
+The source could be OpenAPI, a hand-authored definition, or another provider.
+
+**FSM_REST does not need to know which.**
+
+<p align="center">
+  <img src="docs/assets/fsm-rest-composition-map.svg" alt="Multiple REST description providers converging on FSM_REST and flowing into Workshop composition layers" width="900">
+</p>
+
+See [REST Capability Model](docs/REFLECTION.md), [REST MicroBundles](docs/MICROBUNDLE.md), and [Theory](docs/THEORY.md).
+
+## Why the response is not the bundle
+
+The response is transient, changing, and often user-specific.
+
+The bundle is reusable capability data.
+
+~~~text
+SMALL DESCRIPTION
+      │
+      │ method / path / parameters /
+      │ request rules / response metadata
+      ▼
+REMOTE CAPABILITY
+      │
+      │ current state
+      ▼
+LARGE / DYNAMIC RESULT
+~~~
+
+This does not claim every REST integration is physically small. It means the bundle does not need to duplicate the remote dataset merely to describe how that dataset can be obtained.
+
+That is the property that makes REST capabilities especially attractive as MicroBundle content.
 
 ## Transport boundary
+
+Before transport, RestRequestFactory can bind operation parameters into a concrete request:
+
+~~~csharp
+var request = RestRequestFactory.Create(
+    operation,
+    new Uri("https://example.test/api"),
+    new Dictionary<string, string?>
+    {
+        ["id"] = "42",
+        ["page"] = "1"
+    });
+~~~
+
+It handles path, query, header, and cookie parameter locations while leaving authentication, retries, caching, and transport policy outside the core.
 
 The package provides a minimal executable boundary:
 

@@ -2,32 +2,57 @@
 
 ## Form before implementation
 
-FSM_REST exists to provide the reusable form through which REST capabilities can enter the FSM ecosystem.
+FSM_REST provides the reusable form through which REST capabilities enter the FSM ecosystem.
 
 It should not become the place where every REST technology is implemented.
 
-This is the same composition principle used by MicroBundleDomain:
+> **FSM_REST describes the shape of a REST capability. A MicroBundle supplies the particular capability.**
 
-> the foundation describes and hosts composition; concrete capabilities arrive separately.
+## Capability data is not remote data
+
+The important distinction is between the **recipe** for obtaining a capability and the **result** produced by using it.
+
+~~~text
+CAPABILITY RECIPE
+      │
+      ▼
+RestOperationDescriptor
+      │
+      ▼
+RestRequest
+      │
+      ▼
+IRestTransport
+      │
+      ▼
+REMOTE RESPONSE
+      │
+      ▼
+runtime data
+~~~
+
+The descriptor belongs to composition.
+
+The response belongs to execution.
+
+A MicroBundle can therefore remain stable while the remote service changes its data.
 
 ## Protocol descriptions are participants
 
-OpenAPI is useful because it can describe REST APIs.
+OpenAPI is useful because it describes REST APIs.
 
-That does not make OpenAPI part of REST itself, nor does it make OpenAPI a permanent dependency of FSM_REST.
-
-The intended architecture is:
+That does not make OpenAPI a permanent dependency of FSM_REST.
 
 ~~~text
 OpenAPI MicroBundle
-       |
-       v
- IProvider<OpenAPI>
-       |
-       v
+       │
+       ▼
+ provider / adapter
+       │
+       ▼
    FSM_REST
-       |
-       v
+       │
+       ▼
  REST capability
 ~~~
 
@@ -35,78 +60,113 @@ The OpenAPI MicroBundle owns OpenAPI semantics.
 
 FSM_REST owns the neutral REST surface.
 
-This prevents the core package from accumulating protocol-specific assumptions.
+This keeps protocol-specific assumptions out of the substrate.
 
 ## MicroBundles provide meaning
 
 A MicroBundle can bring together:
 
-- a description format;
-- a provider;
+- description format;
+- provider;
 - executable behavior;
 - dependencies;
 - optional GUI support;
-- optional transport policy.
+- optional transport policy;
+- REST capability descriptors.
 
-FSM_REST should consume those capabilities rather than trying to manufacture them internally.
+FSM_REST consumes those capabilities rather than manufacturing concrete services internally.
+
+~~~text
+MicroBundle
+    │
+    ├── description
+    ├── provider
+    ├── behavior
+    └── REST capability
+              │
+              ▼
+          FSM_REST
+~~~
 
 ## Transport principle
 
-A distributed FSM ecosystem needs a boundary between semantic capability and communication.
-
-IRestTransport is that boundary.
+IRestTransport is the boundary between semantic capability and communication.
 
 ~~~text
 capability
-    |
-    v
+    │
+    ▼
 RestRequest
-    |
-    v
+    │
+    ▼
 IRestTransport
-    |
-    v
+    │
+    ▼
 RestResponse
 ~~~
 
-HTTP is one implementation of that boundary, not the definition of the boundary.
+HTTP is one implementation of that boundary, not the definition of it.
+
+HttpClientRestTransport is therefore an adapter. A host can replace it without changing capability descriptors.
 
 ## GUI is downstream
 
-FSM_REST should never decide that an operation is a button, form, card, table action, or workflow node.
+FSM_REST does not decide that an operation is a button, form, card, table action, or workflow node.
 
-It provides enough structured information for a downstream layer to make that decision.
+It provides structured capability data for downstream layers.
 
 ~~~text
 REST capability
-      |
-      +---- GUI manifestation
-      |
-      +---- FSM behavior
-      |
-      +---- serialization
-      |
-      +---- composition
-      |
-      v
-  Experience
+      │
+      ├──── GUI manifestation
+      ├──── FSM behavior
+      ├──── serialization
+      └──── composition
+                 │
+                 ▼
+             Experience
 ~~~
+
+## Cheap by construction
+
+A REST capability can be large in behavior while remaining small in description.
+
+The MicroBundle needs the information required to construct and understand requests. It does not need every response the remote service can ever produce.
+
+~~~text
+SMALL DESCRIPTION
+      │
+      │ method / path / parameters /
+      │ request rules / response metadata
+      ▼
+REMOTE CAPABILITY
+      │
+      │ current state
+      ▼
+LARGE / DYNAMIC RESULT
+~~~
+
+This is not a claim that every REST integration is physically small.
+
+It is a composition property:
+
+> **The bundle describes the access path and capability semantics instead of duplicating the remote dataset.**
+
+That makes external capabilities attractive candidates for composable Workshop content.
 
 ## Domain ownership remains external
 
 A concrete service should not be baked into FSM_REST.
 
-A concrete service can instead arrive as a REST MicroBundle whose implementation references the FSM_REST package.
-
-That produces the dependency direction we want:
+A concrete service can arrive as a REST MicroBundle whose implementation references FSM_REST.
 
 ~~~text
 FSM_REST
-   ^
-   |
+   ▲
+   │
 REST MicroBundle
-   ^
-   |
+   ▲
+   │
 host / experience
 ~~~
 
@@ -114,18 +174,32 @@ The substrate stays reusable while capabilities remain independently loadable.
 
 ## Current alpha boundary
 
-Alpha 2 establishes:
+Alpha 3 establishes:
 
 - neutral REST capability descriptors;
+- stable operation presentation metadata;
 - request and response forms;
+- response success classification;
 - a transport abstraction;
 - an HttpClient adapter;
-- unit coverage around the boundary.
+- unit coverage around the boundary;
+- documented MicroBundle composition guidance.
 
-It intentionally does not establish an OpenAPI implementation.
+It intentionally does not establish:
 
-The next architectural step is therefore **not** to add OpenAPI back into FSM_REST. It is to create the separate OpenAPI MicroBundle that consumes this substrate and exposes its own provider.
+- OpenAPI implementation;
+- YAML implementation;
+- credential store;
+- GUI renderer;
+- response warehouse;
+- concrete remote services.
+
+Those remain separately composable.
 
 ## Core invariant
 
 **FSM_REST is the form. MicroBundles are the things composed through the form.**
+
+The response is runtime data.
+
+The bundle is the capability recipe.
