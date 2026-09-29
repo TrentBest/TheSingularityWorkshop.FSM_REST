@@ -207,6 +207,21 @@ That is the property that makes REST capabilities especially attractive as Micro
 
 ## Transport boundary
 
+Before transport, RestRequestFactory can bind operation parameters into a concrete request:
+
+~~~csharp
+var request = RestRequestFactory.Create(
+    operation,
+    new Uri("https://example.test/api"),
+    new Dictionary<string, string?>
+    {
+        ["id"] = "42",
+        ["page"] = "1"
+    });
+~~~
+
+It handles path, query, header, and cookie parameter locations while leaving authentication, retries, caching, and transport policy outside the core.
+
 The package provides a minimal executable boundary:
 
 ~~~csharp
