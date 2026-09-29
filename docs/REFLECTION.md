@@ -1,62 +1,59 @@
 # REST Capability Model
 
-FSM_REST describes the **shape of a REST capability** without claiming ownership of the format that originally described it.
+FSM_REST describes the **shape of a REST capability** without owning the format that originally described it.
 
-That distinction is fundamental.
-
-## The boundary
+## From description to capability
 
 ~~~text
-description MicroBundle
-        |
-        v
- provider / adapter
-        |
-        v
- RestApiDescriptor
-        |
-        +---- RestOperationDescriptor
-        |          |
-        |          +---- parameters
-        |          +---- request body
-        |          +---- responses
-        |
-        v
- GUI / FSM / Experience
+┌───────────────────────────┐
+│ description MicroBundle   │
+│ OpenAPI / custom / other  │
+└─────────────┬─────────────┘
+              │
+              ▼
+       provider / adapter
+              │
+              ▼
+      RestApiDescriptor
+              │
+              ├── RestOperationDescriptor
+              │       ├── parameters
+              │       ├── request body
+              │       └── responses
+              │
+              ▼
+        GUI / FSM / Experience
 ~~~
 
-The description format is external.
-
-OpenAPI is one possible MicroBundle. Another format could provide the same REST capability surface without requiring FSM_REST to know that format exists.
+The description format is external. OpenAPI is one possible participant.
 
 ## Descriptor semantics
 
-RestApiDescriptor describes a collection of REST operations.
+### RestApiDescriptor
 
-RestOperationDescriptor identifies an operation using:
+Describes a collection of REST operations.
+
+### RestOperationDescriptor
+
+Describes one REST operation using:
 
 - HTTP method;
 - path;
-- operation identity;
-- optional summary and description;
+- stable operation identity;
+- summary and description;
 - parameter metadata;
 - request-body metadata;
 - response metadata.
 
-The descriptor does not execute anything.
+Its PaletteLabel gives downstream tooling a useful human-readable label without making GUI a dependency.
 
-## Parameters
+### Parameters
 
-The neutral parameter model supports:
+The neutral parameter model supports locations such as path, query, header, and cookie.
 
-- path;
-- query;
-- header;
-- cookie.
+The source format translates its own semantics into this representation.
 
-The source format is responsible for translating its own parameter semantics into this neutral representation.
-
-## Request and response bodies
+### Request and response bodies
 
 RestRequestBodyDescriptor records basic request-body information.
 
@@ -68,13 +65,42 @@ RestResponseDescriptor records:
 - basic schema type;
 - basic schema format.
 
-These are deliberately shallow contracts. A protocol MicroBundle may carry richer schemas without forcing that schema model into FSM_REST.
+These are deliberately shallow contracts. A protocol MicroBundle may carry richer schemas without forcing that model into FSM_REST.
+
+## Capability recipe versus execution
+
+The descriptor describes the operation.
+
+The request represents one execution.
+
+~~~text
+reusable capability data
+          │
+          ▼
+RestOperationDescriptor
+          │
+   bind runtime values
+          │
+          ▼
+     RestRequest
+          │
+          ▼
+    IRestTransport
+          │
+          ▼
+      RestResponse
+          │
+          ▼
+      current data
+~~~
+
+A MicroBundle can store reusable capability description without storing changing response payloads.
 
 ## Stable identity
 
-OperationId is the preferred identity when a source format provides one.
+OperationId is the preferred identity when a source provides one.
 
-When no source-defined identity exists, a provider can derive a deterministic identity from the method and path.
+When no source-defined identity exists, a provider can derive a deterministic identity from method and path.
 
 FSM_REST does not require that identity to come from OpenAPI.
 
@@ -82,31 +108,19 @@ FSM_REST does not require that identity to come from OpenAPI.
 
 Provider work answers:
 
-> What capability exists?
+> **What capability exists?**
 
 Transport answers:
 
-> How do we communicate with it?
+> **How do we communicate with it?**
 
 IRestTransport makes that distinction explicit.
 
-~~~text
-provider
-   |
-   v
-REST capability
-   |
-   v
-RestRequest
-   |
-   v
-IRestTransport
-   |
-   v
-RestResponse
-~~~
+## GUI is downstream
 
-A host can replace HttpClientRestTransport with another adapter without changing the capability descriptors.
+FSM_REST does not decide that an operation is a button, form, card, table action, or workflow node.
+
+It provides structured capability data from which another layer can make that decision.
 
 ## Deliberate non-responsibilities
 
@@ -118,28 +132,30 @@ FSM_REST does not:
 - discover credentials;
 - generate GUI controls;
 - define concrete remote services;
-- own domain-specific MicroBundles.
+- own domain-specific MicroBundles;
+- persist response payloads.
 
-Those concerns belong in separately composable packages.
+Those concerns belong in separately composable packages or host policy.
 
 ## Composition invariant
 
-The architecture should remain:
-
 ~~~text
 format/domain package
-        |
-        v
+        │
+        ▼
 provider
-        |
-        v
+        │
+        ▼
 FSM_REST
-        |
-        +---- transport
-        +---- capability model
-        |
-        v
+        │
+        ├──── transport
+        ├──── capability model
+        │
+        ▼
 FSM_COS / GUI / FSM_API
+        │
+        ▼
+Experience
 ~~~
 
-The REST package is therefore a **form**, not a warehouse of implementations.
+The REST package is a **form**, not a warehouse of implementations.
