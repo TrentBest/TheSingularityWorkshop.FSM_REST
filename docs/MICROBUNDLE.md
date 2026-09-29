@@ -6,6 +6,10 @@ A REST API can be enormous at runtime while being small as a capability descript
 
 That difference is exactly what a MicroBundle can exploit.
 
+<p align="center">
+  <img src="assets/fsm-rest-capability-recipe.svg" alt="REST MicroBundle recipe versus changing remote runtime data" width="900">
+</p>
+
 ~~~text
 REMOTE SERVICE
      │
@@ -208,6 +212,10 @@ other description ─────┘
 The source changes.
 
 The downstream composition surface does not.
+
+<p align="center">
+  <img src="assets/fsm-rest-composition-map.svg" alt="REST providers converging on the neutral FSM_REST composition surface" width="900">
+</p>
 
 ## Storefront implications
 
