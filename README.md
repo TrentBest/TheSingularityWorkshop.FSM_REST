@@ -2,6 +2,12 @@
 
 **REST capability and transport substrate for the FSM ecosystem.**
 
+[![NuGet](https://img.shields.io/nuget/v/TheSingularityWorkshop.FSM_Rest?style=flat-square&logo=nuget&logoColor=white)](https://www.nuget.org/packages/TheSingularityWorkshop.FSM_Rest)
+[![NuGet downloads](https://img.shields.io/nuget/dt/TheSingularityWorkshop.FSM_Rest?style=flat-square&logo=nuget&logoColor=white)](https://www.nuget.org/packages/TheSingularityWorkshop.FSM_Rest)
+[![Build](https://img.shields.io/github/actions/workflow/status/TrentBest/TheSingularityWorkshop.FSM_REST/build.yml?branch=master&style=flat-square&logo=github)](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/workflows/build.yml)
+[![Coverage](https://codecov.io/gh/TrentBest/TheSingularityWorkshop.FSM_REST/graph/badge.svg)](https://codecov.io/gh/TrentBest/TheSingularityWorkshop.FSM_REST)
+[![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE.txt)
+
 FSM_REST is intentionally **not an implementation of a REST API**, and it is not a container for every REST description format.
 
 It provides the reusable forms from which REST capabilities can be composed:
@@ -33,32 +39,7 @@ FSM_REST answers one question:
 
 > **How does a REST capability enter the Workshop without bringing its entire description format, GUI, domain, or transport policy with it?**
 
-The answer is a small set of neutral forms:
-
-```text
-description/provider
-       |
-       v
-RestApiDescriptor
-       |
-       v
-RestOperationDescriptor
-       |
-       +----> GUI / FSM / Experience
-       |
-       v
-RestRequest
-       |
-       v
-IRestTransport
-       |
-       v
-RestResponse
-```
-
-
-
-
+The answer is a small neutral vocabulary for capability description, request construction, and transport.
 
 ---
 
@@ -223,87 +204,6 @@ LARGE / DYNAMIC RESULT
 This does not claim every REST integration is physically small. It means the bundle does not need to duplicate the remote dataset merely to describe how that dataset can be obtained.
 
 That is the property that makes REST capabilities especially attractive as MicroBundle content.
-
-## What belongs in FSM_REST
-
-The package owns the protocol-neutral REST vocabulary needed by the hosting ecosystem:
-
-- RestApiDescriptor — a collection of REST operations.
-- RestOperationDescriptor — an operation that can become a capability.
-- RestParameterDescriptor — parameter metadata.
-- RestRequestBodyDescriptor — request-body metadata.
-- RestResponseDescriptor — response metadata.
-- RestRequest — an executable transport request.
-- RestResponse — an observed transport response.
-- IRestTransport — the transport boundary.
-- HttpClientRestTransport — the default .NET HTTP adapter.
-
-These types deliberately do not require ASP.NET Core, OpenAPI, a GUI framework, or a particular domain.
-
-## What does *not* belong here
-
-A description format is a participant in the ecosystem, not the ecosystem itself.
-
-For example, **OpenAPI is not a citizen of FSM_REST**.
-
-An OpenAPI MicroBundle can be supplied separately. That bundle can understand OpenAPI documents, expose an OpenAPI provider, and translate the OpenAPI-specific representation into the neutral REST capability forms supplied by FSM_REST.
-
-Conceptually:
-
-~~~text
-             MicroBundleDomain
-                    |
-                    v
-             OpenAPI MicroBundle
-                    |
-             IProvider<OpenAPI>
-                    |
-                    v
-                FSM_REST
-                    |
-          RestApiDescriptor
-          RestOperationDescriptor
-                    |
-          +---------+---------+
-          |                   |
-        GUI                  FSM
-          |                   |
-          +---------+---------+
-                    |
-                Experience
-~~~
-
-The same pattern applies to other description formats or REST capability families. They should arrive as separately loadable MicroBundles rather than becoming permanent dependencies of the REST substrate.
-
-## REST MicroBundles
-
-A concrete REST MicroBundle is where a particular capability belongs.
-
-A bundle might provide:
-
-- a remote service;
-- a family of REST operations;
-- an API description adapter;
-- authentication behavior;
-- domain-specific request construction;
-- GUI manifestation providers.
-
-The hosting environment loads the MicroBundle and supplies the composition/runtime infrastructure. FSM_REST supplies the REST-specific forms the bundle can use.
-
-This keeps the dependency direction clean:
-
-~~~text
-MicroBundle
-    |
-    +---- MicroBundleDomain
-    +---- FSM_COS
-    +---- FSM_REST
-    |
-    v
-concrete REST capability
-~~~
-
-FSM_REST should never grow upward into a catalog of concrete REST services.
 
 ## Transport boundary
 
