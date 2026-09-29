@@ -60,6 +60,46 @@ public sealed class RestTransportTests
         Assert.Equal("missing", response.Body);
     }
 
+    [Fact]
+    public async Task TransportHonorsCancellation()
+    {
+        using var client = new HttpClient(new BlockingHandler());
+        var transport = new HttpClientRestTransport(client);
+        using var cancellation = new CancellationTokenSource();
+
+        var task = transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/slow")),
+            cancellation.Token);
+
+        cancellation.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => task);
+    }
+
+    [Fact]
+    public void TransportRejectsNullHttpClient()
+    {
+        Assert.Throws<ArgumentNullException>(() => new HttpClientRestTransport(null!));
+    }
+
+    [Fact]
+    public async Task TransportRejectsNullRequest()
+    {
+        using var client = new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
+        var transport = new HttpClientRestTransport(client);
+
+        await Assert.ThrowsAsync<ArgumentNullException>(() => transport.SendAsync(null!));
+    }
+
+    private sealed class BlockingHandler : HttpMessageHandler
+    {
+        protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
+        {
+            await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        }
+    }
+
     private sealed class StubHandler(
         Func<HttpRequestMessage, HttpResponseMessage> responder) : HttpMessageHandler
     {

@@ -37,6 +37,22 @@ public sealed class RestDescriptorTests
     }
 
     [Fact]
+    public void OperationDescriptorPreservesResponseDescriptors()
+    {
+        var responses = new[]
+        {
+            new RestResponseDescriptor("200", "Success", new[] { "application/json" }, "object", null),
+            new RestResponseDescriptor("404", "Not found", Array.Empty<string>(), null, null)
+        };
+
+        var operation = new RestOperationDescriptor(
+            "GET", "/users/{id}", "getUser", "Get user", "Retrieves one user.",
+            Array.Empty<RestParameterDescriptor>(), null, responses);
+
+        Assert.Equal(responses, operation.ResponseDescriptors);
+    }
+
+    [Fact]
     public void ApiDescriptorReportsOperationCount()
     {
         var operations = new[]
