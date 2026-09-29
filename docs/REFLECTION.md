@@ -96,6 +96,10 @@ RestOperationDescriptor
 
 A MicroBundle can store reusable capability description without storing changing response payloads.
 
+<p align="center">
+  <img src="assets/fsm-rest-execution-flow.svg" alt="REST capability execution flow from reusable operation through request construction and transport" width="900">
+</p>
+
 ## Stable identity
 
 OperationId is the preferred identity when a source provides one.
@@ -159,3 +163,5 @@ Experience
 ~~~
 
 The REST package is a **form**, not a warehouse of implementations.
+
+The visual model is deliberate: the reusable description remains on one side of the boundary; runtime values and remote state cross the boundary only when the capability is executed.
