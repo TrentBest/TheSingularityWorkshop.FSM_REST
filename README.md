@@ -33,6 +33,10 @@ The important architectural rule is:
 
 > **FSM_REST provides the composition surface. Domain and protocol-specific MicroBundles provide the things composed through it.**
 
+<p align="center">
+  <img src="docs/assets/fsm-rest-capability-recipe.svg" alt="REST capability recipe flowing from a MicroBundle into a request and current remote data" width="900">
+</p>
+
 ## If you only have a minute
 
 FSM_REST answers one question:
@@ -145,6 +149,10 @@ The transport communicates.
 
 It does not decide what the response means. Interpretation remains downstream.
 
+<p align="center">
+  <img src="docs/assets/fsm-rest-execution-flow.svg" alt="REST execution flow from reusable operation through request construction and transport to current remote data" width="900">
+</p>
+
 ## REST endpoint → MicroBundle
 
 A provider can translate an external description into the neutral FSM_REST vocabulary and carry that capability as MicroBundle data.
@@ -179,6 +187,10 @@ RestApiDescriptor
 The source could be OpenAPI, a hand-authored definition, or another provider.
 
 **FSM_REST does not need to know which.**
+
+<p align="center">
+  <img src="docs/assets/fsm-rest-composition-map.svg" alt="Multiple REST description providers converging on FSM_REST and flowing into Workshop composition layers" width="900">
+</p>
 
 See [REST Capability Model](docs/REFLECTION.md), [REST MicroBundles](docs/MICROBUNDLE.md), and [Theory](docs/THEORY.md).
 
