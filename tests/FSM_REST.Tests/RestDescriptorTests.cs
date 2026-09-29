@@ -71,7 +71,6 @@ public sealed class RestDescriptorTests
 
         Assert.Equal(1, api.OperationCount);
     }
-}
 
     [Fact]
     public void RequestFactoryBindsPathQueryHeadersAndCookies()
@@ -135,4 +134,4 @@ public sealed class RestDescriptorTests
                 new Uri("https://example.test/api"),
                 new Dictionary<string, string?> { ["x"] = "1" }));
     }
-
+}
