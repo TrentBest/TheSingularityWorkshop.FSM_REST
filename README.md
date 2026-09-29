@@ -27,6 +27,45 @@ The important architectural rule is:
 
 > **FSM_REST provides the composition surface. Domain and protocol-specific MicroBundles provide the things composed through it.**
 
+## If you only have a minute
+
+FSM_REST answers one question:
+
+> **How does a REST capability enter the Workshop without bringing its entire description format, GUI, domain, or transport policy with it?**
+
+The answer is a small set of neutral forms:
+
+```text
+description/provider
+       |
+       v
+RestApiDescriptor
+       |
+       v
+RestOperationDescriptor
+       |
+       +----> GUI / FSM / Experience
+       |
+       v
+RestRequest
+       |
+       v
+IRestTransport
+       |
+       v
+RestResponse
+```
+
+**Still interested?** Read [What belongs here](#what-belongs-in-fsm_rest).
+
+**Still interested?** Read [How to use the transport](#transport-boundary).
+
+**Still interested?** Read [Why OpenAPI stays outside](docs/THEORY.md#protocol-descriptions-are-participants).
+
+**Still interested?** Read the full [theory](docs/THEORY.md).
+
+---
+
 ## What belongs in FSM_REST
 
 The package owns the protocol-neutral REST vocabulary needed by the hosting ecosystem:
@@ -172,11 +211,11 @@ FSM_REST does not choose the manifestation.
 
 Concrete protocol/domain packages remain separately owned and publishable.
 
-## Alpha 2 boundary
+## Alpha 3 boundary
 
-**TheSingularityWorkshop.FSM_Rest 0.1.0-alpha.2**
+**TheSingularityWorkshop.FSM_Rest 0.1.0-alpha.3**
 
-Alpha 2 establishes the protocol-neutral REST transport boundary and keeps description formats outside the core package.
+Alpha 3 hardens the public contract and makes the package easier to consume without changing the deliberately small runtime boundary.
 
 The current package intentionally does **not** include:
 
