@@ -56,15 +56,173 @@ IRestTransport
 RestResponse
 ```
 
-**Still interested?** Read [What belongs here](#what-belongs-in-fsm_rest).
 
-**Still interested?** Read [How to use the transport](#transport-boundary).
 
-**Still interested?** Read [Why OpenAPI stays outside](docs/THEORY.md#protocol-descriptions-are-participants).
 
-**Still interested?** Read the full [theory](docs/THEORY.md).
 
 ---
+
+## The capability recipe
+
+The useful trick is that a REST API can be enormous at runtime while being small as a capability description.
+
+**The MicroBundle stores what is needed to obtain the capability—not the remote payload itself.**
+
+~~~text
+CAPABILITY RECIPE
+      │
+      ▼
+RestOperationDescriptor
+      │
+      │ bind runtime values
+      ▼
+RestRequest
+      │
+      ▼
+IRestTransport
+      │
+      ▼
+REMOTE API
+      │
+      │ current / user-specific data
+      ▼
+RestResponse
+      │
+      ▼
+GUI / FSM / Experience
+~~~
+
+For a storefront, the bundle can carry the API identity, operation identity, method, path, parameter definitions, request rules, response metadata, and provider-specific behavior.
+
+The current catalog, inventory, prices, user-specific results, and other changing payloads remain runtime data.
+
+| Capability recipe | Runtime result |
+|---|---|
+| method + path | current records |
+| parameters | current prices |
+| request rules | current inventory |
+| response metadata | current response |
+| provider behavior | transient transport data |
+
+**The response is runtime data. The MicroBundle is the capability recipe.**
+
+This means an endpoint can be cheap to describe, distribute, compose, and replace without copying the dataset it exposes.
+
+## Build a capability
+
+The smallest useful REST capability is just an operation description:
+
+~~~csharp
+var operation = new RestOperationDescriptor(
+    "GET",
+    "/products",
+    "listProducts",
+    "List products",
+    "Returns the current product catalog.",
+    [
+        new RestParameterDescriptor(
+            "page", "query", false, "integer", null, "Page number.")
+    ],
+    null,
+    [
+        new RestResponseDescriptor(
+            "200", "Product collection.",
+            ["application/json"], "array", null)
+    ]);
+
+var api = new RestApiDescriptor(
+    "Store Catalog",
+    "1.0",
+    [operation]);
+~~~
+
+Nothing has been fetched, cached, or rendered.
+
+You have described a capability that can now participate in the Workshop.
+
+## Execute the capability
+
+When an experience needs the data, the capability becomes a request:
+
+~~~csharp
+using var httpClient = new HttpClient();
+IRestTransport transport = new HttpClientRestTransport(httpClient);
+
+var request = new RestRequest(
+    "GET",
+    new Uri("https://example.test/products?page=1"));
+
+RestResponse response = await transport.SendAsync(request);
+
+if (response.IsSuccessStatusCode)
+{
+    Console.WriteLine(response.Body);
+}
+~~~
+
+The transport communicates.
+
+It does not decide what the response means. Interpretation remains downstream.
+
+## REST endpoint → MicroBundle
+
+A provider can translate an external description into the neutral FSM_REST vocabulary and carry that capability as MicroBundle data.
+
+~~~text
+external description
+        │
+        ▼
+provider / adapter
+        │
+        ▼
+RestApiDescriptor
+        │
+   ┌────┼────┐
+   ▼    ▼    ▼
+ op A  op B  op C
+   └────┼────┘
+        ▼
+ REST MicroBundle
+        │
+        ▼
+    FSM_COS / host
+        │
+   ┌────┴────┐
+   ▼         ▼
+  GUI       FSM
+   └────┬────┘
+        ▼
+    Experience
+~~~
+
+The source could be OpenAPI, a hand-authored definition, or another provider.
+
+**FSM_REST does not need to know which.**
+
+See [REST Capability Model](docs/REFLECTION.md), [REST MicroBundles](docs/MICROBUNDLE.md), and [Theory](docs/THEORY.md).
+
+## Why the response is not the bundle
+
+The response is transient, changing, and often user-specific.
+
+The bundle is reusable capability data.
+
+~~~text
+SMALL DESCRIPTION
+      │
+      │ method / path / parameters /
+      │ request rules / response metadata
+      ▼
+REMOTE CAPABILITY
+      │
+      │ current state
+      ▼
+LARGE / DYNAMIC RESULT
+~~~
+
+This does not claim every REST integration is physically small. It means the bundle does not need to duplicate the remote dataset merely to describe how that dataset can be obtained.
+
+That is the property that makes REST capabilities especially attractive as MicroBundle content.
 
 ## What belongs in FSM_REST
 
