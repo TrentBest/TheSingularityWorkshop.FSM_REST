@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 680">
+<defs>
+ <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#07111f"/><stop offset="1" stop-color="#111b2d"/></linearGradient>
+ <linearGradient id="hub" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#43e5ff"/><stop offset="1" stop-color="#826cff"/></linearGradient>
+ <filter id="glow"><feGaussianBlur stdDeviation="8" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="1200" height="680" rx="34" fill="url(#bg)"/>
+<text x="65" y="72" fill="#fff" font-family="Segoe UI,Arial" font-size="38" font-weight="700">Many descriptions. One composition surface.</text>
+<text x="65" y="108" fill="#9fb2c8" font-family="Segoe UI,Arial" font-size="19">Protocol-specific knowledge stays at the edge; the Workshop consumes a neutral capability form.</text>
+<g font-family="Segoe UI,Arial">
+ <g fill="#13243a" stroke="#45617d" stroke-width="2">
+  <rect x="70" y="175" width="230" height="82" rx="18"/><rect x="70" y="295" width="230" height="82" rx="18"/><rect x="70" y="415" width="230" height="82" rx="18"/>
+ </g>
+ <text x="112" y="208" fill="#fff" font-size="19" font-weight="700">OpenAPI provider</text><text x="112" y="235" fill="#9fb2c8" font-size="15">external description</text>
+ <text x="112" y="328" fill="#fff" font-size="19" font-weight="700">Hand-authored</text><text x="112" y="355" fill="#9fb2c8" font-size="15">capability provider</text>
+ <text x="112" y="448" fill="#fff" font-size="19" font-weight="700">Vendor adapter</text><text x="112" y="475" fill="#9fb2c8" font-size="15">another source format</text>
+ <rect x="430" y="230" width="330" height="220" rx="35" fill="#0e2438" stroke="url(#hub)" stroke-width="5" filter="url(#glow)"/>
+ <text x="493" y="295" fill="#62eaff" font-size="20" font-weight="700">THE COMMON FORM</text>
+ <text x="493" y="343" fill="#fff" font-size="34" font-weight="700">FSM_REST</text>
+ <text x="493" y="380" fill="#b8c9da" font-size="17">descriptors • request • transport</text>
+ <text x="493" y="412" fill="#b8c9da" font-size="17">neutral REST capability surface</text>
+ <g fill="#13243a" stroke="#45617d" stroke-width="2">
+  <rect x="890" y="160" width="230" height="82" rx="18"/><rect x="890" y="280" width="230" height="82" rx="18"/><rect x="890" y="400" width="230" height="82" rx="18"/><rect x="890" y="520" width="230" height="82" rx="18"/>
+ </g>
+ <text x="952" y="193" fill="#fff" font-size="19" font-weight="700">FSM_COS</text><text x="925" y="220" fill="#9fb2c8" font-size="15">composition</text>
+ <text x="953" y="313" fill="#fff" font-size="19" font-weight="700">GUI</text><text x="925" y="340" fill="#9fb2c8" font-size="15">manifestation</text>
+ <text x="948" y="433" fill="#fff" font-size="19" font-weight="700">FSM_API</text><text x="925" y="460" fill="#9fb2c8" font-size="15">behavior</text>
+ <text x="945" y="553" fill="#fff" font-size="19" font-weight="700">Experience</text><text x="925" y="580" fill="#9fb2c8" font-size="15">user-facing result</text>
+ <g stroke="#5ee7ff" stroke-width="3" fill="none"><path d="M300 216C360 216 370 275 430 275"/><path d="M300 336H430"/><path d="M300 456C360 456 370 405 430 405"/><path d="M760 275C825 275 825 201 890 201"/><path d="M760 325H890"/><path d="M760 375C825 375 825 441 890 441"/></g>
+ <path d="M1005 482V520" stroke="#826cff" stroke-width="4"/>
+</g>
+</svg>
