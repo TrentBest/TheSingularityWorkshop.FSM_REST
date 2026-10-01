@@ -7,20 +7,23 @@ namespace TheSingularityWorkshop.FSM_REST;
 /// The operation descriptor defines the capability. This binding supplies the
 /// runtime values for one invocation without mutating the descriptor.
 /// </remarks>
-/// <param name="Operation">Reusable operation capability being invoked.</param>
-/// <param name="Parameters">Runtime values keyed by the operation's parameter names.</param>
-public sealed record RestOperationBinding(
-    RestOperationDescriptor Operation,
-    IReadOnlyDictionary<string, string?> Parameters)
+public sealed record RestOperationBinding
 {
     public RestOperationBinding(
         RestOperationDescriptor operation,
         IReadOnlyDictionary<string, string?>? parameters = null)
-        : this(
-            operation ?? throw new ArgumentNullException(nameof(operation)),
-            parameters is null
-                ? new Dictionary<string, string?>(StringComparer.Ordinal)
-                : new Dictionary<string, string?>(parameters, StringComparer.Ordinal))
     {
+        ArgumentNullException.ThrowIfNull(operation);
+
+        Operation = operation;
+        Parameters = parameters is null
+            ? new Dictionary<string, string?>(StringComparer.Ordinal)
+            : new Dictionary<string, string?>(parameters, StringComparer.Ordinal);
     }
+
+    /// <summary>Reusable operation capability being invoked.</summary>
+    public RestOperationDescriptor Operation { get; }
+
+    /// <summary>Runtime values keyed by the operation's parameter names.</summary>
+    public IReadOnlyDictionary<string, string?> Parameters { get; }
 }
