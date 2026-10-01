@@ -35,6 +35,9 @@ public sealed class RestMicroBundle : IMicroBundle
     public RestApiDescriptor Api { get; }
 
     /// <inheritdoc />
+    public ulong Id => Descriptor.Id;
+
+    /// <inheritdoc />
     public MicroBundleDescriptor Descriptor { get; }
 
     /// <inheritdoc />
