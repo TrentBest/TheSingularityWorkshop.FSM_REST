@@ -63,9 +63,9 @@ It contains the information required to obtain the response.
 
 ## Minimal composition example
 
-The REST package does not depend on MicroBundleDomain.
+FSM_REST now includes a small composition adapter: `RestApiDescriptor.ToMicroBundle(...)` creates a `RestMicroBundle` that carries the REST capability into `FSM_COS`. The package therefore provides the common REST vocabulary and the bridge into the ecosystem, while concrete providers still remain separate.
 
-A separate provider can combine the two concepts:
+A provider can still combine the two concepts explicitly when it needs custom bundle behavior:
 
 ~~~csharp
 using TheSingularityWorkshop.FSM_REST;
@@ -102,9 +102,9 @@ var api = new RestApiDescriptor(
     ]);
 ~~~
 
-This is illustrative rather than a new FSM_REST dependency.
+The direct adapter is useful when the REST descriptor itself is the capability being composed. A provider can still supply its own `IMicroBundle` when it needs additional behavior.
 
-The separation is the important part:
+The separation is still the important part:
 
 ~~~text
 MicroBundleDomain
@@ -268,3 +268,39 @@ The point is to make the REST edge cheap and reusable enough that higher-level s
 - [README](../README.md)
 - [REST Capability Model](REFLECTION.md)
 - [FSM_REST Theory](THEORY.md)
+
+## Direct REST MicroBundle composition
+
+When no provider-specific bundle behavior is required, the REST capability can cross the composition boundary directly:
+
+~~~csharp
+var api = new RestApiDescriptor(
+    "Store Catalog",
+    "1.0",
+    [
+        new RestOperationDescriptor("GET", "/products", "listProducts", "List products",
+            "Returns the current product catalog.", [], null)
+    ]);
+
+RestMicroBundle bundle = api.ToMicroBundle(0x2001UL);
+~~~
+
+The resulting bundle carries the REST descriptor and the MicroBundle descriptor together. `FSM_COS` can compose it like any other `IMicroBundle`.
+
+The important boundary remains:
+
+~~~text
+RestApiDescriptor
+       │
+       │ ToMicroBundle(id)
+       ▼
+RestMicroBundle
+       │
+       ▼
+FSM_COS
+       │
+       ▼
+RuntimeAssembly
+~~~
+
+The bundle does **not** contain current remote response data, credentials, or an HTTP client. It carries the reusable capability recipe.
