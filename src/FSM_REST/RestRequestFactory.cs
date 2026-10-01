@@ -82,7 +82,7 @@ public static class RestRequestFactory
                 if (parameter.Required)
                     throw new ArgumentException(
                         $"Required REST parameter '{parameter.Name}' was not supplied.",
-                        nameof(parameters));
+                        nameof(binding));
 
                 continue;
             }
