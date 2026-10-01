@@ -121,7 +121,7 @@ public static class RestRequestFactory
             if (path.Contains("{" + placeholder.Name + "}", StringComparison.Ordinal))
                 throw new ArgumentException(
                     $"Path parameter '{placeholder.Name}' was not bound.",
-                    nameof(parameters));
+                    nameof(binding));
         }
 
         if (cookies.Count > 0)
