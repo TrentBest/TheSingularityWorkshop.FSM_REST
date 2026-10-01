@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <PackageId>TheSingularityWorkshop.FSM_Rest</PackageId>
-    <Version>0.1.0-alpha.4</Version>
+    <Version>0.1.0-alpha.5</Version>
     <Authors>Trent Best</Authors>
     <Company>The Singularity Workshop</Company>
     <Description>Framework-agnostic REST capability descriptors and transport boundary for the FSM ecosystem.</Description>
@@ -15,12 +15,12 @@
     <PackageProjectUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Alpha 4: separates runtime operation binding from request construction and adds a first-class REST MicroBundle adapter for FSM_COS composition.</PackageReleaseNotes>
+    <PackageReleaseNotes>Alpha 5: aligns the REST capability package with FSM_COS alpha.4.</PackageReleaseNotes>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="TheSingularityWorkshop.FSM_COS" Version="0.1.0-alpha.3" />
+    <PackageReference Include="TheSingularityWorkshop.FSM_COS" Version="0.1.0-alpha.4" />
   </ItemGroup>
   <ItemGroup>
     <None Include="../../README.md" Pack="true" PackagePath="" />
