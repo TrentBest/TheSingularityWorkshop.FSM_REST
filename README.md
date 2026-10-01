@@ -125,9 +125,23 @@ Nothing has been fetched, cached, or rendered.
 
 You have described a capability that can now participate in the Workshop.
 
-## Execute the capability
+## Bind and execute the capability
 
-When an experience needs the data, the capability becomes a request:
+When an experience needs the data, the reusable capability is first bound to runtime values:
+
+~~~csharp
+var binding = new RestOperationBinding(
+    operation,
+    new Dictionary<string, string?> { ["page"] = "1" });
+
+var request = RestRequestFactory.Create(
+    binding,
+    new Uri("https://example.test"));
+~~~
+
+The binding is one invocation. The operation descriptor remains reusable.
+
+When an experience needs to send that request:
 
 ~~~csharp
 using var httpClient = new HttpClient();
@@ -294,13 +308,13 @@ FSM_REST does not choose the manifestation.
 | FSM_Serialization | serialized representation |
 | GUI | visual manifestation |
 
-Concrete protocol/domain packages remain separately owned and publishable.
+Concrete protocol/domain packages remain separately owned and publishable. FSM_REST can also provide the small adapter needed when the REST capability itself is the MicroBundle.
 
-## Alpha 3 boundary
+## Alpha 4 boundary
 
-**TheSingularityWorkshop.FSM_Rest 0.1.0-alpha.3**
+**TheSingularityWorkshop.FSM_Rest 0.1.0-alpha.4**
 
-Alpha 3 hardens the public contract and makes the package easier to consume without changing the deliberately small runtime boundary.
+Alpha 4 makes the documented capability model directly composable: runtime operation values are separated from reusable operation descriptors, and a REST API descriptor can now be carried directly as an ecosystem MicroBundle.
 
 The current package intentionally does **not** include:
 
