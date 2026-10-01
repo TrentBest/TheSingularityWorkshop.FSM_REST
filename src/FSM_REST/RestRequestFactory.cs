@@ -30,12 +30,41 @@ public static class RestRequestFactory
         string? contentType = null)
     {
         ArgumentNullException.ThrowIfNull(operation);
+
+        return Create(
+            new RestOperationBinding(operation, parameters),
+            baseUri,
+            headers,
+            body,
+            contentType);
+    }
+
+    /// <summary>
+    /// Creates a request from a runtime operation binding.
+    /// </summary>
+    /// <param name="binding">Reusable operation plus runtime parameter values.</param>
+    /// <param name="baseUri">Absolute base URI of the remote API.</param>
+    /// <param name="headers">Additional request headers.</param>
+    /// <param name="body">Optional request body.</param>
+    /// <param name="contentType">Optional request content type.</param>
+    /// <returns>An executable request for one operation invocation.</returns>
+    public static RestRequest Create(
+        RestOperationBinding binding,
+        Uri baseUri,
+        IReadOnlyDictionary<string, string>? headers = null,
+        string? body = null,
+        string? contentType = null)
+    {
+        ArgumentNullException.ThrowIfNull(binding);
+        var operation = binding.Operation;
+
+        ArgumentNullException.ThrowIfNull(operation);
         ArgumentNullException.ThrowIfNull(baseUri);
 
         if (!baseUri.IsAbsoluteUri)
             throw new ArgumentException("The REST base URI must be absolute.", nameof(baseUri));
 
-        var values = parameters ?? new Dictionary<string, string?>();
+        var values = binding.Parameters;
         var requestHeaders = headers is null
             ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             : new Dictionary<string, string>(headers, StringComparer.OrdinalIgnoreCase);
