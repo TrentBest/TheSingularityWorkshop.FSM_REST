@@ -72,6 +72,76 @@ public sealed class RestDescriptorTests
         Assert.Equal(1, api.OperationCount);
     }
 
+
+    [Fact]
+    public void OperationBindingPreservesCapabilityAndCopiesRuntimeValues()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET",
+            "/users/{id}",
+            "getUser",
+            "Get user",
+            null,
+            [new RestParameterDescriptor("id", "path", true, "string", null, null)],
+            null);
+
+        var values = new Dictionary<string, string?> { ["id"] = "42" };
+        var binding = new RestOperationBinding(operation, values);
+        values["id"] = "changed";
+
+        Assert.Same(operation, binding.Operation);
+        Assert.Equal("42", binding.Parameters["id"]);
+    }
+
+    [Fact]
+    public void RequestFactoryAcceptsOperationBinding()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET",
+            "/users/{id}",
+            "getUser",
+            null,
+            null,
+            [new RestParameterDescriptor("id", "path", true, "string", null, null)],
+            null);
+
+        var binding = new RestOperationBinding(
+            operation,
+            new Dictionary<string, string?> { ["id"] = "42" });
+
+        var request = RestRequestFactory.Create(
+            binding,
+            new Uri("https://example.test/api"));
+
+        Assert.Equal("https://example.test/api/users/42", request.Uri.AbsoluteUri);
+    }
+
+    [Fact]
+    public void ApiDescriptorCanBecomeAnEcosystemMicroBundle()
+    {
+        var api = new RestApiDescriptor(
+            "Store Catalog",
+            "1.0",
+            [
+                new RestOperationDescriptor(
+                    "GET",
+                    "/products",
+                    "listProducts",
+                    null,
+                    null,
+                    Array.Empty<RestParameterDescriptor>(),
+                    null)
+            ]);
+
+        var bundle = api.ToMicroBundle(0x2001UL);
+
+        Assert.Equal(0x2001UL, bundle.Id);
+        Assert.Equal("1.0", bundle.Descriptor.Version);
+        Assert.Same(api, bundle.Api);
+        Assert.Contains(bundle.Descriptor.Providers, provider => provider.Id == "rest:Store Catalog");
+        Assert.Empty(bundle.Dependencies);
+    }
+
     [Fact]
     public void RequestFactoryBindsPathQueryHeadersAndCookies()
     {
