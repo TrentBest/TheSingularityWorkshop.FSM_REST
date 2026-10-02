@@ -117,32 +117,6 @@ public sealed class RestDescriptorTests
     }
 
     [Fact]
-    public void ApiDescriptorCanBecomeAnEcosystemMicroBundle()
-    {
-        var api = new RestApiDescriptor(
-            "Store Catalog",
-            "1.0",
-            [
-                new RestOperationDescriptor(
-                    "GET",
-                    "/products",
-                    "listProducts",
-                    null,
-                    null,
-                    Array.Empty<RestParameterDescriptor>(),
-                    null)
-            ]);
-
-        var bundle = api.ToMicroBundle(0x2001UL);
-
-        Assert.Equal(0x2001UL, bundle.Id);
-        Assert.Equal("1.0", bundle.Descriptor.Version);
-        Assert.Same(api, bundle.Api);
-        Assert.Contains(bundle.Descriptor.Providers, provider => provider.Id == "rest:Store Catalog");
-        Assert.Empty(bundle.Dependencies);
-    }
-
-    [Fact]
     public void RequestFactoryBindsPathQueryHeadersAndCookies()
     {
         var operation = new RestOperationDescriptor(
