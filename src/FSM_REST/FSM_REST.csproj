@@ -15,12 +15,9 @@
     <PackageProjectUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>1.0.0: stable REST capability descriptors, request construction, transport boundary, and FSM_COS composition adapter.</PackageReleaseNotes>
+    <PackageReleaseNotes>1.0.0: stable REST capability descriptors, request construction, and transport boundary. Composition adapters live at the consuming composition boundary.</PackageReleaseNotes>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
   </PropertyGroup>
-  <ItemGroup>
-    <PackageReference Include="TheSingularityWorkshop.FSM_COS" Version="1.0.0" />
-  </ItemGroup>
   <ItemGroup>
     <None Include="../../README.md" Pack="true" PackagePath="" />
     <None Include="../../LICENSE.txt" Pack="true" PackagePath="" />
