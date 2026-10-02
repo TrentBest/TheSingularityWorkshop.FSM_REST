@@ -60,7 +60,9 @@ jobs:
           fail_ci_if_error: true
 
       - name: Pack
-        run: dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --no-build --output ./artifacts
+        run: |
+          dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --no-build --output ./artifacts
+          dotnet pack src/FSM_REST.COS/FSM_REST.COS.csproj --configuration Release --no-build --output ./artifacts
 
       - name: Upload NuGet package artifact
         uses: actions/upload-artifact@v7
