@@ -61,69 +61,27 @@ It contains the information required to obtain the response.
 
 > **Store the instructions for obtaining the data; obtain the data when the capability is used.**
 
-## Minimal composition example
+## Composition belongs downstream
 
-FSM_REST now includes a small composition adapter: `RestApiDescriptor.ToMicroBundle(...)` creates a `RestMicroBundle` that carries the REST capability into `FSM_COS`. The package therefore provides the common REST vocabulary and the bridge into the ecosystem, while concrete providers still remain separate.
-
-A provider can still combine the two concepts explicitly when it needs custom bundle behavior:
-
-~~~csharp
-using TheSingularityWorkshop.FSM_REST;
-using TheSingularityWorkshop.MicroBundleDomain;
-
-var bundle = new MicroBundleDescriptor(
-    id: 0x2001UL,
-    version: "1.0.0",
-    providers:
-    [
-        new MicroBundleProvider("rest:catalog")
-    ]);
-
-var api = new RestApiDescriptor(
-    "Store Catalog",
-    "1.0",
-    [
-        new RestOperationDescriptor(
-            "GET",
-            "/products",
-            "listProducts",
-            "List products",
-            "Returns the current product catalog.",
-            [],
-            null,
-            [
-                new RestResponseDescriptor(
-                    "200",
-                    "Current product collection.",
-                    ["application/json"],
-                    "array",
-                    null)
-            ])
-    ]);
-~~~
-
-The direct adapter is useful when the REST descriptor itself is the capability being composed. A provider can still supply its own `IMicroBundle` when it needs additional behavior.
-
-The separation is still the important part:
+FSM_REST defines the REST capability. It does not implement `IMicroBundle`, because that interface belongs to the composition engine.
 
 ~~~text
-MicroBundleDomain
-      │
-      │ identifies the loadable capability
-      ▼
-REST provider
-      │
-      │ supplies REST semantics
-      ▼
 FSM_REST
-      │
-      │ supplies neutral REST forms
-      ▼
-FSM_COS / host
-      │
-      ▼
-runtime execution
+  │
+  │ REST capability vocabulary
+  ▼
+FSM_COS
+  │
+  │ composition-side adapter
+  ▼
+RestMicroBundle
 ~~~
+
+This matters because an application should be able to install FSM_REST alone and immediately use REST descriptors, request construction, and transport.
+
+If a different composition engine is introduced later, it can consume FSM_REST without changing the REST package.
+
+> **The provider describes the capability. The composition engine decides how that capability enters its runtime.**
 
 ## From operation to request
 
@@ -269,38 +227,19 @@ The point is to make the REST edge cheap and reusable enough that higher-level s
 - [REST Capability Model](REFLECTION.md)
 - [FSM_REST Theory](THEORY.md)
 
-## Direct REST MicroBundle composition
+## Composition example
 
-When no provider-specific bundle behavior is required, the REST capability can cross the composition boundary directly:
-
-~~~csharp
-var api = new RestApiDescriptor(
-    "Store Catalog",
-    "1.0",
-    [
-        new RestOperationDescriptor("GET", "/products", "listProducts", "List products",
-            "Returns the current product catalog.", [], null)
-    ]);
-
-RestMicroBundle bundle = api.ToMicroBundle(0x2001UL);
-~~~
-
-The resulting bundle carries the REST descriptor and the MicroBundle descriptor together. `FSM_COS` can compose it like any other `IMicroBundle`.
-
-The important boundary remains:
+A composition engine can wrap a `RestApiDescriptor` in its own MicroBundle implementation. For FSM_COS, that adapter belongs in the FSM_COS package so that the dependency remains one-way.
 
 ~~~text
 RestApiDescriptor
        │
-       │ ToMicroBundle(id)
+       │ consumed by composition layer
        ▼
-RestMicroBundle
+   FSM_COS adapter
        │
        ▼
-FSM_COS
-       │
-       ▼
-RuntimeAssembly
+  RuntimeAssembly
 ~~~
 
-The bundle does **not** contain current remote response data, credentials, or an HTTP client. It carries the reusable capability recipe.
+The resulting bundle may carry the REST descriptor, but it should not contain current remote response data, credentials, or an HTTP client. It carries the reusable capability recipe.
