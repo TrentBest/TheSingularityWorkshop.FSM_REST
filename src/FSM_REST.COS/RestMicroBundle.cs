@@ -1,4 +1,3 @@
-using TheSingularityWorkshop.FSM_COS;
 using TheSingularityWorkshop.FSM_REST;
 using TheSingularityWorkshop.MicroBundleDomain;
 
@@ -41,17 +40,17 @@ public sealed class RestMicroBundle : IMicroBundle
     public MicroBundleDescriptor Descriptor { get; }
 
     /// <inheritdoc />
-    public IReadOnlyList<BundleRequest> Dependencies =>
+    public IReadOnlyList<MicroBundleDependencyRequest> Dependencies =>
         Descriptor.Dependencies
-            .Select(dependency => BundleRequest.Unconfigured(dependency.BundleId))
+            .Select(dependency => MicroBundleDependencyRequest.Unconfigured(dependency.BundleId))
             .ToArray();
 
     /// <inheritdoc />
-    public void Load(MicroBundleLoadContext context) =>
+    public void Load(IMicroBundleLoadContext context) =>
         ArgumentNullException.ThrowIfNull(context);
 
     /// <inheritdoc />
-    public bool Arbitrate(ArbitrationContext context, int roundIndex)
+    public bool Arbitrate(IMicroBundleArbitrationContext context, int roundIndex)
     {
         ArgumentNullException.ThrowIfNull(context);
         return false;
