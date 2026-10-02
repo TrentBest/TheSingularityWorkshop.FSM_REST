@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1050" height="330" viewBox="0 0 1050 330">
+<rect width="1050" height="330" rx="28" fill="#0b1020"/>
+<text x="525" y="48" text-anchor="middle" fill="#fff" font-family="Segoe UI,Arial" font-size="26" font-weight="700">FSM_REST 1.0.0 — Downstream Capability Layer</text>
+<g font-family="Segoe UI,Arial" text-anchor="middle">
+<rect x="55" y="105" width="220" height="72" rx="15" fill="#111827" stroke="#60a5fa" stroke-width="2"/>
+<text x="165" y="135" fill="#fff" font-size="18" font-weight="700">FSM_API</text><text x="165" y="160" fill="#93c5fd" font-size="15">1.0.13 stable</text>
+<rect x="55" y="205" width="220" height="72" rx="15" fill="#111827" stroke="#60a5fa" stroke-width="2"/>
+<text x="165" y="235" fill="#fff" font-size="18" font-weight="700">FSM_COS</text><text x="165" y="260" fill="#93c5fd" font-size="15">1.0.0 stable prerequisite</text>
+<rect x="415" y="120" width="220" height="140" rx="20" fill="#172554" stroke="#fbbf24" stroke-width="3"/>
+<text x="525" y="163" fill="#fff" font-size="22" font-weight="700">FSM_REST</text>
+<text x="525" y="192" fill="#fde68a" font-size="18">1.0.0 release prep</text>
+<text x="525" y="220" fill="#c7d2fe" font-size="14">describe → bind → request</text>
+<text x="525" y="242" fill="#c7d2fe" font-size="14">→ transport → response</text>
+<rect x="775" y="120" width="220" height="140" rx="20" fill="#111827" stroke="#64748b" stroke-width="2"/>
+<text x="885" y="163" fill="#e5e7eb" font-size="19" font-weight="700">Remote API</text>
+<text x="885" y="195" fill="#94a3b8" font-size="15">current data</text>
+<text x="885" y="220" fill="#94a3b8" font-size="15">user/runtime state</text>
+<text x="885" y="245" fill="#94a3b8" font-size="15">not stored in bundle</text>
+</g>
+<g stroke="#93c5fd" stroke-width="3" fill="none"><path d="M275 141 C335 141 355 190 415 190"/><path d="M275 241 C335 241 355 190 415 190"/></g>
+<path d="M635 190 C690 190 720 190 775 190" stroke="#fbbf24" stroke-width="3" fill="none"/>
+<text x="525" y="305" text-anchor="middle" fill="#dbeafe" font-family="Segoe UI,Arial" font-size="14">The capability recipe is reusable; the response is runtime data.</text>
+</svg>
