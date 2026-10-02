@@ -6,19 +6,24 @@ FSM_REST 1.0.0 stabilizes the reusable REST capability surface without turning t
 
 ## Dependency boundary
 
-```text
-FSM_API
-   │
-FSM_COS 1.0.0
-   │
+FSM_REST is a foundation package, not a downstream composition package.
+
+~~~text
 FSM_REST 1.0.0
    ├── operation descriptors
    ├── runtime bindings
    ├── request construction
    └── transport boundary
-```
 
-FSM_REST does not own authentication policy, OpenAPI parsing, remote data, GUI generation, or application-specific REST services.
+          ▲
+          │ consumed by
+          │
+     FSM_COS / other composition layers
+~~~
+
+There is intentionally **no dependency on FSM_COS**.
+
+If FSM_COS needs to represent a REST capability as an `IMicroBundle`, FSM_COS consumes FSM_REST and owns that adapter.
 
 ## What is stable
 
@@ -30,7 +35,6 @@ The release contract covers:
 - deterministic request construction;
 - transport abstraction;
 - HttpClient transport adapter;
-- REST MicroBundle composition adapter;
 - separation between capability description and runtime response data.
 
 ## What remains outside
@@ -75,7 +79,7 @@ That distinction keeps reusable capability metadata separate from transient runt
 
 ## Release review checklist
 
-- [ ] FSM_COS 1.0.0 is available as a stable dependency.
+- [ ] Package restores without FSM_COS or any other Workshop dependency.
 - [ ] Release build succeeds.
 - [ ] Complete test suite succeeds.
 - [ ] Coverage collection succeeds.
@@ -83,7 +87,7 @@ That distinction keeps reusable capability metadata separate from transient runt
 - [ ] Packed nuspec contains no prerelease first-party dependency.
 - [ ] README contains practical construction/execution examples.
 - [ ] Theory explains the capability-versus-data boundary.
-- [ ] Visuals accurately show the dependency and runtime boundaries.
+- [ ] Visuals accurately show the independent REST foundation and downstream composition boundary.
 - [ ] Publication remains manual and explicit.
 
 > **Describe the capability once; obtain its changing result when the experience needs it.**
