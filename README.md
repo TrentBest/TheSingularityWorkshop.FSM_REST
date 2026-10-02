@@ -310,9 +310,39 @@ FSM_REST does not choose the manifestation.
 
 Concrete protocol/domain packages remain separately owned and publishable. FSM_REST can also provide the small adapter needed when the REST capability itself is the MicroBundle.
 
-## Alpha 4 boundary
+## 1.0.0 release posture
 
-**TheSingularityWorkshop.FSM_Rest 0.1.0-alpha.4**
+This branch prepares FSM_REST 1.0.0 as the first stable REST capability layer above FSM_COS.
+
+```text
+FSM_API 1.0.13
+      │
+      ▼
+FSM_COS 1.0.0
+      │
+      ▼
+FSM_REST 1.0.0
+      │
+      ├── capability descriptors
+      ├── request construction
+      └── transport boundary
+```
+
+The stable release depends on **FSM_COS 1.0.0**. Until that package is released, this branch is intentionally a downstream release-preparation artifact rather than a publishable package.
+
+### Release gate
+
+CI packs the package and rejects any stable first-party dependency that is still prerelease. Publication requires an explicit workflow dispatch with `publish: true`.
+
+See [Theory](docs/THEORY.md), [REST Capability Model](docs/REFLECTION.md), and the package release workflow for the implementation boundary.
+
+<p align="center">
+  <img src="docs/assets/release-frontier.svg" alt="FSM_REST 1.0.0 downstream of FSM_COS 1.0.0">
+</p>
+
+## Previous alpha boundary
+
+**TheSingularityWorkshop.FSM_Rest 1.0.0 release candidate**
 
 Alpha 4 makes the documented capability model directly composable: runtime operation values are separated from reusable operation descriptors, and a REST API descriptor can now be carried directly as an ecosystem MicroBundle.
 
