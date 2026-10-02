@@ -202,6 +202,8 @@ The source could be OpenAPI, a hand-authored definition, or another provider.
 
 **FSM_REST does not need to know which.**
 
+When the REST capability itself needs to participate in FSM_COS, that integration lives in the separate `TheSingularityWorkshop.FSM_Rest.COS` package. The transport substrate remains independent.
+
 <p align="center">
   <img src="docs/assets/fsm-rest-composition-map.svg" alt="Multiple REST description providers converging on FSM_REST and flowing into Workshop composition layers" width="900">
 </p>
@@ -305,6 +307,7 @@ FSM_REST does not choose the manifestation.
 | MicroBundleDomain | domain-side MicroBundle description |
 | FSM_COS | runtime MicroBundle composition |
 | FSM_REST | REST capability and transport substrate |
+| FSM_Rest.COS | optional REST-to-FSM_COS MicroBundle integration |
 | FSM_Serialization | serialized representation |
 | GUI | visual manifestation |
 
@@ -314,7 +317,7 @@ Concrete protocol/domain packages remain separately owned and publishable. FSM_R
 
 **TheSingularityWorkshop.FSM_Rest 0.1.0-alpha.4**
 
-Alpha 4 makes the documented capability model directly composable: runtime operation values are separated from reusable operation descriptors, and a REST API descriptor can now be carried directly as an ecosystem MicroBundle.
+Alpha 4 makes the documented capability model directly composable: runtime operation values are separated from reusable operation descriptors. The optional REST MicroBundle adapter is now isolated in `TheSingularityWorkshop.FSM_Rest.COS`, so the core REST package does not depend on FSM_COS.
 
 The current package intentionally does **not** include:
 
