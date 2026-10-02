@@ -13,7 +13,7 @@ FSM_REST is intentionally **not an implementation of a REST API**, and it is not
 It provides the reusable forms from which REST capabilities can be composed:
 
 ~~~text
-REST MicroBundle / external description
+external REST description
             |
             v
         FSM_REST
@@ -31,7 +31,7 @@ REST MicroBundle / external description
 
 The important architectural rule is:
 
-> **FSM_REST provides the composition surface. Domain and protocol-specific MicroBundles provide the things composed through it.**
+> **FSM_REST provides the REST capability vocabulary. A consuming composition layer decides how that capability becomes a MicroBundle or runtime capability.**
 
 <p align="center">
   <img src="docs/assets/fsm-rest-capability-recipe.svg" alt="REST capability recipe flowing from a MicroBundle into a request and current remote data" width="900">
@@ -167,46 +167,45 @@ It does not decide what the response means. Interpretation remains downstream.
   <img src="docs/assets/fsm-rest-execution-flow.svg" alt="REST execution flow from reusable operation through request construction and transport to current remote data" width="900">
 </p>
 
-## REST endpoint → MicroBundle
+## REST capability → composition boundary
 
-A provider can translate an external description into the neutral FSM_REST vocabulary and carry that capability as MicroBundle data.
+FSM_REST deliberately stops before the composition kernel.
+
+A REST description can be carried by a MicroBundle, but the adapter that implements the composition kernel's `IMicroBundle` contract belongs at the composition boundary—not inside the standalone REST substrate.
 
 ~~~text
 external description
-        │
-        ▼
+        |
+        v
 provider / adapter
-        │
-        ▼
+        |
+        v
 RestApiDescriptor
-        │
-   ┌────┼────┐
-   ▼    ▼    ▼
- op A  op B  op C
-   └────┼────┘
-        ▼
- REST MicroBundle
-        │
-        ▼
-    FSM_COS / host
-        │
-   ┌────┴────┐
-   ▼         ▼
-  GUI       FSM
-   └────┬────┘
-        ▼
-    Experience
+        |
+        +----------------------+
+        |                      |
+        v                      v
+ direct REST use       consuming composition
+                              |
+                              v
+                          FSM_COS
+                              |
+                         RestMicroBundle
 ~~~
 
-The source could be OpenAPI, a hand-authored definition, or another provider.
+This keeps the dependency direction one-way:
 
-**FSM_REST does not need to know which.**
+~~~text
+FSM_REST  ──>  no FSM_COS dependency
 
-<p align="center">
-  <img src="docs/assets/fsm-rest-composition-map.svg" alt="Multiple REST description providers converging on FSM_REST and flowing into Workshop composition layers" width="900">
-</p>
+FSM_COS  ──>  FSM_REST
+~~~
 
-See [REST Capability Model](docs/REFLECTION.md), [REST MicroBundles](docs/MICROBUNDLE.md), and [Theory](docs/THEORY.md).
+When FSM_COS needs REST composition, it can reference FSM_REST and provide the small adapter there. Another composition engine can do the same without forcing FSM_REST to know about either engine.
+
+> **A capability vocabulary should not depend on the engine that consumes it.**
+
+See [REST MicroBundles](docs/MICROBUNDLE.md) for the boundary in detail.
 
 ## Why the response is not the bundle
 
@@ -303,32 +302,35 @@ FSM_REST does not choose the manifestation.
 |---|---|
 | FSM_API | state-machine execution |
 | MicroBundleDomain | domain-side MicroBundle description |
-| FSM_COS | runtime MicroBundle composition |
+| FSM_COS | runtime MicroBundle composition and composition-side adapters |
 | FSM_REST | REST capability and transport substrate |
 | FSM_Serialization | serialized representation |
 | GUI | visual manifestation |
 
-Concrete protocol/domain packages remain separately owned and publishable. FSM_REST can also provide the small adapter needed when the REST capability itself is the MicroBundle.
+Concrete protocol/domain packages remain separately owned and publishable. A composition layer such as FSM_COS may consume FSM_REST and provide its own small adapter when the REST capability itself is a MicroBundle.
 
 ## 1.0.0 release posture
 
-This branch prepares FSM_REST 1.0.0 as the first stable REST capability layer above FSM_COS.
+This branch prepares FSM_REST 1.0.0 as a **standalone foundation package**.
 
-```text
-FSM_API 1.0.13
-      │
-      ▼
-FSM_COS 1.0.0
-      │
-      ▼
+~~~text
 FSM_REST 1.0.0
-      │
-      ├── capability descriptors
-      ├── request construction
-      └── transport boundary
-```
+├── capability descriptors
+├── request construction
+└── transport boundary
 
-The stable release depends on **FSM_COS 1.0.0**. Until that package is released, this branch is intentionally a downstream release-preparation artifact rather than a publishable package.
+(no FSM_COS dependency)
+        |
+        v
+consumer / composition layer
+        |
+        v
+FSM_COS + composition adapters
+~~~
+
+A project can add FSM_REST and use its descriptors, request factory, and transport boundary without installing FSM_COS. This is intentional: FSM_REST is infrastructure that can be useful before any composition engine is introduced.
+
+FSM_COS may later depend on stable FSM_REST to turn REST capabilities into composed MicroBundles.
 
 ### Release gate
 
@@ -337,14 +339,14 @@ CI packs the package and rejects any stable first-party dependency that is still
 See [Theory](docs/THEORY.md), [REST Capability Model](docs/REFLECTION.md), and the package release workflow for the implementation boundary.
 
 <p align="center">
-  <img src="docs/assets/release-frontier.svg" alt="FSM_REST 1.0.0 downstream of FSM_COS 1.0.0">
+  <img src="docs/assets/release-frontier.svg" alt="FSM_REST 1.0.0 as an independent foundation below the composition boundary">
 </p>
 
 ## Previous alpha boundary
 
 **TheSingularityWorkshop.FSM_Rest 1.0.0 release candidate**
 
-Alpha 4 makes the documented capability model directly composable: runtime operation values are separated from reusable operation descriptors, and a REST API descriptor can now be carried directly as an ecosystem MicroBundle.
+Alpha 4 established the reusable capability model. The 1.0 boundary deliberately moves ecosystem-specific MicroBundle adapters into the consuming composition layer.
 
 The current package intentionally does **not** include:
 
@@ -354,6 +356,7 @@ The current package intentionally does **not** include:
 - authentication implementations;
 - URL discovery;
 - GUI generation;
+- composition-engine adapters;
 - concrete REST services;
 - domain-specific MicroBundles.
 
