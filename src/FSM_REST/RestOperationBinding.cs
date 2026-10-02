@@ -9,6 +9,7 @@ namespace TheSingularityWorkshop.FSM_REST;
 /// </remarks>
 public sealed record RestOperationBinding
 {
+    /// <summary>Creates a runtime binding for one REST operation invocation.</summary>
     public RestOperationBinding(
         RestOperationDescriptor operation,
         IReadOnlyDictionary<string, string?>? parameters = null)
