@@ -6,6 +6,12 @@ on:
     branches:
       - master
   workflow_dispatch:
+    inputs:
+      publish:
+        description: "Publish the already-verified package to NuGet.org"
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -62,6 +68,40 @@ jobs:
       - name: Pack
         run: dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --no-build --output ./artifacts
 
+      - name: Validate stable package dependency gate
+        shell: python
+        run: |
+          import glob
+          import zipfile
+          import xml.etree.ElementTree as ET
+
+          failures = []
+          for package_path in glob.glob("artifacts/*.nupkg"):
+              with zipfile.ZipFile(package_path) as package:
+                  nuspec_name = next(name for name in package.namelist() if name.endswith(".nuspec"))
+                  root = ET.fromstring(package.read(nuspec_name))
+
+              ns = {"n": "http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd"}
+              version = root.findtext("n:metadata/n:version", namespaces=ns) or ""
+              if "-" in version:
+                  continue
+
+              for dependency in root.findall("n:metadata/n:dependencies//n:dependency", namespaces=ns):
+                  dependency_version = dependency.attrib.get("version", "")
+                  if "-" in dependency_version:
+                      failures.append(
+                          f"{version} contains prerelease dependency "
+                          f"{dependency.attrib.get('id')} {dependency_version}"
+                      )
+
+          if failures:
+              print("Stable package dependency gate failed:")
+              for failure in failures:
+                  print(f" - {failure}")
+              raise SystemExit(1)
+
+          print("Stable package dependency gate passed.")
+
       - name: Upload NuGet package artifact
         uses: actions/upload-artifact@v7
         with:
@@ -77,7 +117,7 @@ jobs:
   publish_nuget:
     needs: build-and-test
     runs-on: ubuntu-24.04
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish == true }}
     permissions:
       contents: read
       id-token: write
