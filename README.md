@@ -319,7 +319,7 @@ Concrete protocol/domain packages remain separately owned and publishable. FSM_R
 
 Alpha 4 makes the documented capability model directly composable: runtime operation values are separated from reusable operation descriptors. The optional REST MicroBundle adapter is now isolated in `TheSingularityWorkshop.FSM_Rest.COS`, so the core REST package does not depend on FSM_COS.
 
-The current package intentionally does **not** include:
+The core REST package intentionally does **not** include:
 
 - OpenAPI parsing;
 - OpenAPI $ref resolution;
@@ -339,6 +339,7 @@ dotnet restore TheSingularityWorkshop.FSM_REST.slnx
 dotnet build TheSingularityWorkshop.FSM_REST.slnx --configuration Release
 dotnet test tests/FSM_REST.Tests/FSM_REST.Tests.csproj --configuration Release
 dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --output ./artifacts
+ dotnet pack src/FSM_REST.COS/FSM_REST.COS.csproj --configuration Release --output ./artifacts
 ~~~
 
 ## License
