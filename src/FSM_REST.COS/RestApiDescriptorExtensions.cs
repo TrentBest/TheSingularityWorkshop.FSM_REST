@@ -1,16 +1,15 @@
-using TheSingularityWorkshop.FSM_COS;
 using TheSingularityWorkshop.MicroBundleDomain;
 
-namespace TheSingularityWorkshop.FSM_REST;
+namespace TheSingularityWorkshop.FSM_REST.COS;
 
-/// <summary>Provides ecosystem composition helpers for REST API descriptors.</summary>
+/// <summary>Provides FSM_COS composition helpers for REST API descriptors.</summary>
 public static class RestApiDescriptorExtensions
 {
     /// <summary>
     /// Creates a MicroBundle carrying the REST API capability.
     /// </summary>
     public static RestMicroBundle ToMicroBundle(
-        this RestApiDescriptor api,
+        this TheSingularityWorkshop.FSM_REST.RestApiDescriptor api,
         ulong id,
         string? version = null,
         IEnumerable<MicroBundleDependency>? dependencies = null,

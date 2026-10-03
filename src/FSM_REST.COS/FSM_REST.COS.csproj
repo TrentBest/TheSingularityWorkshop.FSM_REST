@@ -1,0 +1,26 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+    <PackageId>TheSingularityWorkshop.FSM_Rest.COS</PackageId>
+    <Version>0.1.0-alpha.1</Version>
+    <Authors>Trent Best</Authors>
+    <Company>The Singularity Workshop</Company>
+    <Description>FSM_COS integration adapters for REST capabilities.</Description>
+    <PackageTags>REST;FSM_COS;MicroBundle;composition;TheSingularityWorkshop</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <PackageReference Include="TheSingularityWorkshop.MicroBundleDomain" Version="1.0.1" />
+    <ProjectReference Include="../FSM_REST/FSM_REST.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="../../LICENSE.txt" Pack="true" PackagePath="" />
+    <None Include="README.md" Pack="true" PackagePath="" />
+  </ItemGroup>
+</Project>

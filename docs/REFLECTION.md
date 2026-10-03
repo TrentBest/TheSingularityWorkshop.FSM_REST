@@ -141,6 +141,24 @@ FSM_REST does not:
 
 Those concerns belong in separately composable packages or host policy.
 
+## Optional FSM_COS integration
+
+The REST substrate remains independent of FSM_COS. When a REST capability itself needs to cross the FSM_COS composition boundary, the optional `TheSingularityWorkshop.FSM_Rest.COS` package supplies that adapter.
+
+```text
+FSM_REST
+   │
+   │ REST capability
+   ▼
+FSM_REST.COS
+   │
+   │ RestMicroBundle
+   ▼
+FSM_COS
+```
+
+This keeps transport and capability modeling reusable even in hosts that never use FSM_COS.
+
 ## Composition invariant
 
 ~~~text

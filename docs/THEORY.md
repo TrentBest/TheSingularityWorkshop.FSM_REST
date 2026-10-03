@@ -158,7 +158,7 @@ That makes external capabilities attractive candidates for composable Workshop c
 
 A concrete service should not be baked into FSM_REST.
 
-A concrete service can arrive as a REST MicroBundle whose implementation references FSM_REST.
+A concrete service can arrive as a REST MicroBundle whose implementation references FSM_REST. If that bundle needs FSM_COS composition, the optional `TheSingularityWorkshop.FSM_Rest.COS` package owns that upward integration.
 
 ~~~text
 FSM_REST
@@ -174,7 +174,7 @@ The substrate stays reusable while capabilities remain independently loadable.
 
 ## Current alpha boundary
 
-Alpha 3 establishes:
+Alpha 4 establishes:
 
 - neutral REST capability descriptors;
 - stable operation presentation metadata;
@@ -183,7 +183,9 @@ Alpha 3 establishes:
 - a transport abstraction;
 - an HttpClient adapter;
 - unit coverage around the boundary;
-- documented MicroBundle composition guidance.
+- documented MicroBundle composition guidance;
+- separation of the REST transport substrate from optional FSM_COS integration;
+- a separate REST-to-FSM_COS adapter package so the core REST package remains independent of FSM_COS.
 
 It intentionally does not establish:
 
@@ -196,9 +198,31 @@ It intentionally does not establish:
 
 Those remain separately composable.
 
+## Package dependency direction
+
+The dependency direction is intentional:
+
+```text
+TheSingularityWorkshop.FSM_Rest
+        │
+        │ neutral REST capability + transport
+        ▼
+provider / host
+
+TheSingularityWorkshop.FSM_Rest.COS
+        │
+        │ optional composition adapter
+        ▼
+FSM_COS
+```
+
+The core REST package does **not** depend on FSM_COS. A host that wants REST capabilities to become FSM_COS MicroBundles can add the separate `.COS` package.
+
+This preserves the Workshop rule that lower-level capability packages do not depend upward on the composition kernel.
+
 ## Core invariant
 
-**FSM_REST is the form. MicroBundles are the things composed through the form.**
+**FSM_REST is the form. MicroBundles are the things composed through the form. FSM_REST.COS is the optional bridge into FSM_COS.**
 
 The response is runtime data.
 

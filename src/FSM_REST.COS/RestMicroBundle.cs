@@ -1,18 +1,17 @@
-using TheSingularityWorkshop.FSM_COS;
+using TheSingularityWorkshop.FSM_REST;
 using TheSingularityWorkshop.MicroBundleDomain;
 
-namespace TheSingularityWorkshop.FSM_REST;
+namespace TheSingularityWorkshop.FSM_REST.COS;
 
-/// <summary>
-/// Carries a REST API capability as an ecosystem MicroBundle.
-/// </summary>
+/// <summary>Carries a REST API capability as an ecosystem MicroBundle for FSM_COS.</summary>
 /// <remarks>
-/// This adapter intentionally carries the REST capability into FSM_COS without
-/// making FSM_REST responsible for hosting, transport policy, or response interpretation.
-/// The bundle is the capability recipe; remote responses remain runtime data.
+/// This is an integration adapter, not part of the REST transport boundary.
+/// The REST package describes and transports REST capabilities; this package
+/// composes those capabilities into FSM_COS.
 /// </remarks>
 public sealed class RestMicroBundle : IMicroBundle
 {
+    /// <summary>Creates a REST MicroBundle from a REST API descriptor.</summary>
     public RestMicroBundle(
         ulong id,
         RestApiDescriptor api,
@@ -41,19 +40,17 @@ public sealed class RestMicroBundle : IMicroBundle
     public MicroBundleDescriptor Descriptor { get; }
 
     /// <inheritdoc />
-    public IReadOnlyList<BundleRequest> Dependencies =>
+    public IReadOnlyList<MicroBundleDependencyRequest> Dependencies =>
         Descriptor.Dependencies
-            .Select(dependency => BundleRequest.Unconfigured(dependency.BundleId))
+            .Select(dependency => MicroBundleDependencyRequest.Unconfigured(dependency.BundleId))
             .ToArray();
 
     /// <inheritdoc />
-    public void Load(MicroBundleLoadContext context)
-    {
+    public void Load(IMicroBundleLoadContext context) =>
         ArgumentNullException.ThrowIfNull(context);
-    }
 
     /// <inheritdoc />
-    public bool Arbitrate(ArbitrationContext context, int roundIndex)
+    public bool Arbitrate(IMicroBundleArbitrationContext context, int roundIndex)
     {
         ArgumentNullException.ThrowIfNull(context);
         return false;

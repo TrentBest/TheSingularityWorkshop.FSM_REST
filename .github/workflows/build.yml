@@ -6,6 +6,12 @@ on:
     branches:
       - master
   workflow_dispatch:
+    inputs:
+      publish:
+        description: 'Publish the verified packages to NuGet.org'
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -60,7 +66,9 @@ jobs:
           fail_ci_if_error: true
 
       - name: Pack
-        run: dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --no-build --output ./artifacts
+        run: |
+          dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --no-build --output ./artifacts
+          dotnet pack src/FSM_REST.COS/FSM_REST.COS.csproj --configuration Release --no-build --output ./artifacts
 
       - name: Upload NuGet package artifact
         uses: actions/upload-artifact@v7
@@ -77,7 +85,7 @@ jobs:
   publish_nuget:
     needs: build-and-test
     runs-on: ubuntu-24.04
-    if: github.event_name == 'push' || github.event_name == 'workflow_dispatch'
+    if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish == true && false }}
     permissions:
       contents: read
       id-token: write
@@ -95,5 +103,8 @@ jobs:
         with:
           user: TheSingularityWorkshop
 
-      - name: Publish package to NuGet.org
-        run: dotnet nuget push "./artifacts/*.nupkg" --source "https://api.nuget.org/v3/index.json" --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --skip-duplicate
+      - name: Publish packages to NuGet.org
+        run: |
+          for package in ./artifacts/*.nupkg; do
+            dotnet nuget push "$package" --source "https://api.nuget.org/v3/index.json" --api-key "${{ steps.login.outputs.NUGET_API_KEY }}" --skip-duplicate
+          done
