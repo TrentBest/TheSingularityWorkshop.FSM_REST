@@ -338,8 +338,7 @@ Those are composition opportunities for separate packages.
 dotnet restore TheSingularityWorkshop.FSM_REST.slnx
 dotnet build TheSingularityWorkshop.FSM_REST.slnx --configuration Release
 dotnet test tests/FSM_REST.Tests/FSM_REST.Tests.csproj --configuration Release
-dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --output ./artifacts
- dotnet pack src/FSM_REST.COS/FSM_REST.COS.csproj --configuration Release --output ./artifacts
+dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --output ./artifactsdotnet pack src/FSM_REST.COS/FSM_REST.COS.csproj --configuration Release --output ./artifacts
 ~~~
 
 ## License
