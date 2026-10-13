@@ -1,4 +1,43 @@
+![The Singularity Workshop animated moniker](https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Renderer/development/docs/assets/moniker.svg)
+
 # TheSingularityWorkshop.FSM_REST
+
+
+> **A reusable REST capability and transport substrate—not a REST API implementation.**
+
+FSM_REST supplies the forms from which REST-facing capabilities can be composed. Domain-specific MicroBundles own the behavior and meaning of each capability.
+
+```mermaid
+flowchart TD
+  D[Domain contract] --> C[FSM_REST capability]
+  C --> B[Bound inputs]
+  B --> T[Transport boundary]
+  T --> H[Host / Experience]
+```
+
+## 🟦 01 What
+
+FSM_REST supplies the forms from which REST-facing capabilities can be composed. Domain-specific MicroBundles own the behavior and meaning of each capability.
+
+## 🟣 02 Why
+
+The package makes this boundary explicit so applications can compose the capability without coupling unrelated responsibilities. It should remain a small, honest contract: no hidden provider, host, or runtime behavior is implied unless the implementation and tests demonstrate it.
+
+## 🔺 03 How
+
+Define the capability boundary, bind the required inputs, and let the host decide how the transport is invoked. A response is data crossing the boundary; it is not automatically the capability itself.
+
+## 🟢 04 See it in a minute
+
+Follow the capability recipe below, then run the repository's documented build and tests. The quick example demonstrates composition contracts, not a promise that every external endpoint is available.
+
+## 🟪 05 Documentation and theory
+
+[Capability recipe](#the-capability-recipe) · [Development](#development) · [License](#license)
+
+---
+
+## Detailed guide
 
 **REST capability and transport substrate for the FSM ecosystem.**
 
