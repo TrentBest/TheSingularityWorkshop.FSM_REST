@@ -21,7 +21,7 @@ FSM_REST supplies the forms from which REST-facing capabilities can be composed.
 
 ## 🟣 02 Why
 
-The package makes this boundary explicit so applications can compose the capability without coupling unrelated responsibilities. It should remain a small, honest contract: no hidden provider, host, or runtime behavior is implied unless the implementation and tests demonstrate it.
+REST contracts, transport mechanics, and domain behavior change for different reasons. FSM_REST keeps the reusable capability and transport surface separate so an individual API's meaning and policy remain owned by its domain MicroBundle and host.
 
 ## 🔺 03 How
 
