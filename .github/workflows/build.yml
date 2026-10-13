@@ -82,6 +82,38 @@ jobs:
           name: fsm-rest-test-results
           path: ./TestResults/*
 
+  source-integration:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout FSM_REST
+        uses: actions/checkout@v7
+        with:
+          path: FSM_REST
+
+      - name: Checkout MicroBundleDomain source
+        uses: actions/checkout@v7
+        with:
+          repository: TrentBest/TheSingularityWorkshop.MicroBundleDomain
+          ref: development
+          path: TheSingularityWorkshop.MicroBundleDomain
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: 8.0.x
+
+      - name: Restore source-integrated solution
+        working-directory: FSM_REST
+        run: dotnet restore TheSingularityWorkshop.FSM_REST.slnx -p:WorkshopUseRepositorySources=true
+
+      - name: Build source-integrated solution
+        working-directory: FSM_REST
+        run: dotnet build TheSingularityWorkshop.FSM_REST.slnx --configuration Release --no-restore -p:WorkshopUseRepositorySources=true
+
+      - name: Test source-integrated solution
+        working-directory: FSM_REST
+        run: dotnet test TheSingularityWorkshop.FSM_REST.slnx --configuration Release --no-build -p:WorkshopUseRepositorySources=true
+
   publish_nuget:
     needs: build-and-test
     runs-on: ubuntu-24.04
