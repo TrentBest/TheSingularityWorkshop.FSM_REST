@@ -17,7 +17,7 @@ flowchart TD
 
 ## 🟦 01 What
 
-FSM_REST supplies the forms from which REST-facing capabilities can be composed. Domain-specific MicroBundles own the behavior and meaning of each capability.
+It defines reusable capability and transport forms. It does not automatically implement every REST endpoint or own the domain rules behind a particular API.
 
 ## 🟣 02 Why
 
