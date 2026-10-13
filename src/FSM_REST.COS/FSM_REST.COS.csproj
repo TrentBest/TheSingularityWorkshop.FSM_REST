@@ -15,10 +15,18 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
-  <ItemGroup>
+  <ItemGroup Condition="'$(WorkshopUseRepositorySources)' != 'true'">
     <PackageReference Include="TheSingularityWorkshop.MicroBundleDomain" Version="1.0.1" />
+  </ItemGroup>
+  <ItemGroup>
     <ProjectReference Include="../FSM_REST/FSM_REST.csproj" />
   </ItemGroup>
+  <ItemGroup Condition="'$(WorkshopUseRepositorySources)' == 'true'">
+    <ProjectReference Include="../../../TheSingularityWorkshop.MicroBundleDomain/TheSingularityWorkshop.MicroBundleDomain.csproj" />
+  </ItemGroup>
+  <Target Name="ValidateWorkshopRepositorySources" BeforeTargets="PrepareForBuild" Condition="'$(WorkshopUseRepositorySources)' == 'true'">
+    <Error Condition="!Exists('../../../TheSingularityWorkshop.MicroBundleDomain/TheSingularityWorkshop.MicroBundleDomain.csproj')" Text="WorkshopUseRepositorySources=true requires TheSingularityWorkshop.MicroBundleDomain beside this repository." />
+  </Target>
   <ItemGroup>
     <None Include="../../LICENSE.txt" Pack="true" PackagePath="" />
     <None Include="README.md" Pack="true" PackagePath="" />
