@@ -5,7 +5,7 @@
   </a>
 </p>
 
-# TheSingularityWorkshop.FSM_REST
+# ✳️ 00 TheSingularityWorkshop.FSM_REST
 
 **REST capability and transport substrate for the FSM ecosystem.**
 
