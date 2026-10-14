@@ -44,6 +44,9 @@ The important architectural rule is:
   <img src="docs/assets/fsm-rest-capability-recipe.svg" alt="REST capability recipe flowing from a MicroBundle into a request and current remote data" width="900">
 </p>
 
+
+This README follows the Workshop's shared [Documentation Standard](https://github.com/TrentBest/TheSingularityWorkshop.FSM_COS/blob/master/DOCUMENTATION_STANDARD.md), while keeping this repository's own purpose and implementation authoritative.
+
 ## If you only have a minute
 
 FSM_REST answers one question:
