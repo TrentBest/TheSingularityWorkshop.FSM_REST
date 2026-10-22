@@ -205,4 +205,20 @@ public sealed class RestDescriptorTests
                 new Uri("https://example.test/api"),
                 new Dictionary<string, string?> { ["x"] = "1" }));
     }
+
+    [Theory]
+    [InlineData("https://example.test/api?tenant=one")]
+    [InlineData("https://example.test/api#section")]
+    public void RequestFactoryRejectsBaseUriWithQueryOrFragment(string baseUri)
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/users", "listUsers", null, null,
+            Array.Empty<RestParameterDescriptor>(),
+            null);
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            RestRequestFactory.Create(operation, new Uri(baseUri)));
+
+        Assert.Equal("baseUri", exception.ParamName);
+    }
 }
