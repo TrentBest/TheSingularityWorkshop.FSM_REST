@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+
 namespace TheSingularityWorkshop.FSM_REST;
 
 /// <summary>
@@ -5,7 +7,8 @@ namespace TheSingularityWorkshop.FSM_REST;
 /// </summary>
 /// <remarks>
 /// The operation descriptor defines the capability. This binding supplies the
-/// runtime values for one invocation without mutating the descriptor.
+/// runtime values for one invocation without mutating the descriptor. Input values
+/// are copied and exposed through a read-only dictionary.
 /// </remarks>
 public sealed record RestOperationBinding
 {
@@ -16,14 +19,15 @@ public sealed record RestOperationBinding
         ArgumentNullException.ThrowIfNull(operation);
 
         Operation = operation;
-        Parameters = parameters is null
+        var snapshot = parameters is null
             ? new Dictionary<string, string?>(StringComparer.Ordinal)
             : new Dictionary<string, string?>(parameters, StringComparer.Ordinal);
+        Parameters = new ReadOnlyDictionary<string, string?>(snapshot);
     }
 
     /// <summary>Reusable operation capability being invoked.</summary>
     public RestOperationDescriptor Operation { get; }
 
-    /// <summary>Runtime values keyed by the operation's parameter names.</summary>
+    /// <summary>Read-only snapshot of runtime values keyed by declared parameter names.</summary>
     public IReadOnlyDictionary<string, string?> Parameters { get; }
 }
