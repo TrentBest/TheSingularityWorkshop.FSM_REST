@@ -227,3 +227,28 @@ This preserves the Workshop rule that lower-level capability packages do not dep
 The response is runtime data.
 
 The bundle is the capability recipe.
+
+
+## Execution contract: what each stage guarantees
+
+The boundary is useful only when each stage has a narrow, predictable responsibility:
+
+| Stage | It guarantees | It does not guarantee |
+|---|---|---|
+| Descriptor | Reusable operation metadata and parameter/response descriptions | That a remote endpoint exists or follows the description |
+| Binding | A snapshot of runtime parameter values for one invocation | Authentication, authorization, or validation against a remote schema |
+| Request factory | A concrete URI, method, headers, and optional body from the supported inputs | Network I/O, retries, caching, or domain validation |
+| Transport | Sends the constructed request, observes the response, and propagates cancellation | That a response is successful, safe, trustworthy, or meaningful to the caller |
+| Consumer | Interprets the response under its domain contract | Nothing is inferred automatically from HTTP success alone |
+
+A non-success HTTP status is still a response, not automatically an exception. The caller must decide whether to retry, report, transform, or reject it. Cancellation and transport failures must also be handled by the caller's execution policy.
+
+## Parameter and schema fidelity
+
+The core parameter model is intentionally shallow. Runtime values are strings; path and query values are percent-encoded, declared header values are copied to request headers, and cookie values are encoded into a Cookie header. The factory does not implement the full set of OpenAPI parameter serialization rules for arrays, objects, style, or explode, and it does not validate a request or response body against a schema. A provider translating a richer external description must preserve that richer meaning in its own adapter or reject unsupported forms explicitly rather than silently claiming equivalence.
+
+The same applies to response metadata: media types and basic schema type/format describe a response; they do not deserialize or validate its body. RestResponse.Body remains transport output until a downstream consumer interprets it.
+
+## The practical design rule
+
+Use FSM_REST when you want to model a reusable REST operation and execute one request through a replaceable communication boundary. Add a provider when you need a source format, an adapter when you need a particular transport policy, and a host/domain layer when you need authentication, authorization, validation, retries, persistence, or business meaning. Keep those decisions explicit so the small core remains dependable and independently consumable.
