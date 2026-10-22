@@ -43,6 +43,12 @@ The package is a capability substrate. It is not itself a REST service, API-desc
 
 These exclusions are architectural boundaries, not claims that those concerns are unimportant. They belong in adapters, domain MicroBundles, or host policy so the substrate stays composable.
 
+## Supported request semantics and limits
+
+The request factory accepts runtime values as strings. It percent-encodes scalar path and query values, places declared header values in request headers, and encodes cookie values into a Cookie header. A required parameter with no non-empty value is rejected. The factory does not implement the full OpenAPI serialization matrix for arrays, objects, style, or explode; parameter Type and Format are descriptive hints, not runtime serializers.
+
+Request-body and response schema fields are descriptive metadata only. The core passes an optional request body to the transport and returns the observed response body as text; it does not validate schemas or deserialize domain objects. Consumers translating richer protocol descriptions must preserve or explicitly reject semantics the neutral model cannot represent.
+
 ## Package boundaries
 
 - **Published core library:** `src/FSM_REST/FSM_REST.csproj`, package ID `TheSingularityWorkshop.FSM_Rest`.
