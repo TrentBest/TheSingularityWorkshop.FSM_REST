@@ -10,6 +10,10 @@
     <Company>The Singularity Workshop</Company>
     <Description>FSM_COS integration adapters for REST capabilities.</Description>
     <PackageTags>REST;FSM_COS;MicroBundle;composition;TheSingularityWorkshop</PackageTags>
+    <PackageProjectUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageReleaseNotes>Alpha 1: introduces the optional FSM_COS MicroBundle adapter for reusable REST capability descriptors.</PackageReleaseNotes>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
