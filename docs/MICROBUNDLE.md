@@ -272,7 +272,7 @@ The point is to make the REST edge cheap and reusable enough that higher-level s
 
 ## Optional FSM_COS composition adapter
 
-When no provider-specific bundle behavior is required, add the optional `TheSingularityWorkshop.FSM_Rest.COS` package and its namespace. The core REST package alone does not expose `ToMicroBundle` or `RestMicroBundle. The capability can then cross the composition boundary directly:
+When no provider-specific bundle behavior is required, add the optional `TheSingularityWorkshop.FSM_Rest.COS` package and its namespace. The core REST package alone does not expose `ToMicroBundle` or `RestMicroBundle`. The capability can then cross the composition boundary directly:
 
 ~~~csharp
 var api = new RestApiDescriptor(
