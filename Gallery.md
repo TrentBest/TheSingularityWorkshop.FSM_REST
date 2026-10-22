@@ -8,6 +8,7 @@ A `RestApiDescriptor` groups `RestOperationDescriptor` instances. An operation r
 
 - [Core descriptor types](src/FSM_REST/)
 - [Reflection and descriptor model](docs/REFLECTION.md)
+- [RestApiDescriptor UML and use cases](docs/UML/RestApiDescriptorUML.md) — source-checked target-centered map with explicit scan scope.
 
 ## 2. Bind and construct one request
 
