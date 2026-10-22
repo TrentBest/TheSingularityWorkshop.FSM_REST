@@ -17,12 +17,28 @@ public sealed class HttpClientRestTransport : IRestTransport
         ArgumentNullException.ThrowIfNull(request);
         using var message = new HttpRequestMessage(new HttpMethod(request.Method), request.Uri);
 
-        if (request.Headers is not null)
-            foreach (var header in request.Headers)
-                message.Headers.TryAddWithoutValidation(header.Key, header.Value);
-
         if (request.Body is not null)
             message.Content = new StringContent(request.Body, System.Text.Encoding.UTF8, request.ContentType ?? "application/json");
+
+        if (request.Headers is not null)
+        {
+            foreach (var header in request.Headers)
+            {
+                if (message.Headers.TryAddWithoutValidation(header.Key, header.Value))
+                    continue;
+
+                // HttpClient separates request headers from entity/content headers.
+                // Do not silently drop a valid content header just because it was supplied
+                // through the transport-neutral request header collection.
+                if (message.Content is not null
+                    && message.Content.Headers.TryAddWithoutValidation(header.Key, header.Value))
+                    continue;
+
+                throw new ArgumentException(
+                    $"Request header '{header.Key}' could not be applied to the HTTP request.",
+                    nameof(request));
+            }
+        }
 
         using var response = await _client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
