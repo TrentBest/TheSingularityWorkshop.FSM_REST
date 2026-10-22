@@ -221,4 +221,20 @@ public sealed class RestDescriptorTests
 
         Assert.Equal("baseUri", exception.ParamName);
     }
+
+    [Fact]
+    public void OperationBindingExposesRuntimeValuesAsReadOnlySnapshot()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/users", "listUsers", null, null,
+            Array.Empty<RestParameterDescriptor>(), null);
+        var input = new Dictionary<string, string?> { ["page"] = "1" };
+        var binding = new RestOperationBinding(operation, input);
+
+        input["page"] = "2";
+
+        Assert.Equal("1", binding.Parameters["page"]);
+        Assert.Throws<NotSupportedException>(() =>
+            ((IDictionary<string, string?>)binding.Parameters)["page"] = "3");
+    }
 }
