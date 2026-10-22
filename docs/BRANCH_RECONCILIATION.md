@@ -1,6 +1,6 @@
 # FSM_REST Branch Reconciliation Ledger
 
-**Snapshot date:** 2026-10-22 (refreshed after CI run `39855573430`)  
+**Snapshot date:** 2026-10-22 (refreshed after CI run `39857589458`)  
 **Comparison base:** `development`  
 **Purpose:** Preserve unique work before any surplus branch is manually removed. This ledger is a review aid, not authorization to delete branches.
 
@@ -51,7 +51,7 @@ The branch diff reports:
 - Changes to the build workflow, README, MicroBundle documentation, project file, and descriptor-binding tests.
 - Removal of `RestApiDescriptorExtensions.cs` and `RestMicroBundle.cs` from the core-project path.
 
-The current architecture keeps the FSM_COS integration in the separate `src/FSM_REST.COS/` project, including its own `RestApiDescriptorExtensions.cs` and `RestMicroBundle.cs`. Do not restore those integration types into the core merely because the release branch had a different layout. A fresh comparison against the current development snapshot reports 13 commits ahead and 59 behind. Review `RELEASE_1_0.md` and `release-frontier.svg` for durable release criteria or useful visual explanations; harvest relevant material into current documentation if it remains accurate, then leave deletion to the owner.
+The current architecture keeps the FSM_COS integration in the separate `src/FSM_REST.COS/` project, including its own `RestApiDescriptorExtensions.cs` and `RestMicroBundle.cs`. Do not restore those integration types into the core merely because the release branch had a different layout. A fresh comparison against the current development snapshot reports 13 commits ahead and 60 behind. Review `RELEASE_1_0.md` and `release-frontier.svg` for durable release criteria or useful visual explanations; harvest relevant material into current documentation if it remains accurate, then leave deletion to the owner.
 
 ### Release checklist harvested into current development
 
@@ -76,7 +76,7 @@ The current `development` implementation of `RestRequestFactory` and `RestDescri
 - [ ] Compare test intent and edge cases; port missing tests into the current test project.
 - [ ] Confirm no useful release criteria or package-boundary decisions remain only in branch history.
 - [x] Re-run CI after the latest checklist and ledger updates; runs `39855235239` and `39855248904` passed build/test and source-integration. Publishing was skipped.
-- [ ] Re-run CI after any future harvested source or documentation changes. Latest ledger-only run `39855573430` passed build/test and source-integration; `publish_nuget` was skipped. The MicroBundle boundary correction committed after that run still needs its own CI.
+- [ ] Re-run CI after any future harvested source or documentation changes. Latest ledger-only run `39855573430` passed build/test and source-integration; `publish_nuget` was skipped. The MicroBundle boundary correction and example wording are now verified by run `39857589458`: build/test and source-integration passed; `publish_nuget` was skipped.
 - [ ] Owner manually deletes only branches whose unique work has been reconciled.
 
 **No publication or release action is authorized by this ledger.**
