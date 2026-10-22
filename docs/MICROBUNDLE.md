@@ -63,12 +63,13 @@ It contains the information required to obtain the response.
 
 ## Minimal composition example
 
-FSM_REST now includes a small composition adapter: `RestApiDescriptor.ToMicroBundle(...)` creates a `RestMicroBundle` that carries the REST capability into `FSM_COS`. The package therefore provides the common REST vocabulary and the bridge into the ecosystem, while concrete providers still remain separate.
+The core `TheSingularityWorkshop.FSM_Rest` package defines REST capabilities and transport without depending on FSM_COS. The optional `TheSingularityWorkshop.FSM_Rest.COS` package provides `RestApiDescriptor.ToMicroBundle(...)` and `RestMicroBundle` for hosts that want to compose a REST capability into FSM_COS. Concrete providers remain separate.
 
 A provider can still combine the two concepts explicitly when it needs custom bundle behavior:
 
 ~~~csharp
 using TheSingularityWorkshop.FSM_REST;
+using TheSingularityWorkshop.FSM_REST.COS;
 using TheSingularityWorkshop.MicroBundleDomain;
 
 var bundle = new MicroBundleDescriptor(
@@ -269,9 +270,9 @@ The point is to make the REST edge cheap and reusable enough that higher-level s
 - [REST Capability Model](REFLECTION.md)
 - [FSM_REST Theory](THEORY.md)
 
-## Direct REST MicroBundle composition
+## Optional FSM_COS composition adapter
 
-When no provider-specific bundle behavior is required, the REST capability can cross the composition boundary directly:
+When no provider-specific bundle behavior is required, add the optional `TheSingularityWorkshop.FSM_Rest.COS` package and its namespace. The core REST package alone does not expose `ToMicroBundle` or `RestMicroBundle. The capability can then cross the composition boundary directly:
 
 ~~~csharp
 var api = new RestApiDescriptor(
@@ -285,7 +286,7 @@ var api = new RestApiDescriptor(
 RestMicroBundle bundle = api.ToMicroBundle(0x2001UL);
 ~~~
 
-The resulting bundle carries the REST descriptor and the MicroBundle descriptor together. `FSM_COS` can compose it like any other `IMicroBundle`.
+The resulting bundle carries the REST descriptor and the MicroBundle descriptor together. `FSM_COS` can compose it like any other `IMicroBundle`. Keep this integration in the `.COS` package so the core transport substrate stays independent of FSM_COS.
 
 The important boundary remains:
 
