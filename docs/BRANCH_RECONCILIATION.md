@@ -53,6 +53,10 @@ The branch diff reports:
 
 The current architecture keeps the FSM_COS integration in the separate `src/FSM_REST.COS/` project, including its own `RestApiDescriptorExtensions.cs` and `RestMicroBundle.cs`. Do not restore those integration types into the core merely because the release branch had a different layout. A fresh comparison reports 13 commits ahead and 54 behind. Review `RELEASE_1_0.md` and `release-frontier.svg` for durable release criteria or useful visual explanations; harvest relevant material into current documentation if it remains accurate, then leave deletion to the owner.
 
+### Release checklist harvested into current development
+
+The durable verification criteria from the historical `docs/RELEASE_1_0.md` have been refreshed in [`docs/RELEASE_CHECKLIST.md`](RELEASE_CHECKLIST.md). The checklist now requires checking the actual candidate commit, current package metadata/dependencies, core-versus-`FSM_REST.COS` boundary, behavior and coverage, packed NuGet contents, documentation/diagram provenance, and explicit owner approval before publication. It intentionally does not repeat the old `1.0.0` version or stable-FSM_COS prerequisite as fact. The historical SVG was not copied into current docs because its labels make those stale claims; its useful capability-versus-runtime-data idea is retained in the checklist and current theory documentation.
+
 ### Release contract and frontier visual: reviewed
 
 The unique `docs/RELEASE_1_0.md` provides a useful release-checklist skeleton: independent restore/build/test/coverage, XML documentation review, package dependency inspection, practical README examples, theory and visual boundary checks, and explicit publication gating. Those criteria should be retained as a checklist, but the branch document is **not** accepted as a current 1.0 release contract without revision: the current work is focused on the existing development line, and its release status/prerequisites must be revalidated against current package metadata and FSM_COS Alpha.7.
