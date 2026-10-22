@@ -10,10 +10,10 @@
 
 | Branch | Ahead of development | Behind development | Status | Required disposition |
 |---|---:|---:|---|---|
-| `architecture/decouple-rest-microbundle-from-core` | 0 | 34 | Behind | No branch-only commits according to the comparison. Review commit history if desired, then owner may manually delete. |
-| `forge/fsm-rest-documentation-and-capability-flow` | 16 | 65 | Diverged | Reconcile before deletion; review documentation, diagrams, request factory, and test changes. |
-| `forge/fsm-rest-functional-standard` | 14 | 66 | Diverged | Reconcile before deletion; compare transport/core API/test changes against current development. |
-| `release-prep/fsm-rest-1.0.0` | 13 | 50 | Diverged | Reconcile before deletion; it contains release-prep documentation and a visual absent from current development at this snapshot. |
+| `architecture/decouple-rest-microbundle-from-core` | 0 | 37 | Behind | No branch-only commits according to the comparison. Review commit history if desired, then owner may manually delete. |
+| `forge/fsm-rest-documentation-and-capability-flow` | 16 | 68 | Diverged | Reconcile before deletion; review documentation, diagrams, request factory, and test changes. |
+| `forge/fsm-rest-functional-standard` | 14 | 69 | Diverged | Reconcile before deletion; compare transport/core API/test changes against current development. |
+| `release-prep/fsm-rest-1.0.0` | 13 | 53 | Diverged | Reconcile before deletion; it contains release-prep documentation and a visual absent from current development at this snapshot. |
 
 Counts are from GitHub's compare endpoint with `development` as the base. The changed-file lists below describe branch diffs from Git's merge base; a file appearing in a list does **not** prove the branch's version is absent from development.
 
