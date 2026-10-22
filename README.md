@@ -380,6 +380,7 @@ Those are composition opportunities for separate packages.
 - [MicroBundle integration](docs/MICROBUNDLE.md) — composition boundary and optional FSM_COS adapter.
 - [Core UML and use cases](docs/UML/FSM_REST.Core.UML.md) — source-grounded package relationships.
 - [RestOperationDescriptor class card](docs/UML/RestOperationDescriptor.UML.md) — focused class responsibilities and use cases.
+- [Request execution UML](docs/UML/RestRequestExecution.UML.md) — request construction, transport substitution, response handling, and test coverage.
 
 ## Development
 
