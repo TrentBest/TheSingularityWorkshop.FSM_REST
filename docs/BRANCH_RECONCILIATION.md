@@ -12,7 +12,7 @@
 |---|---:|---:|---|---|
 | `architecture/decouple-rest-microbundle-from-core` | 0 | 37 | Behind | No branch-only commits according to the comparison. Review commit history if desired, then owner may manually delete. |
 | `forge/fsm-rest-documentation-and-capability-flow` | 16 | 69 | Diverged | Reconcile before deletion; review documentation, diagrams, request factory, and test changes. |
-| `forge/fsm-rest-functional-standard` | 14 | 70 | Diverged | Reconcile before deletion; compare transport/core API/test changes against current development. |
+| `forge/fsm-rest-functional-standard` | 14 | 71 | Diverged | Reconcile before deletion; transport/core API/test paths overlap current development; retain any unique branch history until fully reviewed. |
 | `release-prep/fsm-rest-1.0.0` | 13 | 54 | Diverged | Reconcile before deletion; it contains release-prep documentation and a visual absent from current development at this snapshot. |
 
 Counts are from GitHub's compare endpoint with `development` as the base. The changed-file lists below describe branch diffs from Git's merge base; a file appearing in a list does **not** prove the branch's version is absent from development.
@@ -40,7 +40,7 @@ The branch diff reports changes in:
 - Core descriptor and transport files under `src/FSM_REST/`
 - `tests/FSM_REST.Tests/RestDescriptorTests.cs` and `RestTransportTests.cs`
 
-These paths exist in the current repository, but the branch may contain distinct historical implementations or test coverage. A fresh comparison reports 14 commits ahead and 70 behind. The branch's transport and descriptor paths overlap the current source, so compare behavior rather than line counts; do not overwrite the active implementation with an older branch snapshot. The branch adds 40 lines to `RestTransportTests.cs`, making transport-test intent the next specific review target.
+These paths exist in the current repository, but the branch may contain distinct historical implementations or test coverage. A fresh comparison reports 14 commits ahead and 71 behind. The branch's transport and descriptor paths overlap the current source, so compare behavior rather than line counts; do not overwrite the active implementation with an older branch snapshot. A direct content comparison of `tests/FSM_REST.Tests/RestTransportTests.cs` shows its full content is identical on the branch and current `development` (same blob SHA). The five transport cases—request/response capture, non-success status preservation, cancellation, null client, and null request—are already present, so no test code needs porting from this file.
 
 ### `release-prep/fsm-rest-1.0.0`
 
@@ -63,7 +63,7 @@ This review preserves the substantive value in the ledger without copying stale 
 
 ### Follow-up after direct file comparison
 
-The current `development` implementation of `RestRequestFactory` and `RestDescriptorTests.cs` already includes the request-binding feature and the branch's core edge cases; development adds explicit base-URI query/fragment rejection coverage. No code was copied from this branch because this audit found no missing implementation to port. The functional-standard branch's transport-test additions remain a candidate for a method-by-method review. This is a content comparison, not yet a complete commit-by-commit audit.
+The current `development` implementation of `RestRequestFactory` and `RestDescriptorTests.cs` already includes the request-binding feature and the branch's core edge cases; development adds explicit base-URI query/fragment rejection coverage. No code was copied from this branch because this audit found no missing implementation to port. The functional-standard branch's transport tests have been directly compared and are identical to current `development`; no transport tests need porting. This remains a content comparison, not yet a complete commit-by-commit audit.
 
 ## Manual completion checklist
 
