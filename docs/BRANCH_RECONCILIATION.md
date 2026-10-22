@@ -1,6 +1,6 @@
 # FSM_REST Branch Reconciliation Ledger
 
-**Snapshot date:** 2026-10-22 (refreshed after CI run `39857589458`)  
+**Snapshot date:** 2026-10-22 (refreshed after CI run `39862629994`)  
 **Comparison base:** `development`  
 **Purpose:** Preserve unique work before any surplus branch is manually removed. This ledger is a review aid, not authorization to delete branches.
 
@@ -10,10 +10,10 @@
 
 | Branch | Ahead of development | Behind development | Status | Required disposition |
 |---|---:|---:|---|---|
-| `architecture/decouple-rest-microbundle-from-core` | 0 | 44 | Behind | Branch tip is the merge base and there are no branch-only commits. Candidate for owner deletion after final history check. |
-| `forge/fsm-rest-documentation-and-capability-flow` | 16 | 75 | Diverged | Reconcile before deletion; review documentation, diagrams, request factory, and test changes. |
-| `forge/fsm-rest-functional-standard` | 14 | 76 | Diverged | Reconcile before deletion; transport/core API/test paths overlap current development; retain any unique branch history until fully reviewed. |
-| `release-prep/fsm-rest-1.0.0` | 13 | 60 | Diverged | Reconcile before deletion; historical release docs and a visual require review; do not accept stale release claims unchanged. |
+| `architecture/decouple-rest-microbundle-from-core` | 0 | 59 | Behind | Branch tip is the merge base and there are no branch-only commits. Candidate for owner deletion after final history check. |
+| `forge/fsm-rest-documentation-and-capability-flow` | 16 | 90 | Diverged | Reconcile before deletion; review documentation, diagrams, request factory, and test changes. |
+| `forge/fsm-rest-functional-standard` | 14 | 91 | Diverged | Reconcile before deletion; transport/core API/test paths overlap current development; retain any unique branch history until fully reviewed. |
+| `release-prep/fsm-rest-1.0.0` | 13 | 75 | Diverged | Reconcile before deletion; historical release docs and a visual require review; do not accept stale release claims unchanged. |
 
 Counts are from GitHub's compare endpoint with `development` as the base. The changed-file lists below describe branch diffs from Git's merge base; a file appearing in a list does **not** prove the branch's version is absent from development.
 
@@ -71,7 +71,7 @@ The current `development` implementation of `RestRequestFactory` and `RestDescri
 
 ## Manual completion checklist
 
-- [ ] Inspect branch-only commits, not just the current changed-file summary. Compare metadata refreshed: architecture 0 ahead/44 behind; capability/docs 16/75; functional-standard 14/76; release-prep 13/60.
+- [ ] Inspect branch-only commits, not just the current changed-file summary. Compare metadata refreshed: architecture 0 ahead/59 behind; capability/docs 16/90; functional-standard 14/91; release-prep 13/75.
 - [ ] Compare candidate docs and SVGs against current `development`; retain accurate missing explanations.
 - [ ] Compare test intent and edge cases; port missing tests into the current test project.
 - [ ] Confirm no useful release criteria or package-boundary decisions remain only in branch history.
