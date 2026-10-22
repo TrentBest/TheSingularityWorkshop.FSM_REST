@@ -20,7 +20,7 @@ public static class RestRequestFactory
     /// <param name="contentType">Optional request content type.</param>
     /// <returns>An executable <see cref="RestRequest"/>.</returns>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="operation"/> or <paramref name="baseUri"/> is null.</exception>
-    /// <exception cref="ArgumentException">Thrown when a required parameter is missing or an unsupported parameter location is declared.</exception>
+    /// <exception cref="ArgumentException">Thrown when the base URI is invalid for an API root, a required parameter is missing, or an unsupported parameter location is declared.</exception>
     public static RestRequest Create(
         RestOperationDescriptor operation,
         Uri baseUri,
@@ -63,6 +63,11 @@ public static class RestRequestFactory
 
         if (!baseUri.IsAbsoluteUri)
             throw new ArgumentException("The REST base URI must be absolute.", nameof(baseUri));
+
+        if (!string.IsNullOrEmpty(baseUri.Query) || !string.IsNullOrEmpty(baseUri.Fragment))
+            throw new ArgumentException(
+                "The REST base URI must not contain a query or fragment.",
+                nameof(baseUri));
 
         var values = binding.Parameters;
         var requestHeaders = headers is null
