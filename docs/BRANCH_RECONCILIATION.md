@@ -10,10 +10,10 @@
 
 | Branch | Ahead of development | Behind development | Status | Required disposition |
 |---|---:|---:|---|---|
-| `architecture/decouple-rest-microbundle-from-core` | 0 | 37 | Behind | No branch-only commits according to the comparison. Review commit history if desired, then owner may manually delete. |
-| `forge/fsm-rest-documentation-and-capability-flow` | 16 | 69 | Diverged | Reconcile before deletion; review documentation, diagrams, request factory, and test changes. |
-| `forge/fsm-rest-functional-standard` | 14 | 71 | Diverged | Reconcile before deletion; transport/core API/test paths overlap current development; retain any unique branch history until fully reviewed. |
-| `release-prep/fsm-rest-1.0.0` | 13 | 54 | Diverged | Reconcile before deletion; it contains release-prep documentation and a visual absent from current development at this snapshot. |
+| `architecture/decouple-rest-microbundle-from-core` | 0 | 43 | Behind | No branch-only commits according to the comparison. Review commit history if desired, then owner may manually delete. |
+| `forge/fsm-rest-documentation-and-capability-flow` | 16 | 74 | Diverged | Reconcile before deletion; review documentation, diagrams, request factory, and test changes. |
+| `forge/fsm-rest-functional-standard` | 14 | 75 | Diverged | Reconcile before deletion; transport/core API/test paths overlap current development; retain any unique branch history until fully reviewed. |
+| `release-prep/fsm-rest-1.0.0` | 13 | 59 | Diverged | Reconcile before deletion; it contains release-prep documentation and a visual absent from current development at this snapshot. |
 
 Counts are from GitHub's compare endpoint with `development` as the base. The changed-file lists below describe branch diffs from Git's merge base; a file appearing in a list does **not** prove the branch's version is absent from development.
 
@@ -40,7 +40,7 @@ The branch diff reports changes in:
 - Core descriptor and transport files under `src/FSM_REST/`
 - `tests/FSM_REST.Tests/RestDescriptorTests.cs` and `RestTransportTests.cs`
 
-These paths exist in the current repository, but the branch may contain distinct historical implementations or test coverage. A fresh comparison reports 14 commits ahead and 71 behind. The branch's transport and descriptor paths overlap the current source, so compare behavior rather than line counts; do not overwrite the active implementation with an older branch snapshot. A direct content comparison of `tests/FSM_REST.Tests/RestTransportTests.cs` shows its full content is identical on the branch and current `development` (same blob SHA). The five transport cases—request/response capture, non-success status preservation, cancellation, null client, and null request—are already present, so no test code needs porting from this file.
+These paths exist in the current repository, but the branch may contain distinct historical implementations or test coverage. A fresh comparison against the current development snapshot reports 14 commits ahead and 75 behind. The branch's transport and descriptor paths overlap the current source, so compare behavior rather than line counts; do not overwrite the active implementation with an older branch snapshot. A direct content comparison of `tests/FSM_REST.Tests/RestTransportTests.cs` shows its full content is identical on the branch and current `development` (same blob SHA). The five transport cases—request/response capture, non-success status preservation, cancellation, null client, and null request—are already present, so no test code needs porting from this file.
 
 ### `release-prep/fsm-rest-1.0.0`
 
@@ -51,7 +51,7 @@ The branch diff reports:
 - Changes to the build workflow, README, MicroBundle documentation, project file, and descriptor-binding tests.
 - Removal of `RestApiDescriptorExtensions.cs` and `RestMicroBundle.cs` from the core-project path.
 
-The current architecture keeps the FSM_COS integration in the separate `src/FSM_REST.COS/` project, including its own `RestApiDescriptorExtensions.cs` and `RestMicroBundle.cs`. Do not restore those integration types into the core merely because the release branch had a different layout. A fresh comparison reports 13 commits ahead and 54 behind. Review `RELEASE_1_0.md` and `release-frontier.svg` for durable release criteria or useful visual explanations; harvest relevant material into current documentation if it remains accurate, then leave deletion to the owner.
+The current architecture keeps the FSM_COS integration in the separate `src/FSM_REST.COS/` project, including its own `RestApiDescriptorExtensions.cs` and `RestMicroBundle.cs`. Do not restore those integration types into the core merely because the release branch had a different layout. A fresh comparison against the current development snapshot reports 13 commits ahead and 59 behind. Review `RELEASE_1_0.md` and `release-frontier.svg` for durable release criteria or useful visual explanations; harvest relevant material into current documentation if it remains accurate, then leave deletion to the owner.
 
 ### Release checklist harvested into current development
 
@@ -67,7 +67,7 @@ This review preserves the substantive value in the ledger without copying stale 
 
 ### Follow-up after direct file comparison
 
-The current `development` implementation of `RestRequestFactory` and `RestDescriptorTests.cs` already includes the request-binding feature and the branch's core edge cases; development adds explicit base-URI query/fragment rejection coverage. No code was copied from this branch because this audit found no missing implementation to port. The functional-standard branch's transport tests have been directly compared and are identical to current `development`; no transport tests need porting. The ledger commit `cf632222d63491075d18d7e52a3a9b14c9fd0db1` then passed the complete `Package FSM REST` workflow: build/test/coverage, NuGet package creation, and source-integration build/tests. The NuGet publish job was skipped. This remains a targeted file/content comparison, not yet a complete commit-by-commit audit.
+The current `development` implementation of `RestRequestFactory` and `RestDescriptorTests.cs` already includes the request-binding feature and the branch's core edge cases; development adds explicit base-URI query/fragment rejection coverage. No code was copied from this branch because this audit found no missing implementation to port. The functional-standard branch's transport tests have been directly compared and are identical to current `development`; no transport tests need porting. The ledger commit `cf632222d63491075d18d7e52a3a9b14c9fd0db1` passed the complete `Package FSM REST` workflow: build/test/coverage, NuGet package creation, and source-integration build/tests. The two latest documentation commits also passed: checklist commit `17f321e8acc1b65251ba407fbb9928fafb2ab052` (run `39855235239`) and ledger commit `34f2d0439d3367c4d3a6bccd8e65b713dfc47fec` (run `39855248904`), each with build/test and source-integration successful and `publish_nuget` skipped. This remains a targeted file/content comparison, not yet a complete commit-by-commit audit.
 
 ## Manual completion checklist
 
@@ -75,7 +75,7 @@ The current `development` implementation of `RestRequestFactory` and `RestDescri
 - [ ] Compare candidate docs and SVGs against current `development`; retain accurate missing explanations.
 - [ ] Compare test intent and edge cases; port missing tests into the current test project.
 - [ ] Confirm no useful release criteria or package-boundary decisions remain only in branch history.
-- [x] Re-run CI after the latest ledger update; workflow `39854185933` passed build/test/coverage, package creation, and source-integration checks. Publishing was skipped.
+- [x] Re-run CI after the latest checklist and ledger updates; runs `39855235239` and `39855248904` passed build/test and source-integration. Publishing was skipped.
 - [ ] Re-run CI after any future harvested source or documentation changes.
 - [ ] Owner manually deletes only branches whose unique work has been reconciled.
 
