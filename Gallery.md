@@ -64,6 +64,10 @@ The longer-term Workshop direction is to connect source and tests to a normalize
 
 For every visual, document what it teaches, how it was produced, the scope of evidence, how to verify it, and what it does not prove. The recursive UML standard also requires stable type identity, explicit relationship kinds, unresolved-relationship reporting, and links to companion type/use-case documentation. Reflection alone is not a full syntax tree and cannot infer user intent.
 
+## What the current core does—and does not—serialize
+
+Request parameter values are scalar strings. The factory handles path, query, header, and cookie locations, but it is not a full OpenAPI parameter serializer: array/object encoding and style/explode rules are outside the current model. Request/response schema type and format fields are descriptive; they do not validate or deserialize bodies. The transport returns status, headers, and body for the caller to interpret, including non-success status codes.
+
 ## Verification
 
 The repository contains descriptor and transport tests under [tests/FSM_REST.Tests](tests/FSM_REST.Tests/). CI definitions are in [build.yml](.github/workflows/build.yml) and [verify.yml](.github/workflows/verify.yml). Consult the current workflow results before treating a branch as release-ready.
