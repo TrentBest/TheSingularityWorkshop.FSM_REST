@@ -129,8 +129,20 @@ public static class RestRequestFactory
                     nameof(binding));
         }
 
+        // Never send a template token literally when the descriptor forgot to declare it.
+        if (path.Contains('{', StringComparison.Ordinal) || path.Contains('}', StringComparison.Ordinal))
+            throw new ArgumentException(
+                "The operation path contains an unresolved template placeholder.",
+                nameof(operation));
+
         if (cookies.Count > 0)
-            requestHeaders["Cookie"] = string.Join("; ", cookies);
+        {
+            var parameterCookies = string.Join("; ", cookies);
+            requestHeaders["Cookie"] = requestHeaders.TryGetValue("Cookie", out var existingCookies)
+                && !string.IsNullOrWhiteSpace(existingCookies)
+                    ? $"{existingCookies.TrimEnd(';', ' ')}; {parameterCookies}"
+                    : parameterCookies;
+        }
 
         var relativePath = path.TrimStart('/');
         if (!baseUri.AbsolutePath.EndsWith("/", StringComparison.Ordinal))
