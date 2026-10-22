@@ -63,7 +63,7 @@ This review preserves the substantive value in the ledger without copying stale 
 
 ### Follow-up after direct file comparison
 
-The current `development` implementation of `RestRequestFactory` and `RestDescriptorTests.cs` already includes the request-binding feature and the branch's core edge cases; development adds explicit base-URI query/fragment rejection coverage. No code was copied from this branch because this audit found no missing implementation to port. The functional-standard branch's transport tests have been directly compared and are identical to current `development`; no transport tests need porting. This remains a content comparison, not yet a complete commit-by-commit audit.
+The current `development` implementation of `RestRequestFactory` and `RestDescriptorTests.cs` already includes the request-binding feature and the branch's core edge cases; development adds explicit base-URI query/fragment rejection coverage. No code was copied from this branch because this audit found no missing implementation to port. The functional-standard branch's transport tests have been directly compared and are identical to current `development`; no transport tests need porting. The ledger commit `cf632222d63491075d18d7e52a3a9b14c9fd0db1` then passed the complete `Package FSM REST` workflow: build/test/coverage, NuGet package creation, and source-integration build/tests. The NuGet publish job was skipped. This remains a targeted file/content comparison, not yet a complete commit-by-commit audit.
 
 ## Manual completion checklist
 
@@ -71,7 +71,8 @@ The current `development` implementation of `RestRequestFactory` and `RestDescri
 - [ ] Compare candidate docs and SVGs against current `development`; retain accurate missing explanations.
 - [ ] Compare test intent and edge cases; port missing tests into the current test project.
 - [ ] Confirm no useful release criteria or package-boundary decisions remain only in branch history.
-- [ ] Re-run CI after any harvested changes.
+- [x] Re-run CI after the latest ledger update; workflow `39854185933` passed build/test/coverage, package creation, and source-integration checks. Publishing was skipped.
+- [ ] Re-run CI after any future harvested source or documentation changes.
 - [ ] Owner manually deletes only branches whose unique work has been reconciled.
 
 **No publication or release action is authorized by this ledger.**
