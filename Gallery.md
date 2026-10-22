@@ -71,3 +71,8 @@ The repository contains descriptor and transport tests under [tests/FSM_REST.Tes
 ## Not claimed by this gallery
 
 FSM_REST does not currently claim to parse OpenAPI/YAML, provide authentication or retry policy, cache responses, generate GUI controls, interpret arbitrary response schemas, or host production REST endpoints. Those require separately defined adapters or host responsibilities.
+
+
+## Maintainer note: branch cleanup
+
+Before removing any surplus branch, use the [branch reconciliation ledger](docs/BRANCH_RECONCILIATION.md). It records the comparison against `development` and calls out candidate material that needs review; it does not authorize automatic deletion.
