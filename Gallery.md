@@ -50,6 +50,19 @@ The optional `src/FSM_REST.COS` project defines `RestMicroBundle`, an adapter th
 - [Execution flow](docs/assets/fsm-rest-execution-flow.svg)
 - [Composition map](docs/assets/fsm-rest-composition-map.svg)
 
+## Living documentation and visual provenance
+
+The SVGs linked above are explanatory diagrams of the capability recipe, execution flow, and composition boundary. Treat each as a teaching aid whose claims must remain aligned with the source; an SVG file is not automatically a generated or runtime-verified view.
+
+The longer-term Workshop direction is to connect source and tests to a normalized semantic model, then render that model through GUI.SVG. Keep source structure, human-authored explanation, and runtime observations distinct:
+
+- **Source-checked:** relationships and labels were checked against named source files or a stated scope.
+- **Generated:** the diagram was produced by a documented generation pipeline from a declared model/source revision.
+- **Runtime-observed:** the image captures actual execution or state, with the capture method recorded.
+- **Conceptual:** the image explains an intended design and is explicitly not implementation evidence.
+
+For every visual, document what it teaches, how it was produced, the scope of evidence, how to verify it, and what it does not prove. The recursive UML standard also requires stable type identity, explicit relationship kinds, unresolved-relationship reporting, and links to companion type/use-case documentation. Reflection alone is not a full syntax tree and cannot infer user intent.
+
 ## Verification
 
 The repository contains descriptor and transport tests under [tests/FSM_REST.Tests](tests/FSM_REST.Tests/). CI definitions are in [build.yml](.github/workflows/build.yml) and [verify.yml](.github/workflows/verify.yml). Consult the current workflow results before treating a branch as release-ready.
