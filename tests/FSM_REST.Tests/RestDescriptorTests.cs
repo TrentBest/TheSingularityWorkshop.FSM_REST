@@ -237,4 +237,34 @@ public sealed class RestDescriptorTests
         Assert.Throws<NotSupportedException>(() =>
             ((IDictionary<string, string?>)binding.Parameters)["page"] = "3");
     }
+    [Fact]
+    public void RequestFactoryPreservesCallerCookiesWhenAddingCookieParameters()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/users", "listUsers", null, null,
+            [new RestParameterDescriptor("session", "cookie", false, "string", null, null)],
+            null);
+
+        var request = RestRequestFactory.Create(
+            operation,
+            new Uri("https://example.test/api"),
+            headers: new Dictionary<string, string> { ["Cookie"] = "tenant=work" },
+            parameters: new Dictionary<string, string?> { ["session"] = "abc 123" });
+
+        Assert.Equal("tenant=work; session=abc%20123", request.Headers!["Cookie"]);
+    }
+
+    [Fact]
+    public void RequestFactoryRejectsUndeclaredPathTemplate()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/users/{id}", "getUser", null, null,
+            Array.Empty<RestParameterDescriptor>(), null);
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            RestRequestFactory.Create(operation, new Uri("https://example.test/api")));
+
+        Assert.Equal("operation", exception.ParamName);
+    }
+
 }
