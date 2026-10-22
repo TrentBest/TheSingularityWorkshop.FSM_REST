@@ -371,13 +371,24 @@ The core REST package intentionally does **not** include:
 
 Those are composition opportunities for separate packages.
 
+## Documentation map
+
+- [Gallery](Gallery.md) — implementation-grounded tour and verified boundaries.
+- [Domain definition](docs/DOMAIN.md) — owned concepts, explicit non-goals, and package boundaries.
+- [Theory](docs/THEORY.md) — why capability descriptions and runtime results are separate.
+- [Reflection model](docs/REFLECTION.md) — descriptor semantics and execution flow.
+- [MicroBundle integration](docs/MICROBUNDLE.md) — composition boundary and optional FSM_COS adapter.
+- [Core UML and use cases](docs/UML/FSM_REST.Core.UML.md) — source-grounded package relationships.
+- [RestOperationDescriptor class card](docs/UML/RestOperationDescriptor.UML.md) — focused class responsibilities and use cases.
+
 ## Development
 
 ~~~bash
 dotnet restore TheSingularityWorkshop.FSM_REST.slnx
 dotnet build TheSingularityWorkshop.FSM_REST.slnx --configuration Release
 dotnet test tests/FSM_REST.Tests/FSM_REST.Tests.csproj --configuration Release
-dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --output ./artifactsdotnet pack src/FSM_REST.COS/FSM_REST.COS.csproj --configuration Release --output ./artifacts
+dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --output ./artifacts
+dotnet pack src/FSM_REST.COS/FSM_REST.COS.csproj --configuration Release --output ./artifacts
 ~~~
 
 ## License
