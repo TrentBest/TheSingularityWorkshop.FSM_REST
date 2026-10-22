@@ -33,7 +33,7 @@ Follow the capability recipe below, then run the repository's documented build a
 
 ## 🟪 05 Documentation and theory
 
-[Gallery: concepts, examples, visual provenance, and verification](Gallery.md) · [Capability recipe](#the-capability-recipe) · [Development](#development) · [License](#license)
+[Gallery: concepts, examples, visual provenance, and verification](Gallery.md) · [Consumer guide](docs/CONSUMING.md) · [Capability recipe](#the-capability-recipe) · [Development](#development) · [License](#license)
 
 ---
 
