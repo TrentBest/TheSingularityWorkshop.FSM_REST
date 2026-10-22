@@ -53,6 +53,14 @@ The branch diff reports:
 
 The current architecture keeps the FSM_COS integration in the separate `src/FSM_REST.COS/` project, including its own `RestApiDescriptorExtensions.cs` and `RestMicroBundle.cs`. Do not restore those integration types into the core merely because the release branch had a different layout. Review `RELEASE_1_0.md` and `release-frontier.svg` for durable release criteria or useful visual explanations; harvest relevant material into current documentation if it remains accurate, then leave deletion to the owner.
 
+### Release contract and frontier visual: reviewed
+
+The unique `docs/RELEASE_1_0.md` provides a useful release-checklist skeleton: independent restore/build/test/coverage, XML documentation review, package dependency inspection, practical README examples, theory and visual boundary checks, and explicit publication gating. Those criteria should be retained as a checklist, but the branch document is **not** accepted as a current 1.0 release contract without revision: the current work is focused on the existing development line, and its release status/prerequisites must be revalidated against current package metadata and FSM_COS Alpha.7.
+
+The unique `docs/assets/release-frontier.svg` illustrates capability recipe → operation descriptor → runtime binding → request/transport → current remote data, which is a helpful explanation of the capability-versus-response boundary. However, its labels assert `FSM_REST 1.0.0` and `FSM_COS 1.0.0 stable prerequisite`; those are historical branch claims, not verified current release facts. Do not promote the SVG as current release evidence unchanged. If reused, revise the labels and mark it conceptual or source-checked according to the actual generation process.
+
+This review preserves the substantive value in the ledger without copying stale release claims into the active documentation.
+
 ## Manual completion checklist
 
 - [ ] Inspect branch-only commits, not just the current changed-file summary.
