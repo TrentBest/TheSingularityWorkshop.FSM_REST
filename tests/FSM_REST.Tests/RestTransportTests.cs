@@ -41,6 +41,27 @@ public sealed class RestTransportTests
     }
 
     [Fact]
+    public async Task HttpClientTransportAppliesContentHeadersToRequestContent()
+    {
+        var handler = new StubHandler(request =>
+        {
+            Assert.NotNull(request.Content);
+            Assert.Equal("en", request.Content.Headers.GetValues("Content-Language").Single());
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        });
+
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        await transport.SendAsync(new RestRequest(
+            "POST",
+            new Uri("https://example.test/content"),
+            new Dictionary<string, string> { ["Content-Language"] = "en" },
+            "payload",
+            "text/plain"));
+    }
+
+    [Fact]
     public async Task TransportPreservesNonSuccessStatus()
     {
         var handler = new StubHandler(_ =>
