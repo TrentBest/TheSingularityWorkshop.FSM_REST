@@ -130,7 +130,7 @@ public static class RestRequestFactory
         }
 
         // Never send a template token literally when the descriptor forgot to declare it.
-        if (path.Contains('{', StringComparison.Ordinal) || path.Contains('}', StringComparison.Ordinal))
+        if (path.Contains('{') || path.Contains('}'))
             throw new ArgumentException(
                 "The operation path contains an unresolved template placeholder.",
                 nameof(operation));
