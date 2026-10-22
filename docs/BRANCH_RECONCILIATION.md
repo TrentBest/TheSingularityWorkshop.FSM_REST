@@ -1,6 +1,6 @@
 # FSM_REST Branch Reconciliation Ledger
 
-**Snapshot date:** 2026-10-22  
+**Snapshot date:** 2026-10-22 (refreshed after CI run `39855573430`)  
 **Comparison base:** `development`  
 **Purpose:** Preserve unique work before any surplus branch is manually removed. This ledger is a review aid, not authorization to delete branches.
 
@@ -10,10 +10,10 @@
 
 | Branch | Ahead of development | Behind development | Status | Required disposition |
 |---|---:|---:|---|---|
-| `architecture/decouple-rest-microbundle-from-core` | 0 | 43 | Behind | No branch-only commits according to the comparison. Review commit history if desired, then owner may manually delete. |
-| `forge/fsm-rest-documentation-and-capability-flow` | 16 | 74 | Diverged | Reconcile before deletion; review documentation, diagrams, request factory, and test changes. |
-| `forge/fsm-rest-functional-standard` | 14 | 75 | Diverged | Reconcile before deletion; transport/core API/test paths overlap current development; retain any unique branch history until fully reviewed. |
-| `release-prep/fsm-rest-1.0.0` | 13 | 59 | Diverged | Reconcile before deletion; it contains release-prep documentation and a visual absent from current development at this snapshot. |
+| `architecture/decouple-rest-microbundle-from-core` | 0 | 44 | Behind | Branch tip is the merge base and there are no branch-only commits. Candidate for owner deletion after final history check. |
+| `forge/fsm-rest-documentation-and-capability-flow` | 16 | 75 | Diverged | Reconcile before deletion; review documentation, diagrams, request factory, and test changes. |
+| `forge/fsm-rest-functional-standard` | 14 | 76 | Diverged | Reconcile before deletion; transport/core API/test paths overlap current development; retain any unique branch history until fully reviewed. |
+| `release-prep/fsm-rest-1.0.0` | 13 | 60 | Diverged | Reconcile before deletion; historical release docs and a visual require review; do not accept stale release claims unchanged. |
 
 Counts are from GitHub's compare endpoint with `development` as the base. The changed-file lists below describe branch diffs from Git's merge base; a file appearing in a list does **not** prove the branch's version is absent from development.
 
@@ -67,16 +67,16 @@ This review preserves the substantive value in the ledger without copying stale 
 
 ### Follow-up after direct file comparison
 
-The current `development` implementation of `RestRequestFactory` and `RestDescriptorTests.cs` already includes the request-binding feature and the branch's core edge cases; development adds explicit base-URI query/fragment rejection coverage. No code was copied from this branch because this audit found no missing implementation to port. The functional-standard branch's transport tests have been directly compared and are identical to current `development`; no transport tests need porting. The ledger commit `cf632222d63491075d18d7e52a3a9b14c9fd0db1` passed the complete `Package FSM REST` workflow: build/test/coverage, NuGet package creation, and source-integration build/tests. The two latest documentation commits also passed: checklist commit `17f321e8acc1b65251ba407fbb9928fafb2ab052` (run `39855235239`) and ledger commit `34f2d0439d3367c4d3a6bccd8e65b713dfc47fec` (run `39855248904`), each with build/test and source-integration successful and `publish_nuget` skipped. This remains a targeted file/content comparison, not yet a complete commit-by-commit audit.
+The current `development` implementation of `RestRequestFactory` and `RestDescriptorTests.cs` already includes the request-binding feature and the branch's core edge cases; development adds explicit base-URI query/fragment rejection coverage. A fresh source-of-truth check also confirmed `RestMicroBundle` and `RestApiDescriptorExtensions` exist only under `src/FSM_REST.COS/`, not in the core project. The wording in `docs/MICROBUNDLE.md` was corrected to make this optional package boundary explicit and to show the required namespace. No code was copied from this branch because this audit found no missing implementation to port. The functional-standard branch's transport tests have been directly compared and are identical to current `development`; no transport tests need porting. The ledger commit `cf632222d63491075d18d7e52a3a9b14c9fd0db1` passed the complete `Package FSM REST` workflow: build/test/coverage, NuGet package creation, and source-integration build/tests. The two latest documentation commits also passed: checklist commit `17f321e8acc1b65251ba407fbb9928fafb2ab052` (run `39855235239`) and ledger commit `34f2d0439d3367c4d3a6bccd8e65b713dfc47fec` (run `39855248904`), each with build/test and source-integration successful and `publish_nuget` skipped. This remains a targeted file/content comparison, not yet a complete commit-by-commit audit.
 
 ## Manual completion checklist
 
-- [ ] Inspect branch-only commits, not just the current changed-file summary.
+- [ ] Inspect branch-only commits, not just the current changed-file summary. Compare metadata refreshed: architecture 0 ahead/44 behind; capability/docs 16/75; functional-standard 14/76; release-prep 13/60.
 - [ ] Compare candidate docs and SVGs against current `development`; retain accurate missing explanations.
 - [ ] Compare test intent and edge cases; port missing tests into the current test project.
 - [ ] Confirm no useful release criteria or package-boundary decisions remain only in branch history.
 - [x] Re-run CI after the latest checklist and ledger updates; runs `39855235239` and `39855248904` passed build/test and source-integration. Publishing was skipped.
-- [ ] Re-run CI after any future harvested source or documentation changes.
+- [ ] Re-run CI after any future harvested source or documentation changes. Latest ledger-only run `39855573430` passed build/test and source-integration; `publish_nuget` was skipped. The MicroBundle boundary correction committed after that run still needs its own CI.
 - [ ] Owner manually deletes only branches whose unique work has been reconciled.
 
 **No publication or release action is authorized by this ledger.**
