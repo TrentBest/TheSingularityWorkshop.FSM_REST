@@ -11,9 +11,9 @@
 | Branch | Ahead of development | Behind development | Status | Required disposition |
 |---|---:|---:|---|---|
 | `architecture/decouple-rest-microbundle-from-core` | 0 | 37 | Behind | No branch-only commits according to the comparison. Review commit history if desired, then owner may manually delete. |
-| `forge/fsm-rest-documentation-and-capability-flow` | 16 | 68 | Diverged | Reconcile before deletion; review documentation, diagrams, request factory, and test changes. |
-| `forge/fsm-rest-functional-standard` | 14 | 69 | Diverged | Reconcile before deletion; compare transport/core API/test changes against current development. |
-| `release-prep/fsm-rest-1.0.0` | 13 | 53 | Diverged | Reconcile before deletion; it contains release-prep documentation and a visual absent from current development at this snapshot. |
+| `forge/fsm-rest-documentation-and-capability-flow` | 16 | 69 | Diverged | Reconcile before deletion; review documentation, diagrams, request factory, and test changes. |
+| `forge/fsm-rest-functional-standard` | 14 | 70 | Diverged | Reconcile before deletion; compare transport/core API/test changes against current development. |
+| `release-prep/fsm-rest-1.0.0` | 13 | 54 | Diverged | Reconcile before deletion; it contains release-prep documentation and a visual absent from current development at this snapshot. |
 
 Counts are from GitHub's compare endpoint with `development` as the base. The changed-file lists below describe branch diffs from Git's merge base; a file appearing in a list does **not** prove the branch's version is absent from development.
 
@@ -30,7 +30,7 @@ The branch diff reports changes in:
 - `src/FSM_REST/RestRequestFactory.cs`
 - `Program.cs` and `tests/FSM_REST.Tests/RestDescriptorTests.cs`
 
-The current `development` branch already contains the named documentation, SVG assets, and request-factory path. Before deleting the branch, compare the branch-specific commits and current file contents to make sure no stronger explanation, test case, or implementation detail exists only in its history.
+The current `development` branch already contains the named documentation, SVG assets, and request-factory path. The branch's `RestRequestFactory` implementation is already present on `development`; the current test file also contains its path/query/header/cookie binding and rejection tests, plus additional tests rejecting base URIs containing a query or fragment. The branch version therefore does not currently justify overwriting the active implementation. Its README and MicroBundle/theory text differ substantially in size and wording, so keep the current richer docs as the baseline and continue reviewing branch-only commits for any precise explanation that is genuinely missing. The three named SVGs and request-factory path are already present.
 
 ### `forge/fsm-rest-functional-standard`
 
@@ -40,7 +40,7 @@ The branch diff reports changes in:
 - Core descriptor and transport files under `src/FSM_REST/`
 - `tests/FSM_REST.Tests/RestDescriptorTests.cs` and `RestTransportTests.cs`
 
-These paths exist in the current repository, but the branch may contain distinct historical implementations or test coverage. Compare the actual patch and test intent; do not blindly copy older files over the current architecture.
+These paths exist in the current repository, but the branch may contain distinct historical implementations or test coverage. A fresh comparison reports 14 commits ahead and 70 behind. The branch's transport and descriptor paths overlap the current source, so compare behavior rather than line counts; do not overwrite the active implementation with an older branch snapshot. The branch adds 40 lines to `RestTransportTests.cs`, making transport-test intent the next specific review target.
 
 ### `release-prep/fsm-rest-1.0.0`
 
@@ -51,7 +51,7 @@ The branch diff reports:
 - Changes to the build workflow, README, MicroBundle documentation, project file, and descriptor-binding tests.
 - Removal of `RestApiDescriptorExtensions.cs` and `RestMicroBundle.cs` from the core-project path.
 
-The current architecture keeps the FSM_COS integration in the separate `src/FSM_REST.COS/` project, including its own `RestApiDescriptorExtensions.cs` and `RestMicroBundle.cs`. Do not restore those integration types into the core merely because the release branch had a different layout. Review `RELEASE_1_0.md` and `release-frontier.svg` for durable release criteria or useful visual explanations; harvest relevant material into current documentation if it remains accurate, then leave deletion to the owner.
+The current architecture keeps the FSM_COS integration in the separate `src/FSM_REST.COS/` project, including its own `RestApiDescriptorExtensions.cs` and `RestMicroBundle.cs`. Do not restore those integration types into the core merely because the release branch had a different layout. A fresh comparison reports 13 commits ahead and 54 behind. Review `RELEASE_1_0.md` and `release-frontier.svg` for durable release criteria or useful visual explanations; harvest relevant material into current documentation if it remains accurate, then leave deletion to the owner.
 
 ### Release contract and frontier visual: reviewed
 
@@ -60,6 +60,10 @@ The unique `docs/RELEASE_1_0.md` provides a useful release-checklist skeleton: i
 The unique `docs/assets/release-frontier.svg` illustrates capability recipe → operation descriptor → runtime binding → request/transport → current remote data, which is a helpful explanation of the capability-versus-response boundary. However, its labels assert `FSM_REST 1.0.0` and `FSM_COS 1.0.0 stable prerequisite`; those are historical branch claims, not verified current release facts. Do not promote the SVG as current release evidence unchanged. If reused, revise the labels and mark it conceptual or source-checked according to the actual generation process.
 
 This review preserves the substantive value in the ledger without copying stale release claims into the active documentation.
+
+### Follow-up after direct file comparison
+
+The current `development` implementation of `RestRequestFactory` and `RestDescriptorTests.cs` already includes the request-binding feature and the branch's core edge cases; development adds explicit base-URI query/fragment rejection coverage. No code was copied from this branch because this audit found no missing implementation to port. The functional-standard branch's transport-test additions remain a candidate for a method-by-method review. This is a content comparison, not yet a complete commit-by-commit audit.
 
 ## Manual completion checklist
 
