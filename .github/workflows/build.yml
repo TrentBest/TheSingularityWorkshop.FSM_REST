@@ -71,6 +71,82 @@ jobs:
           dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --no-build --output ./artifacts
           dotnet pack src/FSM_REST.COS/FSM_REST.COS.csproj --configuration Release --no-build --output ./artifacts
 
+      - name: Audit packed NuGet artifacts
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import glob
+          import zipfile
+          from xml.etree import ElementTree as ET
+
+          expected = {
+              "TheSingularityWorkshop.FSM_Rest": {
+                  "version": "0.1.0-alpha.4",
+                  "dll_prefix": "lib/net8.0/",
+                  "required_files": ["README.md", "LICENSE.txt"],
+                  "forbidden_dependencies": ["TheSingularityWorkshop.MicroBundleDomain", "TheSingularityWorkshop.FSM_COS"],
+              },
+              "TheSingularityWorkshop.FSM_Rest.COS": {
+                  "version": "0.1.0-alpha.1",
+                  "dll_prefix": "lib/net8.0/",
+                  "required_files": ["README.md", "LICENSE.txt"],
+                  "required_dependencies": ["TheSingularityWorkshop.MicroBundleDomain", "TheSingularityWorkshop.FSM_Rest"],
+              },
+          }
+          packages = glob.glob("artifacts/*.nupkg")
+          if len(packages) != len(expected):
+              raise SystemExit(f"Expected {len(expected)} NuGet packages, found {len(packages)}: {packages}")
+
+          found = set()
+          for package in packages:
+              with zipfile.ZipFile(package) as archive:
+                  names = archive.namelist()
+                  lower_names = {name.lower() for name in names}
+                  nuspec_paths = [name for name in names if name.lower().endswith(".nuspec")]
+                  if len(nuspec_paths) != 1:
+                      raise SystemExit(f"{package}: expected exactly one .nuspec, found {nuspec_paths}")
+                  missing = [name for name in expected[next((key for key in expected if key.lower() in package.lower()), "")]["required_files"] if name.lower() not in lower_names] if any(key.lower() in package.lower() for key in expected) else []
+                  if missing:
+                      raise SystemExit(f"{package}: missing required package files: {missing}")
+
+                  root = ET.fromstring(archive.read(nuspec_paths[0]))
+                  metadata = root.find(".//{*}metadata")
+                  if metadata is None:
+                      raise SystemExit(f"{package}: nuspec metadata is missing")
+
+                  def value(tag):
+                      node = metadata.find("{*}" + tag)
+                      return node.text.strip() if node is not None and node.text else ""
+
+                  package_id = value("id")
+                  if package_id not in expected:
+                      raise SystemExit(f"{package}: unexpected package id {package_id!r}")
+                  if package_id in found:
+                      raise SystemExit(f"Duplicate package id: {package_id}")
+                  found.add(package_id)
+                  rule = expected[package_id]
+                  if value("version") != rule["version"]:
+                      raise SystemExit(f"{package_id}: expected version {rule['version']}, got {value('version')}")
+                  if not any(name.startswith(rule["dll_prefix"]) and name.endswith(".dll") for name in names):
+                      raise SystemExit(f"{package_id}: missing net8.0 assembly")
+                  if not any(name.startswith(rule["dll_prefix"]) and name.endswith(".xml") for name in names):
+                      raise SystemExit(f"{package_id}: missing XML API documentation")
+                  if not (value("license") or value("licenseUrl")):
+                      raise SystemExit(f"{package_id}: license metadata is missing")
+                  dependencies = [node.attrib.get("id", "") for node in metadata.findall(".//{*}dependency")]
+                  for forbidden in rule.get("forbidden_dependencies", []):
+                      if any(dep.lower() == forbidden.lower() for dep in dependencies):
+                          raise SystemExit(f"{package_id}: core package has forbidden dependency {forbidden}")
+                  for required in rule.get("required_dependencies", []):
+                      if not any(dep.lower() == required.lower() for dep in dependencies):
+                          raise SystemExit(f"{package_id}: missing expected dependency {required}")
+                  print(f"PASS: {package_id} {value('version')} — assembly, XML docs, README, license, and dependency boundary verified")
+
+          if found != set(expected):
+              raise SystemExit(f"Expected package IDs {sorted(expected)}, found {sorted(found)}")
+          PY
+
       - name: Upload NuGet package artifact
         uses: actions/upload-artifact@v7
         with:
