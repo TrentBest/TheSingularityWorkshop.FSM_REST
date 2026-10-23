@@ -34,7 +34,7 @@ public sealed record RestGuiMapping
         var declaredParameters = operation.Parameters
             .Select(parameter => parameter.Name)
             .ToHashSet(StringComparer.Ordinal);
-        var mappedInputs = (inputs ?? []).ToArray();
+        var mappedInputs = (inputs ?? []).Select(input => input.Validate()).ToArray();
         var duplicate = mappedInputs.GroupBy(input => input.ParameterName, StringComparer.Ordinal)
             .FirstOrDefault(group => group.Count() > 1);
         if (duplicate is not null)
