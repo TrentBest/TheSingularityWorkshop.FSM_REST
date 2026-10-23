@@ -13,6 +13,8 @@ public sealed record RestResponse(
     IReadOnlyDictionary<string, string> Headers,
     string Body)
 {
+    private static readonly JsonSerializerOptions DefaultJsonOptions = new(JsonSerializerDefaults.Web);
+
     /// <summary>Gets whether the response status is in the HTTP 2xx success range.</summary>
     public bool IsSuccessStatusCode => StatusCode is >= 200 and < 300;
 
@@ -22,5 +24,5 @@ public sealed record RestResponse(
     /// <returns>The deserialized value, or the JSON null value when the body is JSON null.</returns>
     /// <remarks>This performs JSON deserialization only; it does not validate the response against the API schema.</remarks>
     public T? Deserialize<T>(JsonSerializerOptions? options = null) =>
-        JsonSerializer.Deserialize<T>(Body, options);
+        JsonSerializer.Deserialize<T>(Body, options ?? DefaultJsonOptions);
 }
