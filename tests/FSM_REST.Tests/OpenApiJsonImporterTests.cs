@@ -98,6 +98,63 @@ public sealed class OpenApiJsonImporterTests
         Assert.Contains(result.Warnings, warning => warning.Contains("Schema reference", StringComparison.Ordinal));
     }
 
+    [Fact]
+    public void MergesDuplicatePathParametersAndAllowsOperationOverride()
+    {
+        const string json = """
+        {
+          "openapi": "3.0.3",
+          "info": { "title": "Parameters", "version": "1" },
+          "paths": {
+            "/items/{id}": {
+              "parameters": [
+                { "name": "id", "in": "path", "schema": { "type": "string" } },
+                { "name": "id", "in": "path", "schema": { "type": "integer" } }
+              ],
+              "get": {
+                "parameters": [
+                  { "name": "id", "in": "path", "schema": { "type": "integer", "format": "int64" } }
+                ],
+                "responses": { "200": { "description": "OK" } }
+              }
+            }
+          }
+        }
+        """;
+
+        var result = OpenApiJsonImporter.Import(json);
+        var operation = Assert.Single(result.Api.Operations);
+        var id = Assert.Single(operation.Parameters);
+
+        Assert.Equal("integer", id.Type);
+        Assert.Equal("int64", id.Format);
+    }
+
+    [Fact]
+    public void WarnsWhenParameterUsesUnsupportedContentSerialization()
+    {
+        const string json = """
+        {
+          "openapi": "3.0.3",
+          "info": { "title": "Content parameter", "version": "1" },
+          "paths": {
+            "/items": {
+              "get": {
+                "parameters": [
+                  { "name": "filter", "in": "query", "content": { "application/json": { "schema": { "type": "object" } } } }
+                ],
+                "responses": { "200": { "description": "OK" } }
+              }
+            }
+          }
+        }
+        """;
+
+        var result = OpenApiJsonImporter.Import(json);
+
+        Assert.Contains(result.Warnings, warning => warning.Contains("content-based serialization", StringComparison.Ordinal));
+    }
+
     [Theory]
     [InlineData("{}")]
     [InlineData("{ \"openapi\": \"2.0\", \"paths\": {} }")]
