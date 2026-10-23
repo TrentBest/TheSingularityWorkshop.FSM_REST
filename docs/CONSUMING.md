@@ -2,6 +2,32 @@
 
 This guide shows the supported path from an API description to one outbound request and one observed response. FSM_REST includes an initial OpenAPI 3.x JSON importer, but it is not a complete OpenAPI runtime, authentication system, or domain client.
 
+## Connect from a definition URL
+
+When the API publishes a Swagger/OpenAPI 3.x JSON document, pass its URL to `OpenApiRestApiConnection.ConnectAsync`. The connection downloads and imports the document, selects the first declared concrete server URL (or the definition's origin if no server is declared), and lets the caller execute imported operations by `operationId`.
+
+```csharp
+using System.Net.Http;
+using TheSingularityWorkshop.FSM_REST;
+
+using var client = new HttpClient();
+// Configure client.DefaultRequestHeaders or a handler for the API's authentication policy.
+var connection = await OpenApiRestApiConnection.ConnectAsync(
+    new Uri("https://api.example.com/openapi.json"),
+    client,
+    cancellationToken);
+
+foreach (var warning in connection.Warnings)
+    Console.WriteLine($"OpenAPI import warning: {warning}");
+
+RestResponse response = await connection.ExecuteAsync(
+    "getPerson",
+    parameters: new Dictionary<string, string?> { ["id"] = "person-123" },
+    cancellationToken: cancellationToken);
+```
+
+The supplied `HttpClient` is used both to retrieve the definition and to call the API; the connection does not dispose it. Authentication remains a host concern, so configure the client with the credentials and scopes required by that API. The first declared server is used; server-variable substitution and choosing among multiple server environments are not automatic. Local component references are resolved for the supported operation metadata subset; external references and full OpenAPI schema composition are not.
+
 ## The invocation lifecycle
 
 1. Keep a `RestOperationDescriptor` as reusable capability metadata.
@@ -87,9 +113,9 @@ Your host or domain capability decides how to handle authentication, authorizati
 
 ## Scope and limitations
 
-FSM_REST provides a neutral descriptor/binding/request/transport/response path and an initial `OpenApiJsonImporter` for OpenAPI 3.x JSON. The importer reads operation paths, parameters, request-body media/schema hints, and response metadata. It does not itself:
+FSM_REST provides a neutral descriptor/binding/request/transport/response path, an `OpenApiJsonImporter` for OpenAPI 3.x JSON, and `OpenApiRestApiConnection` for loading a definition URL and invoking imported operations. The importer reads operation paths, parameters, request-body media/schema hints, and response metadata. It does not itself:
 
-- resolve OpenAPI `$ref` references or fully implement the OpenAPI standard (including YAML, composed schemas, and complete validation);
+- load YAML definitions, resolve external references, substitute server variables, select among multiple server environments, or fully implement the OpenAPI standard (including composed schemas and complete validation);
 - implement array/object parameter serialization styles, `style`/`explode`, or schema-driven body validation;
 - authenticate users, acquire credentials, authorize an operation, or decide whether data may be disclosed;
 - deserialize response bodies into domain objects, retry requests, cache results, or define domain error meanings.
