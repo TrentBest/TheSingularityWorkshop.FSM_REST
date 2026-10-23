@@ -15,6 +15,6 @@ This importer is not a full OpenAPI validator or runtime. YAML, external referen
 - Source: [OpenApiJsonImporter.cs](OpenApiJsonImporter.cs)
 - Connection wrapper: [OpenApiRestApiConnection](OpenApiRestApiConnection.md)
 - Core concepts: [Gallery](../../Gallery.md), [consumer guide](../../docs/CONSUMING.md)
-- UML: [Core architecture](../../docs/UML/FSM_REST.Core.UML.md)
+- UML: [Importer](../../docs/UML/OpenApiJsonImporter.UML.md), [import result](../../docs/UML/OpenApiImportResult.UML.md), [core architecture](../../docs/UML/FSM_REST.Core.UML.md)
 - Tests: [FSM_REST tests](../../tests/FSM_REST.Tests/)
 - Provenance: manually authored companion.
