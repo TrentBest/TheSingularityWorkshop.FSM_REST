@@ -9,27 +9,29 @@
 - README follows the Workshop five-part opening and links to detailed documentation.
 - Gallery.md provides a concise overview, working recipes, visual examples, provenance, and evidence.
 - Every production .cs file has a neighboring companion .md covering author/moniker, purpose, responsibilities, boundaries, source, and tests.
-- Each relevant class has a separate target-centered UML page under docs/UML with explicit relationships and use cases.
+- Each relevant class has a target-centered UML page under docs/UML with relationships and use cases.
 - UML distinguishes expected consumer roles from source-observed relationships and labels manual vs generated provenance.
-- Readiness claims identify the exact branch SHA and CI evidence.
+- Readiness claims identify exact branch SHA and CI evidence.
 - Links, diagrams, examples, package boundaries, and claims are checked; publishing remains approval-gated.
 
 ## Baseline inventory
-The current development tree contains **20 production C# source files** across core REST, optional FSM_COS adapter, and optional GUI adapter. Test sources are excluded from this per-production-file companion count.
+The development tree contains **20 production C# source files** across core REST, optional FSM_COS adapter, and optional GUI adapter. Test sources are excluded.
 
 | Area | State | Remaining work |
 |---|---|---|
 | README / five-part entry | Present | Audit claims and accessibility/readability |
 | Gallery | Present | Check each visual against source and runnable recipe |
 | Consumer guide | Present | Link per-class docs and UML index |
-| UML index/core architecture | Partial | Add navigation index and reconcile class coverage |
-| Core companions | Partial | Companion pages for every production source file |
-| GUI adapter | In progress | Factory companion and target-centered UML added in this batch |
-| FSM_COS adapter | Partial | Document adapter classes and boundary |
-| Readiness evidence | Started | Run local link/path checks and record exact SHA + CI |
-| Generated UML / GUI.SVG | Not claimed | Current diagrams are manually authored; generated promotion is future work |
+| Source companions | **20/20 present** | Review technical accuracy and verify links |
+| UML index and architecture | Expanded | Audit every public type, relationships, and use cases |
+| GUI adapter | Companion and target-centered UML present | Verify emitted metadata and renderer limitations |
+| FSM_COS adapter | Companion and target-centered UML present | Verify against current MicroBundleDomain contract |
+| Visual provenance | Partially documented | Audit each SVG/recipe and classify evidence |
+| Documentation CI | Not yet established | Add robust companion/UML/local-link checks |
+| Generated UML / GUI.SVG | Not claimed | Source-to-model generation remains future work |
 
 ## Production source inventory
+All 20 listed production C# files now have neighboring Markdown companions:
 - src/FSM_REST/HttpClientRestTransport.cs
 - src/FSM_REST/IRestTransport.cs
 - src/FSM_REST/OpenApiJsonImporter.cs
@@ -51,17 +53,15 @@ The current development tree contains **20 production C# source files** across c
 - src/FSM_REST.COS/RestMicroBundle.cs
 - src/FSM_REST.GUI/RestGuiNodeFactory.cs
 
-Every listed file needs a neighboring Markdown companion. Each public class, record, or interface should have focused UML/use-case coverage or an explicit rationale for inclusion in a cohesive diagram.
-
 ## Evidence and completion rule
-Do not mark documentation 100% ready until production sources are reconciled against neighboring Markdown, each class's UML/use-case coverage is checked, links and examples are validated, and current exact-SHA CI passes. The previously passing code CI is for SHA 32e26834a2e6a9e7c3cfbe80ee64a9dff6e9d296; it does not verify documentation changes added after that SHA.
+Do not mark documentation 100% ready until production sources are reconciled against companions, every public class/record/interface has verified UML/use-case coverage, local links and examples are checked, and documentation/full CI passes at the exact SHA. The code CI pass at SHA 32e26834a2e6a9e7c3cfbe80ee64a9dff6e9d296 predates these documentation commits and does not verify them.
 
-**Current documentation readiness: in progress.** Percentage intentionally withheld until the checklist denominator is reconciled and evidence is collected.
+**Current documentation readiness: in progress.** Percentage withheld until the remaining UML denominator, link audit, visual provenance, and CI evidence are reconciled.
 
 ## Next sequence
-1. Finish companions, prioritizing core and FSM_COS integration boundaries.
-2. Complete target-centered UML and use-case pages for each production class, grouping closely related value records only when each target remains explicit.
-3. Add docs/UML/README.md as the navigation index.
-4. Audit Gallery visuals/recipes against source and label each visual implemented, manual conceptual, or proposed.
-5. Add CI checks for missing companions, missing UML/use-case coverage, and broken local links where robust.
-6. Re-run documentation and full CI; record exact SHA and evidence.
+1. Audit all new companions and UML pages against the exact source signatures and relationship kinds.
+2. Add target-centered UML for any remaining public types, including importer result/auxiliary types where applicable.
+3. Audit Gallery visuals and recipes; distinguish implemented behavior, manual explanation, and proposed future behavior.
+4. Add CI checks for missing companions, UML/use-case coverage, and broken local links where robust.
+5. Run documentation checks and full CI; record exact SHA and evidence.
+6. Keep NuGet publication approval-gated; do not publish as part of documentation work.
