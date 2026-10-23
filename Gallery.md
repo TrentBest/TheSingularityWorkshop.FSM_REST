@@ -44,7 +44,7 @@ This example assumes `operation` has already been described and `request` constr
 
 ## 5. Map an operation to GUI and data
 
-`RestGuiMapping` describes a renderer-neutral presentation hint, operation identity, GUI input mappings, optional application-state source paths, a result target, and loading/error-state intent. `RestGuiInputMapping` maps declared API parameters either to a state path or to user-provided input. Construction validates that mappings refer to declared parameters and rejects duplicates. A GUI adapter still needs to render controls, resolve the paths, invoke the connection, deserialize the result, and update its state context.
+`RestGuiMapping` describes a renderer-neutral presentation hint, operation identity, GUI input mappings, optional application-state source paths, a result target, and loading/error-state intent. `RestGuiInputMapping` maps declared API parameters either to a state path or to user-provided input. Construction validates that mappings refer to declared parameters and rejects duplicates. `RestGuiOperationExecutor` resolves source paths through a host callback, combines those values with user-entered inputs, invokes the operation, and publishes the raw response to the configured result target through a host callback. A GUI adapter still needs to render controls and implement the state callbacks; deserialize the result into a consumer-owned model when typed GUI data is required.
 
 ## 6. Carry a capability into FSM_COS
 
