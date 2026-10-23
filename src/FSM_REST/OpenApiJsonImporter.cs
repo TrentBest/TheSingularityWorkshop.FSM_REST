@@ -138,20 +138,20 @@ public static class OpenApiJsonImporter
                 continue;
             }
 
-            parameter = ResolveReference(root, parameter, $"parameter in '{context}'", warnings);
-            if (parameter.ValueKind != JsonValueKind.Object) continue;
+            var resolvedParameter = ResolveReference(root, parameter, $"parameter in '{context}'", warnings);
+            if (resolvedParameter.ValueKind != JsonValueKind.Object) continue;
 
-            var name = GetString(parameter, "name");
-            var location = GetString(parameter, "in");
+            var name = GetString(resolvedParameter, "name");
+            var location = GetString(resolvedParameter, "in");
             if (string.IsNullOrWhiteSpace(name) || string.IsNullOrWhiteSpace(location))
             {
                 warnings.Add($"A parameter in '{context}' was skipped because name or in is missing.");
                 continue;
             }
 
-            var schema = parameter.TryGetProperty("schema", out var schemaElement) ? schemaElement : default;
+            var schema = resolvedParameter.TryGetProperty("schema", out var schemaElement) ? schemaElement : default;
             if (schema.ValueKind == JsonValueKind.Undefined &&
-                parameter.TryGetProperty("content", out var parameterContent) &&
+                resolvedParameter.TryGetProperty("content", out var parameterContent) &&
                 parameterContent.ValueKind == JsonValueKind.Object)
             {
                 warnings.Add($"Parameter '{name}' in '{context}' uses content-based serialization, which is not represented; FSM_REST currently binds scalar values.");
@@ -161,12 +161,12 @@ public static class OpenApiJsonImporter
             result.Add(new RestParameterDescriptor(
                 name,
                 location,
-                GetBoolean(parameter, "required") || location == "path",
+                GetBoolean(resolvedParameter, "required") || location == "path",
                 GetString(schema, "type"),
                 GetString(schema, "format"),
-                GetString(parameter, "description")));
+                GetString(resolvedParameter, "description")));
 
-            if (GetString(parameter, "style") is not null || parameter.TryGetProperty("explode", out _))
+            if (GetString(resolvedParameter, "style") is not null || resolvedParameter.TryGetProperty("explode", out _))
             {
                 warnings.Add($"Parameter serialization style for '{name}' in '{context}' is not represented; FSM_REST currently binds scalar values.");
             }
