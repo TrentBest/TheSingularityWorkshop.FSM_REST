@@ -297,7 +297,7 @@ public static class OpenApiJsonImporter
             }
             if (!found)
             {
-                warnings.Add($"{(context.Contains("parameter", StringComparison.OrdinalIgnoreCase) ? "A parameter reference" : context.Contains("schema", StringComparison.OrdinalIgnoreCase) ? "A schema reference" : "A reference")} in {context} points to a missing local component: '{reference}'.");
+                warnings.Add($"{(context.Contains("parameter", StringComparison.OrdinalIgnoreCase) ? "A parameter reference" : context.Contains("schema", StringComparison.OrdinalIgnoreCase) ? "Schema reference" : "A reference")} in {context} points to a missing local component: '{reference}'.");
                 return default;
             }
             element = target;
