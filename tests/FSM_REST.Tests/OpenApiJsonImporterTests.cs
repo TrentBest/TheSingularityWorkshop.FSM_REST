@@ -155,6 +155,58 @@ public sealed class OpenApiJsonImporterTests
         Assert.Contains(result.Warnings, warning => warning.Contains("content-based serialization", StringComparison.Ordinal));
     }
 
+    [Fact]
+    public void ResolvesLocalParameterRequestBodyResponseAndSchemaReferences()
+    {
+        const string json = """
+        {
+          "openapi": "3.0.3",
+          "info": { "title": "Referenced API", "version": "1" },
+          "paths": {
+            "/items/{id}": {
+              "parameters": [{ "$ref": "#/components/parameters/ItemId" }],
+              "get": {
+                "operationId": "getItem",
+                "responses": {
+                  "200": { "$ref": "#/components/responses/ItemResponse" }
+                }
+              },
+              "post": {
+                "requestBody": { "$ref": "#/components/requestBodies/ItemBody" },
+                "responses": { "201": { "description": "Created" } }
+              }
+            }
+          },
+          "components": {
+            "parameters": {
+              "ItemId": { "name": "id", "in": "path", "required": true, "schema": { "$ref": "#/components/schemas/ItemId" } }
+            },
+            "requestBodies": {
+              "ItemBody": { "required": true, "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Item" } } } }
+            },
+            "responses": {
+              "ItemResponse": { "description": "An item", "content": { "application/json": { "schema": { "$ref": "#/components/schemas/Item" } } } }
+            },
+            "schemas": {
+              "ItemId": { "type": "integer", "format": "int64" },
+              "Item": { "type": "object" }
+            }
+          }
+        }
+        """;
+
+        var result = OpenApiJsonImporter.Import(json);
+        var get = Assert.Single(result.Api.Operations, operation => operation.OperationId == "getItem");
+        Assert.Equal("integer", Assert.Single(get.Parameters).Type);
+        Assert.Equal("int64", Assert.Single(get.Parameters).Format);
+        Assert.Equal("An item", Assert.Single(get.ResponseDescriptors).Description);
+
+        var post = Assert.Single(result.Api.Operations, operation => operation.Method == "POST");
+        Assert.True(post.RequestBody!.Required);
+        Assert.Equal("object", post.RequestBody.SchemaType);
+        Assert.DoesNotContain(result.Warnings, warning => warning.Contains("could not be resolved", StringComparison.Ordinal));
+    }
+
     [Theory]
     [InlineData("{}")]
     [InlineData("{ \"openapi\": \"2.0\", \"paths\": {} }")]
