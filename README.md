@@ -237,9 +237,9 @@ RestApiDescriptor
     Experience
 ~~~
 
-The core now includes `OpenApiJsonImporter` for an initial OpenAPI 3.x JSON subset. It imports operation paths, parameters, request-body media/schema hints, and response metadata into the neutral descriptors. Unsupported security requirements and unresolved `$ref` values are reported as warnings rather than silently treated as fully imported.
+The core includes `OpenApiJsonImporter` for an initial OpenAPI 3.x JSON subset, including supported local component references. `OpenApiRestApiConnection.ConnectAsync` can download a definition URL, choose a concrete declared server (or the definition origin), and execute imported operations by `operationId`. `RestResponse.Deserialize<T>()` deserializes JSON into a consumer-owned model; it does not perform API-schema validation.
 
-YAML, `$ref` resolution, full schema semantics, and provider-specific behavior remain outside this initial importer. Hand-authored descriptors and other provider adapters remain valid inputs.
+`RestGuiMapping` connects an operation identity to renderer-neutral presentation metadata, GUI inputs, application-state source paths, and an optional result target. The GUI adapter remains responsible for rendering controls, resolving data paths, updating application state, and applying authorization/error policy. YAML, external references, server-variable substitution, full schema semantics, and provider-specific behavior remain outside this initial implementation. Hand-authored descriptors and other provider adapters remain valid inputs.
 
 **FSM_REST does not need to own every source format or domain-specific policy.**
 
@@ -336,9 +336,7 @@ MicroBundle / provider
            Experience
 ~~~
 
-A REST operation might ultimately manifest as a button, form, table action, workflow node, FSM transition, automated behavior, or another composition primitive.
-
-FSM_REST does not choose the manifestation.
+A REST operation can be mapped to a button, form, table action, detail view, workflow node, or another composition primitive. `RestGuiMapping` declares the operation, presentation hint, inputs and data paths, result target, and loading/error-state intent. A renderer-specific adapter chooses and builds the actual controls; FSM_REST remains GUI-framework-neutral.
 
 ## Relationship to the ecosystem
 
@@ -360,18 +358,14 @@ Concrete protocol/domain packages remain separately owned and publishable. FSM_R
 
 Alpha 4 makes the documented capability model directly composable: runtime operation values are separated from reusable operation descriptors. The optional REST MicroBundle adapter is now isolated in `TheSingularityWorkshop.FSM_Rest.COS`, so the core REST package does not depend on FSM_COS.
 
-The core REST package includes an initial OpenAPI 3.x JSON importer, but it is not a full OpenAPI runtime. It intentionally does **not** include:
+The core REST package includes an initial OpenAPI 3.x JSON importer and a definition-URL connection path, but it is not a full OpenAPI runtime. It intentionally does **not** include:
 
-- OpenAPI `$ref` resolution or complete schema/composition validation;
-- YAML parsing;
-- YAML parsing;
-- authentication implementations;
-- URL discovery;
-- GUI generation;
-- concrete REST services;
-- domain-specific MicroBundles.
+- YAML parsing, external `$ref` resolution, server-variable substitution, or complete schema/composition validation;
+- authentication implementations or credential acquisition;
+- automatic GUI rendering or application-state path evaluation;
+- concrete REST services or domain-specific MicroBundles.
 
-Authentication, URL discovery, GUI generation, concrete REST services, and domain-specific MicroBundles remain responsibilities of separate adapters or consuming applications.
+Authentication, credential acquisition, concrete GUI rendering, application-state integration, concrete REST services, and domain-specific MicroBundles remain responsibilities of separate adapters or consuming applications.
 
 ## Documentation map
 
