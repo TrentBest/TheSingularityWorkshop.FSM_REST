@@ -9,6 +9,6 @@
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../FSM_REST/FSM_REST.csproj" />
-    <PackageReference Include="TheSingularityWorkshop.GUI.Core" Version="0.1.0" />
+    <PackageReference Include="TheSingularityWorkshop.GUI.Core" Version="0.1.0-alpha.4" />
   </ItemGroup>
 </Project>
