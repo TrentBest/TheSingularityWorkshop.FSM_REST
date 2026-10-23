@@ -55,7 +55,19 @@ var guiMapping = new RestGuiMapping(
     showErrorState: true);
 ```
 
-A GUI adapter can render this mapping as an action/detail view, read `selection.personId` from its application data context, pass that value as the `id` operation parameter, invoke `connection.ExecuteAsync(guiMapping.OperationId, parameters)`, then place the returned response at `views.person` according to the host's response parsing and state-update policy. Inputs without a `SourcePath` are intended to be collected from the user. The `presentation` value is a renderer-neutral hint, not a promise that FSM_REST itself generates controls.
+A GUI adapter can render this mapping as an action/detail view. Use `RestGuiOperationExecutor.ExecuteAsync` to resolve `selection.personId`, invoke the operation with the resolved `id`, and publish the response to `views.person` through a host-supplied callback. Inputs without a `SourcePath` are collected from the user and passed through `userInputs`. The `presentation` value is a renderer-neutral hint, not a promise that FSM_REST itself generates controls.
+
+```csharp
+RestResponse response = await RestGuiOperationExecutor.ExecuteAsync(
+    connection,
+    guiMapping,
+    resolveSource: path => applicationState.ReadString(path),
+    userInputs: formValues,
+    publishResult: (path, result) => applicationState.Write(path, result),
+    cancellationToken: cancellationToken);
+```
+
+The example's `applicationState` is your host's own state service; FSM_REST does not impose a state-container dependency. Deserialize the returned JSON into an application-owned model before publishing if the GUI expects typed data.
 
 The mapping constructor rejects undeclared or duplicate operation parameters. It deliberately does not evaluate arbitrary data paths, execute operations, deserialize payloads, or bypass authorization: those are responsibilities of the GUI/data-context adapter and host policy.
 
