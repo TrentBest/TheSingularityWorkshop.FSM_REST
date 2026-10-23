@@ -53,6 +53,21 @@ if (!response.IsSuccessStatusCode)
 // Parse response.Body using the schema and serializer owned by your application.
 ```
 
+## Execute an operation in one call
+
+When you do not need to inspect or modify the intermediate `RestRequest`, use `RestOperationExecutor` to bind the supplied values and send through your chosen transport:
+
+```csharp
+RestResponse response = await RestOperationExecutor.ExecuteAsync(
+    operation,
+    new Uri("https://api.example.com/"),
+    transport,
+    parameters: new Dictionary<string, string?> { ["id"] = "user-123" },
+    cancellationToken: cancellationToken);
+```
+
+This helper returns the same raw `RestResponse` as the transport. It does not add authentication, retries, response deserialization, or domain-model generation.
+
 ## Request construction rules
 
 - The base URI must be absolute and must not include a query or fragment.
