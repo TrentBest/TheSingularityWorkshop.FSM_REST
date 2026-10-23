@@ -92,9 +92,22 @@ public sealed class OpenApiRestApiConnection
                 if (string.IsNullOrWhiteSpace(value) || value.Contains('{') || value.Contains('}'))
                     throw new ArgumentException("The first OpenAPI server URL must be concrete; server-variable substitution is not supported.");
                 var origin = new Uri(definitionUri.GetLeftPart(UriPartial.Authority) + "/", UriKind.Absolute);
-                var resolved = Uri.TryCreate(value, UriKind.Absolute, out var absolute)
-                    ? absolute
-                    : new Uri(origin, value);
+                Uri resolved;
+                if (value.StartsWith("https://", StringComparison.OrdinalIgnoreCase) ||
+                    value.StartsWith("http://", StringComparison.OrdinalIgnoreCase))
+                {
+                    resolved = new Uri(value, UriKind.Absolute);
+                }
+                else if (Uri.TryCreate(value, UriKind.Absolute, out var nonHttpAbsolute) &&
+                         !string.IsNullOrEmpty(nonHttpAbsolute.Scheme) &&
+                         value.Contains("://", StringComparison.Ordinal))
+                {
+                    throw new ArgumentException("The OpenAPI server URL must use HTTP or HTTPS.");
+                }
+                else
+                {
+                    resolved = new Uri(origin, value);
+                }
                 if (resolved.Scheme != Uri.UriSchemeHttp && resolved.Scheme != Uri.UriSchemeHttps)
                     throw new ArgumentException("The OpenAPI server URL must use HTTP or HTTPS.");
                 if (!string.IsNullOrEmpty(resolved.Query) || !string.IsNullOrEmpty(resolved.Fragment))
