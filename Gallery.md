@@ -36,9 +36,17 @@ IRestTransport transport = new HttpClientRestTransport(client);
 RestResponse response = await transport.SendAsync(request);
 ```
 
-This example assumes `operation` has already been described and `request` constructed. The transport reports status, headers, and body; downstream code decides what those values mean.
+This example assumes `operation` has already been described and `request` constructed. The transport reports status, headers, and body. `RestResponse.Deserialize<T>()` can deserialize JSON into a consumer-owned type; schema validation and domain meaning remain downstream.
 
-## 4. Carry a capability into FSM_COS
+## 4. Connect from a definition URL
+
+`OpenApiRestApiConnection.ConnectAsync` downloads a supported OpenAPI 3.x JSON document, imports the operation catalogue, selects the first concrete server, and exposes operation execution by `operationId`. The caller owns the `HttpClient` and authentication policy. See the [consumer guide](docs/CONSUMING.md) for the complete flow.
+
+## 5. Map an operation to GUI and data
+
+`RestGuiMapping` describes a renderer-neutral presentation hint, operation identity, GUI input mappings, optional application-state source paths, a result target, and loading/error-state intent. `RestGuiInputMapping` maps declared API parameters either to a state path or to user-provided input. Construction validates that mappings refer to declared parameters and rejects duplicates. A GUI adapter still needs to render controls, resolve the paths, invoke the connection, deserialize the result, and update its state context.
+
+## 6. Carry a capability into FSM_COS
 
 The optional `src/FSM_REST.COS` project defines `RestMicroBundle`, an adapter that carries a `RestApiDescriptor` as an `IMicroBundle`. It is integration, not a dependency required by the core transport model.
 
@@ -66,7 +74,7 @@ For every visual, document what it teaches, how it was produced, the scope of ev
 
 ## What the current core does—and does not—serialize
 
-Request parameter values are scalar strings. The factory handles path, query, header, and cookie locations, but it is not a full OpenAPI parameter serializer: array/object encoding and style/explode rules are outside the current model. Request/response schema type and format fields are descriptive; they do not validate or deserialize bodies. The transport returns status, headers, and body for the caller to interpret, including non-success status codes.
+Request parameter values are scalar strings. The factory handles path, query, header, and cookie locations, but it is not a full OpenAPI parameter serializer: array/object encoding and style/explode rules are outside the current model. Request/response schema type and format fields remain descriptive and do not validate bodies. `RestResponse.Deserialize<T>()` can deserialize JSON into a consumer-owned model, but it does not validate that model against the API schema. The transport returns status, headers, and body for the caller to interpret, including non-success status codes.
 
 ## Verification
 
@@ -74,7 +82,7 @@ The repository contains descriptor and transport tests under [tests/FSM_REST.Tes
 
 ## Not claimed by this gallery
 
-FSM_REST does not currently claim to parse OpenAPI/YAML, provide authentication or retry policy, cache responses, generate GUI controls, interpret arbitrary response schemas, or host production REST endpoints. Those require separately defined adapters or host responsibilities.
+FSM_REST supports an initial OpenAPI 3.x JSON subset and can connect to a definition URL; it does not parse YAML, resolve external references, provide authentication or retry policy, cache responses, render GUI controls, evaluate arbitrary data paths, validate arbitrary response schemas, or host production REST endpoints. Those require separately defined adapters or host responsibilities.
 
 
 ## Maintainer note: branch cleanup
