@@ -82,11 +82,15 @@ public static class OpenApiJsonImporter
 
                 var operationElement = property.Value;
                 var operationId = GetString(operationElement, "operationId") ?? $"{method}_{pathItem.Name}";
-                var parameters = pathParameters.ToDictionary(
-                    ParameterKey, p => p, StringComparer.OrdinalIgnoreCase);
+                var parameters = new Dictionary<string, RestParameterDescriptor>(StringComparer.Ordinal);
+                foreach (var parameter in pathParameters)
+                {
+                    parameters[ParameterKey(parameter)] = parameter;
+                }
 
                 foreach (var parameter in ReadParameters(operationElement, $"{method.ToUpperInvariant()} {pathItem.Name}", warnings))
                 {
+                    // OpenAPI operation-level parameters override path-level parameters with the same name and location.
                     parameters[ParameterKey(parameter)] = parameter;
                 }
 
@@ -154,6 +158,12 @@ public static class OpenApiJsonImporter
             }
 
             var schema = parameter.TryGetProperty("schema", out var schemaElement) ? schemaElement : default;
+            if (schema.ValueKind == JsonValueKind.Undefined &&
+                parameter.TryGetProperty("content", out var parameterContent) &&
+                parameterContent.ValueKind == JsonValueKind.Object)
+            {
+                warnings.Add($"Parameter '{name}' in '{context}' uses content-based serialization, which is not represented; FSM_REST currently binds scalar values.");
+            }
             ReportSchemaReference(schema, $"{context} parameter '{name}'", warnings);
             result.Add(new RestParameterDescriptor(
                 name,
@@ -275,8 +285,13 @@ public static class OpenApiJsonImporter
         }
     }
 
-    private static string ParameterKey(RestParameterDescriptor parameter) =>
-        $"{parameter.Location}:{parameter.Name}";
+    private static string ParameterKey(RestParameterDescriptor parameter)
+    {
+        // Header names are case-insensitive; other OpenAPI parameter names retain their spelling.
+        var location = parameter.Location.ToLowerInvariant();
+        var name = location == "header" ? parameter.Name.ToLowerInvariant() : parameter.Name;
+        return $"{location}:{name}";
+    }
 
     private static string? GetString(JsonElement element, string propertyName) =>
         TryGetString(element, propertyName, out var value) ? value : null;
