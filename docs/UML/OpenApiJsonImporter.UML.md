@@ -19,8 +19,14 @@ classDiagram
     class RestApiDescriptor {
       <<related type>>
     }
-    OpenApiJsonImporter ..> RestApiDescriptor : produces
-    OpenApiJsonImporter ..> RestOperationDescriptor : populates
+    class RestOperationDescriptor {
+      <<populated descriptor>>
+    }
+    class OpenApiImportResult {
+      <<returned result>>
+    }
+    OpenApiJsonImporter ..> RestApiDescriptor : wraps in result
+    OpenApiJsonImporter ..> RestOperationDescriptor : creates
     OpenApiJsonImporter ..> OpenApiImportResult : returns
 ```
 
