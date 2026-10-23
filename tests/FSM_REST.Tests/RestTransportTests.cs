@@ -17,7 +17,7 @@ public sealed class RestTransportTests
             Assert.Equal("trace-456", request.Headers.GetValues("X-Trace").Single());
             return new HttpResponseMessage(HttpStatusCode.OK)
             {
-                Content = new StringContent("{\\"id\\":42}")
+                Content = new StringContent("""{"id":42}""")
             };
         });
 
@@ -44,7 +44,7 @@ public sealed class RestTransportTests
 
         Assert.Equal(200, response.StatusCode);
         Assert.True(response.IsSuccessStatusCode);
-        Assert.Equal("{\\"id\\":42}", response.Body);
+        Assert.Equal("""{"id":42}""", response.Body);
     }
 
     [Fact]
