@@ -39,7 +39,6 @@ public static class RestGuiOperationExecutor
             }
             else
             {
-                userInputs?.TryGetValue(input.ParameterName, out value);
                 value = userInputs is not null && userInputs.TryGetValue(input.ParameterName, out var supplied)
                     ? supplied
                     : null;
