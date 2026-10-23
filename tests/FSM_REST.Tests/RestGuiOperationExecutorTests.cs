@@ -69,7 +69,7 @@ public sealed class RestGuiOperationExecutorTests
         { "openapi": "3.0.3", "info": { "title": "People API", "version": "1" }, "paths": {
           "/people/{id}": { "get": { "operationId": "getPerson",
             "parameters": [{ "name": "id", "in": "path", "required": true, "schema": { "type": "string" } }],
-            "responses": { "200": { "description": "OK" } } } } }
+            "responses": { "200": { "description": "OK" } } } } } }
         """;
         using var client = new HttpClient(new RoutingHandler(_ => new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(definition) }));
         var connection = await OpenApiRestApiConnection.ConnectAsync(new Uri("https://api.example.test/openapi.json"), client);
