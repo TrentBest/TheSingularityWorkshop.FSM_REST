@@ -237,9 +237,11 @@ RestApiDescriptor
     Experience
 ~~~
 
-The source could be OpenAPI, a hand-authored definition, or another provider.
+The core now includes `OpenApiJsonImporter` for an initial OpenAPI 3.x JSON subset. It imports operation paths, parameters, request-body media/schema hints, and response metadata into the neutral descriptors. Unsupported security requirements and unresolved `$ref` values are reported as warnings rather than silently treated as fully imported.
 
-**FSM_REST does not need to know which.**
+YAML, `$ref` resolution, full schema semantics, and provider-specific behavior remain outside this initial importer. Hand-authored descriptors and other provider adapters remain valid inputs.
+
+**FSM_REST does not need to own every source format or domain-specific policy.**
 
 When the REST capability itself needs to participate in FSM_COS, that integration lives in the separate `TheSingularityWorkshop.FSM_Rest.COS` package. The transport substrate remains independent.
 
@@ -358,10 +360,10 @@ Concrete protocol/domain packages remain separately owned and publishable. FSM_R
 
 Alpha 4 makes the documented capability model directly composable: runtime operation values are separated from reusable operation descriptors. The optional REST MicroBundle adapter is now isolated in `TheSingularityWorkshop.FSM_Rest.COS`, so the core REST package does not depend on FSM_COS.
 
-The core REST package intentionally does **not** include:
+The core REST package includes an initial OpenAPI 3.x JSON importer, but it is not a full OpenAPI runtime. It intentionally does **not** include:
 
-- OpenAPI parsing;
-- OpenAPI $ref resolution;
+- OpenAPI `$ref` resolution or complete schema/composition validation;
+- YAML parsing;
 - YAML parsing;
 - authentication implementations;
 - URL discovery;
@@ -369,7 +371,7 @@ The core REST package intentionally does **not** include:
 - concrete REST services;
 - domain-specific MicroBundles.
 
-Those are composition opportunities for separate packages.
+Authentication, URL discovery, GUI generation, concrete REST services, and domain-specific MicroBundles remain responsibilities of separate adapters or consuming applications.
 
 ## Documentation map
 
