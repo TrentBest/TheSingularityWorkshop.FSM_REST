@@ -24,6 +24,9 @@ RestResponse response = await connection.ExecuteAsync(
     "getPerson",
     parameters: new Dictionary<string, string?> { ["id"] = "person-123" },
     cancellationToken: cancellationToken);
+
+// Use an application-owned type for a JSON response.
+Person? person = response.Deserialize<Person>();
 ```
 
 The supplied `HttpClient` is used both to retrieve the definition and to call the API; the connection does not dispose it. Authentication remains a host concern, so configure the client with the credentials and scopes required by that API. The first declared server is used; server-variable substitution and choosing among multiple server environments are not automatic. Local component references are resolved for the supported operation metadata subset; external references and full OpenAPI schema composition are not.
@@ -137,7 +140,7 @@ This helper returns the same raw `RestResponse` as the transport. It does not ad
 
 `HttpClientRestTransport` returns the observed HTTP status, reason phrase, response headers, and body. `RestResponse.IsSuccessStatusCode` is true only for status codes from 200 through 299. A non-2xx response is still a response; the transport does not automatically turn it into a domain exception or retry it.
 
-Your host or domain capability decides how to handle authentication, authorization, cancellation, timeouts, retries, backoff, rate limits, caching, telemetry, response deserialization, schema validation, and domain-specific errors. The host also owns the lifetime and configuration of the supplied `HttpClient`.
+Use `response.Deserialize<T>()` when the response is JSON and the consuming application owns a suitable target type. This is JSON deserialization, not validation against the imported API schema. Your host or domain capability decides how to handle authentication, authorization, cancellation, timeouts, retries, backoff, rate limits, caching, telemetry, schema validation, and domain-specific errors. The host also owns the lifetime and configuration of the supplied `HttpClient`.
 
 ## Scope and limitations
 
