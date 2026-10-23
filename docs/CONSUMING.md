@@ -1,6 +1,6 @@
 # Consuming FSM_REST
 
-This guide shows the supported path from a reusable operation description to one outbound request and one observed response. FSM_REST is a request/transport substrate; it is not a complete OpenAPI runtime, authentication system, or domain client.
+This guide shows the supported path from an API description to one outbound request and one observed response. FSM_REST includes an initial OpenAPI 3.x JSON importer, but it is not a complete OpenAPI runtime, authentication system, or domain client.
 
 ## The invocation lifecycle
 
@@ -72,9 +72,9 @@ Your host or domain capability decides how to handle authentication, authorizati
 
 ## Scope and limitations
 
-FSM_REST currently provides a neutral descriptor/binding/request/transport/response path. It does not itself:
+FSM_REST provides a neutral descriptor/binding/request/transport/response path and an initial `OpenApiJsonImporter` for OpenAPI 3.x JSON. The importer reads operation paths, parameters, request-body media/schema hints, and response metadata. It does not itself:
 
-- import or fully implement OpenAPI or another API-description standard;
+- resolve OpenAPI `$ref` references or fully implement the OpenAPI standard (including YAML, composed schemas, and complete validation);
 - implement array/object parameter serialization styles, `style`/`explode`, or schema-driven body validation;
 - authenticate users, acquire credentials, authorize an operation, or decide whether data may be disclosed;
 - deserialize response bodies into domain objects, retry requests, cache results, or define domain error meanings.
