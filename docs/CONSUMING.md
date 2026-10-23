@@ -167,7 +167,9 @@ Treat operation descriptors as metadata, not permission grants. Validate the rem
 
 ## Architectural boundary
 
-FSM_REST owns reusable REST capability shapes and request transport contracts. The consuming domain owns the meaning of an operation and its policy. Optional composition integrations belong in their own integration package; the core remains independently consumable.
+FSM_REST owns reusable REST capability shapes and request transport contracts. The consuming domain owns the meaning of an operation and its policy. The optional `src/FSM_REST.GUI` project references Workshop GUI Core and provides `RestGuiNodeFactory`, which turns a `RestGuiMapping` into an immutable `GuiNode` tree. Input nodes preserve parameter identity, required status, value hints, and host-owned source paths; the action button carries a stable `onClickCommand` identity. The host must explicitly dispatch that command to `RestGuiOperationExecutor`, supply current application state and user input, and update loading/error/result state. The adapter describes semantic controls; it does not silently execute requests or promise that every renderer implements custom `RestInput` nodes.
+
+Optional composition integrations belong in their own integration package; the core remains independently consumable.
 
 ## Verify locally
 
