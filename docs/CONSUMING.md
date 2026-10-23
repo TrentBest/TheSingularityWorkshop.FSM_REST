@@ -28,6 +28,34 @@ RestResponse response = await connection.ExecuteAsync(
 
 The supplied `HttpClient` is used both to retrieve the definition and to call the API; the connection does not dispose it. Authentication remains a host concern, so configure the client with the credentials and scopes required by that API. The first declared server is used; server-variable substitution and choosing among multiple server environments are not automatic. Local component references are resolved for the supported operation metadata subset; external references and full OpenAPI schema composition are not.
 
+## Map an operation into a GUI and application data
+
+An imported operation can be mapped to renderer-neutral GUI metadata without adding a GUI-framework dependency to FSM_REST. The GUI adapter chooses the concrete controls; the mapping declares which operation inputs come from application state, which are supplied by the user, and where the result should be stored.
+
+```csharp
+var operation = connection.Api.Operations.Single(item => item.OperationId == "getPerson");
+var guiMapping = new RestGuiMapping(
+    operation,
+    label: "Open person",
+    presentation: "detail",
+    inputs:
+    [
+        new RestGuiInputMapping(
+            ParameterName: "id",
+            Label: "Person ID",
+            ValueType: "text",
+            SourcePath: "selection.personId",
+            Required: true)
+    ],
+    resultTarget: "views.person",
+    showLoadingState: true,
+    showErrorState: true);
+```
+
+A GUI adapter can render this mapping as an action/detail view, read `selection.personId` from its application data context, pass that value as the `id` operation parameter, invoke `connection.ExecuteAsync(guiMapping.OperationId, parameters)`, then place the returned response at `views.person` according to the host's response parsing and state-update policy. Inputs without a `SourcePath` are intended to be collected from the user. The `presentation` value is a renderer-neutral hint, not a promise that FSM_REST itself generates controls.
+
+The mapping constructor rejects undeclared or duplicate operation parameters. It deliberately does not evaluate arbitrary data paths, execute operations, deserialize payloads, or bypass authorization: those are responsibilities of the GUI/data-context adapter and host policy.
+
 ## The invocation lifecycle
 
 1. Keep a `RestOperationDescriptor` as reusable capability metadata.
