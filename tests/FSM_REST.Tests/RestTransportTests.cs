@@ -8,6 +8,46 @@ namespace TheSingularityWorkshop.FSM_REST.Tests;
 public sealed class RestTransportTests
 {
     [Fact]
+    public async Task OperationExecutorBuildsAndExecutesDescribedOperation()
+    {
+        var handler = new StubHandler(request =>
+        {
+            Assert.Equal(HttpMethod.Get, request.Method);
+            Assert.Equal("https://example.test/v1/people/42?expand=profile", request.RequestUri!.AbsoluteUri);
+            Assert.Equal("trace-456", request.Headers.GetValues("X-Trace").Single());
+            return new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("{\\"id\\":42}")
+            };
+        });
+
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+        var operation = new RestOperationDescriptor(
+            "GET",
+            "/people/{id}",
+            "getPerson",
+            "Get person",
+            null,
+            [
+                new RestParameterDescriptor("id", "path", true, "string", null, null),
+                new RestParameterDescriptor("expand", "query", false, "string", null, null)
+            ],
+            null);
+
+        var response = await RestOperationExecutor.ExecuteAsync(
+            operation,
+            new Uri("https://example.test/v1"),
+            transport,
+            new Dictionary<string, string?> { ["id"] = "42", ["expand"] = "profile" },
+            new Dictionary<string, string> { ["X-Trace"] = "trace-456" });
+
+        Assert.Equal(200, response.StatusCode);
+        Assert.True(response.IsSuccessStatusCode);
+        Assert.Equal("{\\"id\\":42}", response.Body);
+    }
+
+    [Fact]
     public async Task HttpClientTransportExecutesRequestAndCapturesResponse()
     {
         var handler = new StubHandler(request =>
