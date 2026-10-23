@@ -58,23 +58,18 @@ public static class OpenApiJsonImporter
 
         foreach (var pathItem in paths.EnumerateObject())
         {
-            if (pathItem.Value.ValueKind != JsonValueKind.Object)
+            var resolvedPathItem = ResolveReference(root, pathItem.Value, $"path '{pathItem.Name}'", warnings);
+            if (resolvedPathItem.ValueKind != JsonValueKind.Object)
             {
                 warnings.Add($"Path '{pathItem.Name}' was skipped because its path item is not an object.");
                 continue;
             }
 
-            var pathParameters = ReadParameters(pathItem.Value, pathItem.Name, warnings);
-            foreach (var property in pathItem.Value.EnumerateObject())
+            var pathParameters = ReadParameters(root, resolvedPathItem, pathItem.Name, warnings);
+            foreach (var property in resolvedPathItem.EnumerateObject())
             {
                 var method = property.Name.ToLowerInvariant();
-                if (method == "$ref")
-                {
-                    warnings.Add($"Path '{pathItem.Name}' uses a path-item $ref; reference resolution is not supported.");
-                    continue;
-                }
-
-                if (!HttpMethods.Contains(method, StringComparer.Ordinal) ||
+                 if (!HttpMethods.Contains(method, StringComparer.Ordinal) ||
                     property.Value.ValueKind != JsonValueKind.Object)
                 {
                     continue;
@@ -88,14 +83,14 @@ public static class OpenApiJsonImporter
                     parameters[ParameterKey(parameter)] = parameter;
                 }
 
-                foreach (var parameter in ReadParameters(operationElement, $"{method.ToUpperInvariant()} {pathItem.Name}", warnings))
+                foreach (var parameter in ReadParameters(root, operationElement, $"{method.ToUpperInvariant()} {pathItem.Name}", warnings))
                 {
                     // OpenAPI operation-level parameters override path-level parameters with the same name and location.
                     parameters[ParameterKey(parameter)] = parameter;
                 }
 
-                var requestBody = ReadRequestBody(operationElement, $"{method.ToUpperInvariant()} {pathItem.Name}", warnings);
-                var responses = ReadResponses(operationElement, $"{method.ToUpperInvariant()} {pathItem.Name}", warnings);
+                var requestBody = ReadRequestBody(root, operationElement, $"{method.ToUpperInvariant()} {pathItem.Name}", warnings);
+                var responses = ReadResponses(root, operationElement, $"{method.ToUpperInvariant()} {pathItem.Name}", warnings);
 
                 if (operationElement.TryGetProperty("security", out var operationSecurity) &&
                     operationSecurity.ValueKind == JsonValueKind.Array && operationSecurity.GetArrayLength() > 0)
@@ -121,7 +116,7 @@ public static class OpenApiJsonImporter
     }
 
     private static List<RestParameterDescriptor> ReadParameters(
-        JsonElement owner, string context, List<string> warnings)
+        JsonElement root, JsonElement owner, string context, List<string> warnings)
     {
         var result = new List<RestParameterDescriptor>();
         if (!owner.TryGetProperty("parameters", out var parameters))
@@ -143,11 +138,8 @@ public static class OpenApiJsonImporter
                 continue;
             }
 
-            if (parameter.TryGetProperty("$ref", out _))
-            {
-                warnings.Add($"A parameter reference in '{context}' was not resolved.");
-                continue;
-            }
+            parameter = ResolveReference(root, parameter, $"parameter in '{context}'", warnings);
+            if (parameter.ValueKind != JsonValueKind.Object) continue;
 
             var name = GetString(parameter, "name");
             var location = GetString(parameter, "in");
@@ -164,6 +156,7 @@ public static class OpenApiJsonImporter
             {
                 warnings.Add($"Parameter '{name}' in '{context}' uses content-based serialization, which is not represented; FSM_REST currently binds scalar values.");
             }
+            schema = ResolveReference(root, schema, $"{context} parameter '{name}' schema", warnings);
             ReportSchemaReference(schema, $"{context} parameter '{name}'", warnings);
             result.Add(new RestParameterDescriptor(
                 name,
@@ -183,7 +176,7 @@ public static class OpenApiJsonImporter
     }
 
     private static RestRequestBodyDescriptor? ReadRequestBody(
-        JsonElement operation, string context, List<string> warnings)
+        JsonElement root, JsonElement operation, string context, List<string> warnings)
     {
         if (!operation.TryGetProperty("requestBody", out var body))
         {
@@ -196,11 +189,8 @@ public static class OpenApiJsonImporter
             return null;
         }
 
-        if (body.TryGetProperty("$ref", out _))
-        {
-            warnings.Add($"Request-body reference for '{context}' was not resolved.");
-            return new RestRequestBodyDescriptor(false, Array.Empty<string>(), null, null);
-        }
+        body = ResolveReference(root, body, $"request body for '{context}'", warnings);
+        if (body.ValueKind != JsonValueKind.Object) return null;
 
         var mediaTypes = new List<string>();
         string? schemaType = null;
@@ -213,6 +203,7 @@ public static class OpenApiJsonImporter
                 if (media.Value.ValueKind == JsonValueKind.Object &&
                     media.Value.TryGetProperty("schema", out var schema))
                 {
+                    schema = ResolveReference(root, schema, $"{context} request-body schema", warnings);
                     ReportSchemaReference(schema, $"{context} request body", warnings);
                     schemaType ??= GetString(schema, "type");
                     schemaFormat ??= GetString(schema, "format");
@@ -224,7 +215,7 @@ public static class OpenApiJsonImporter
     }
 
     private static IReadOnlyList<RestResponseDescriptor> ReadResponses(
-        JsonElement operation, string context, List<string> warnings)
+        JsonElement root, JsonElement operation, string context, List<string> warnings)
     {
         var responses = new List<RestResponseDescriptor>();
         if (!operation.TryGetProperty("responses", out var responseObject) ||
@@ -241,17 +232,13 @@ public static class OpenApiJsonImporter
                 continue;
             }
 
-            if (response.Value.TryGetProperty("$ref", out _))
-            {
-                warnings.Add($"Response reference '{response.Name}' for '{context}' was not resolved.");
-                responses.Add(new RestResponseDescriptor(response.Name, null, Array.Empty<string>(), null, null));
-                continue;
-            }
+            var responseValue = ResolveReference(root, response.Value, $"response '{response.Name}' for '{context}'", warnings);
+            if (responseValue.ValueKind != JsonValueKind.Object) continue;
 
             var mediaTypes = new List<string>();
             string? schemaType = null;
             string? schemaFormat = null;
-            if (response.Value.TryGetProperty("content", out var content) && content.ValueKind == JsonValueKind.Object)
+            if (responseValue.TryGetProperty("content", out var content) && content.ValueKind == JsonValueKind.Object)
             {
                 foreach (var media in content.EnumerateObject())
                 {
@@ -259,6 +246,7 @@ public static class OpenApiJsonImporter
                     if (media.Value.ValueKind == JsonValueKind.Object &&
                         media.Value.TryGetProperty("schema", out var schema))
                     {
+                        schema = ResolveReference(root, schema, $"{context} response '{response.Name}' schema", warnings);
                         ReportSchemaReference(schema, $"{context} response '{response.Name}'", warnings);
                         schemaType ??= GetString(schema, "type");
                         schemaFormat ??= GetString(schema, "format");
@@ -268,7 +256,7 @@ public static class OpenApiJsonImporter
 
             responses.Add(new RestResponseDescriptor(
                 response.Name,
-                GetString(response.Value, "description"),
+                GetString(responseValue, "description"),
                 mediaTypes,
                 schemaType,
                 schemaFormat));
@@ -277,12 +265,50 @@ public static class OpenApiJsonImporter
         return responses.AsReadOnly();
     }
 
+    private static JsonElement ResolveReference(
+        JsonElement root, JsonElement element, string context, List<string> warnings)
+    {
+        var visited = new HashSet<string>(StringComparer.Ordinal);
+        while (element.ValueKind == JsonValueKind.Object &&
+               element.TryGetProperty("$ref", out var referenceElement))
+        {
+            var reference = referenceElement.ValueKind == JsonValueKind.String ? referenceElement.GetString() : null;
+            if (string.IsNullOrWhiteSpace(reference) || !reference.StartsWith("#/", StringComparison.Ordinal))
+            {
+                warnings.Add($"Reference in {context} is external or malformed and could not be resolved: '{reference ?? "(missing)"}'.");
+                return default;
+            }
+            if (!visited.Add(reference))
+            {
+                warnings.Add($"Reference cycle in {context} could not be resolved: '{reference}'.");
+                return default;
+            }
+
+            var target = root;
+            var found = true;
+            foreach (var rawSegment in reference[2..].Split('/'))
+            {
+                var segment = rawSegment.Replace("~1", "/", StringComparison.Ordinal).Replace("~0", "~", StringComparison.Ordinal);
+                if (target.ValueKind != JsonValueKind.Object || !target.TryGetProperty(segment, out target))
+                {
+                    found = false;
+                    break;
+                }
+            }
+            if (!found)
+            {
+                warnings.Add($"Reference in {context} points to a missing local component: '{reference}'.");
+                return default;
+            }
+            element = target;
+        }
+        return element;
+    }
+
     private static void ReportSchemaReference(JsonElement schema, string context, List<string> warnings)
     {
         if (schema.ValueKind == JsonValueKind.Object && schema.TryGetProperty("$ref", out _))
-        {
             warnings.Add($"Schema reference in {context} was not resolved; schema composition and validation are outside this importer.");
-        }
     }
 
     private static string ParameterKey(RestParameterDescriptor parameter)
