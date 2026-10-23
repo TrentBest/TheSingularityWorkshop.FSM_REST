@@ -27,7 +27,7 @@ public static class RestGuiNodeFactory
             column.Child(field);
         }
         column.Child(GuiBuilders.Button(nodeId + "-execute", mapping.Label)
-            .WithOnClick(GetCommandId(mapping.OperationId)));
+            .Property("onClickCommand", GetCommandId(mapping.OperationId)));
         if (mapping.ResultTarget is not null)
             column.Child(GuiBuilders.Text(nodeId + "-result", "Result").Property("resultTarget", mapping.ResultTarget));
         return GuiBuilders.Panel(nodeId)
