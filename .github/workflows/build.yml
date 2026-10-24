@@ -126,10 +126,6 @@ jobs:
                   nuspec_paths = [name for name in names if name.lower().endswith(".nuspec")]
                   if len(nuspec_paths) != 1:
                       raise SystemExit(f"{package}: expected exactly one .nuspec, found {nuspec_paths}")
-                  missing = [name for name in expected[next((key for key in expected if key.lower() in package.lower()), "")]["required_files"] if name.lower() not in lower_names] if any(key.lower() in package.lower() for key in expected) else []
-                  if missing:
-                      raise SystemExit(f"{package}: missing required package files: {missing}")
-
                   root = ET.fromstring(archive.read(nuspec_paths[0]))
                   metadata = root.find(".//{*}metadata")
                   if metadata is None:
@@ -146,8 +142,16 @@ jobs:
                       raise SystemExit(f"Duplicate package id: {package_id}")
                   found.add(package_id)
                   rule = expected[package_id]
-                  if value("version") != rule["version"]:
-                      raise SystemExit(f"{package_id}: expected version {rule['version']}, got {value('version')}")
+                  package_version = value("version")
+                  if package_version != rule["version"]:
+                      raise SystemExit(f"{package_id}: expected version {rule['version']}, got {package_version}")
+                  expected_filename = f"{package_id}.{package_version}.nupkg"
+                  if package.rsplit("/", 1)[-1].lower() != expected_filename.lower():
+                      raise SystemExit(f"{package}: filename does not match package metadata; expected {expected_filename}")
+                  missing = [required for required in rule["required_files"] if required.lower() not in lower_names]
+                  if missing:
+                      raise SystemExit(f"{package_id}: missing required package files: {missing}")
+                  if not any(name.startswith(rule["dll_prefix"]) and name.endswith(".dll") for name in names):
                   if not any(name.startswith(rule["dll_prefix"]) and name.endswith(".dll") for name in names):
                       raise SystemExit(f"{package_id}: missing net8.0 assembly")
                   if not any(name.startswith(rule["dll_prefix"]) and name.endswith(".xml") for name in names):
