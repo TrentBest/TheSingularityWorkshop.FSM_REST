@@ -119,8 +119,8 @@ public static class RestRequestFactory
                 throw new ArgumentException($"Invalid HTTP header name '{header.Key}'.", nameof(headers));
 
             if (header.Value.Any(character =>
-                    character is '\\r' or '\\n' ||
-                    (char.IsControl(character) && character != '\\t')))
+                    character is '\r' or '\n' ||
+                    (char.IsControl(character) && character != '\t')))
                 throw new ArgumentException(
                     $"HTTP header '{header.Key}' contains an invalid control character.",
                     nameof(headers));
