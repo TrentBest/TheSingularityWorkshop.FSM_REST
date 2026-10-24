@@ -5,7 +5,7 @@
     <Nullable>enable</Nullable>
     <IsPackable>true</IsPackable>
     <PackageId>TheSingularityWorkshop.FSM_Rest</PackageId>
-    <Version>0.1.0-alpha.4</Version>
+    <Version>0.1.0-alpha.5</Version>
     <Authors>Trent Best</Authors>
     <Company>The Singularity Workshop</Company>
     <Description>Framework-agnostic REST capability descriptors and transport boundary for the FSM ecosystem.</Description>
@@ -15,7 +15,7 @@
     <PackageProjectUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Alpha 4: separates runtime operation binding from request construction; protocol-description importers remain optional packages.</PackageReleaseNotes>
+    <PackageReleaseNotes>Alpha 5: adds direct FSM_API dependency and an opt-in FSM-governed REST transport lifecycle; protocol-description importers remain optional packages.</PackageReleaseNotes>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
