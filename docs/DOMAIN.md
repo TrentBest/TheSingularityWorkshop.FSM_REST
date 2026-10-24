@@ -22,6 +22,7 @@ For the implementation inventory and prioritized missing work, see the [Domain G
 | HTTP adapter | Maps the neutral request/response contract to `HttpClient` | `HttpClientRestTransport` |
 | Response | Observed status, headers and body returned by transport | `RestResponse` |
 | FSM_COS integration | Carries a REST API descriptor as an ecosystem MicroBundle | `src/FSM_REST.COS/RestMicroBundle.cs` |
+| OpenAPI provider extension | Imports a supported OpenAPI 3.x JSON subset; deliberately outside core | `src/FSM_REST.OpenApi/` |
 
 ## Domain boundaries
 
@@ -35,7 +36,7 @@ For the implementation inventory and prioritized missing work, see the [Domain G
 
 ### Explicitly outside the domain
 
-- Parsing OpenAPI, YAML, or any other external description format.
+- Parsing OpenAPI, YAML, or any other external description format in the core. The optional `TheSingularityWorkshop.FSM_Rest.OpenApi` package imports a limited OpenAPI 3.x JSON subset.
 - Resolving format-specific references or generating clients.
 - Defining concrete business APIs, domain entities, or remote service behavior.
 - Authentication policy, credential discovery, retries, caching, rate limiting, and service discovery.
@@ -55,6 +56,7 @@ Request-body and response schema fields are descriptive metadata only. The core 
 
 - **Published core library:** `src/FSM_REST/FSM_REST.csproj`, package ID `TheSingularityWorkshop.FSM_Rest`.
 - **Optional FSM_COS adapter:** `src/FSM_REST.COS/FSM_REST.COS.csproj`, which depends on the REST model and MicroBundle abstractions to expose `RestMicroBundle`.
+- **Optional OpenAPI extension:** `src/FSM_REST.OpenApi/FSM_REST.OpenApi.csproj`, which depends on core and owns OpenAPI-specific import/connection behavior.
 - **Experimental host:** root `TheSingularityWorkshop.FSM_REST.csproj`; `IsPackable=false`. It must not be mistaken for the NuGet library.
 - **Tests:** `tests/FSM_REST.Tests`.
 
