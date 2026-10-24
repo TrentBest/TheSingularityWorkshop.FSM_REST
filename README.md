@@ -353,11 +353,11 @@ A REST operation can be mapped to a button, form, table action, detail view, wor
 
 Concrete protocol/domain packages remain separately owned and publishable. FSM_REST can also provide the small adapter needed when the REST capability itself is the MicroBundle.
 
-## Alpha 4 boundary
+## Alpha 5 boundary
 
-**TheSingularityWorkshop.FSM_Rest 0.1.0-alpha.4**
+**TheSingularityWorkshop.FSM_Rest 0.1.0-alpha.5**
 
-Alpha 4 makes the documented capability model directly composable: runtime operation values are separated from reusable operation descriptors. The optional REST MicroBundle adapter is now isolated in `TheSingularityWorkshop.FSM_Rest.COS`, so the core REST package does not depend on FSM_COS.
+Alpha 5 adds a direct `TheSingularityWorkshop.FSM_API` dependency and an opt-in FSM-governed REST transport lifecycle through `RestFsmExecutor`. The FSM tracks transport lifecycle (`Ready → Sending → Completed/Failed/Cancelled`); an HTTP non-success status remains a completed transport result rather than automatically becoming an FSM failure. Direct transport use remains available. Protocol-description importers and FSM_COS integration remain optional packages, keeping the core REST package independent of OpenAPI, GUI, MicroBundleDomain, and FSM_COS.
 
 The optional OpenAPI package includes an initial OpenAPI 3.x JSON importer and a definition-URL connection path, but it is not a full OpenAPI runtime. The neutral core does not include protocol-description importers. It intentionally does **not** include:
 
