@@ -6,6 +6,8 @@
 
 The package is a capability substrate. It is not itself a REST service, API-description parser, service registry, GUI, or domain-specific client.
 
+For the implementation inventory and prioritized missing work, see the [Domain Gap Assessment](DOMAIN_GAP_ASSESSMENT.md). That assessment distinguishes existing behavior from unimplemented or unverified capability; neither document implies full REST/OpenAPI conformance.
+
 ## Core concepts
 
 | Concept | Meaning | Implementation |
