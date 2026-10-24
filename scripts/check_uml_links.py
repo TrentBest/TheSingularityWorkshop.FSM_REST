@@ -9,16 +9,16 @@ ROOT = Path(__file__).resolve().parents[1]
 UML = ROOT / "docs" / "UML"
 errors = []
 checked = 0
-link_pattern = re.compile(r"!?[[^]]*](([^)]+))")
+link_pattern = re.compile(r"!?\[[^\]]*\]\(([^)]+)\)")
 
 for page in sorted(UML.rglob("*.md")):
     text = page.read_text(encoding="utf-8")
-    # Ignore fenced code so Mermaid examples and snippets are not mistaken for links.
-    text = re.sub(r"(?ms)^\s*```.*?^s*```\s*$", "", text)
     for match in link_pattern.finditer(text):
         raw = match.group(1).strip()
-        if not raw or raw.startswith("<"):
-            raw = raw[1:].split(">", 1)[0] if raw.startswith("<") and ">" in raw else raw
+        if not raw:
+            continue
+        if raw.startswith("<") and ">" in raw:
+            raw = raw[1:].split(">", 1)[0]
         destination = raw.split(maxsplit=1)[0] if raw else ""
         parsed = urlsplit(destination)
         if not parsed.path or parsed.scheme or destination.startswith("//"):
