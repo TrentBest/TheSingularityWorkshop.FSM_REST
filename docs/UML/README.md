@@ -18,8 +18,6 @@
 
 - [HttpClientRestTransport](HttpClientRestTransport.UML.md)
 - [IRestTransport](IRestTransport.UML.md)
-- [OpenApiJsonImporter](OpenApiJsonImporter.UML.md)
-- [OpenApiRestApiConnection](OpenApiRestApiConnection.UML.md)
 - [RestOperationBinding](RestOperationBinding.UML.md)
 - [RestOperationExecutor](RestOperationExecutor.UML.md)
 - [RestParameterDescriptor](RestParameterDescriptor.UML.md)
@@ -30,6 +28,9 @@
 - [RestResponseDescriptor](RestResponseDescriptor.UML.md)
 
 ## Optional integration targets
+
+- [OpenApiJsonImporter](OpenApiJsonImporter.UML.md) — optional OpenAPI JSON provider extension.
+- [OpenApiRestApiConnection](OpenApiRestApiConnection.UML.md) — optional definition-URL connection adapter.
 
 - [RestMicroBundle](RestMicroBundle.UML.md) — MicroBundleDomain adapter for FSM_COS.
 - [RestApiDescriptorExtensions](RestApiDescriptorExtensions.UML.md) — optional conversion helper for the COS adapter.
