@@ -208,6 +208,26 @@ public sealed class RestDescriptorTests
             RestRequestFactory.Create(operation, new Uri("https://example.test/api")));
     }
 
+    [Theory]
+    [InlineData("a/b", "a%2Fb")]
+    [InlineData("a?b&c=d", "a%3Fb%26c%3Dd")]
+    [InlineData("100% ready", "100%25%20ready")]
+    [InlineData("Māori name", "M%C4%81ori%20name")]
+    public void RequestFactoryPercentEncodesReservedAndUnicodeQueryValues(string value, string encoded)
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/search", "search", null, null,
+            [new RestParameterDescriptor("q", "query", true, "string", null, null)],
+            null);
+
+        var request = RestRequestFactory.Create(
+            operation,
+            new Uri("https://example.test/api"),
+            new Dictionary<string, string?> { ["q"] = value });
+
+        Assert.Equal($"https://example.test/api/search?q={encoded}", request.Uri.AbsoluteUri);
+    }
+
     [Fact]
     public void RequestFactoryRejectsMissingRequiredParameter()
     {
