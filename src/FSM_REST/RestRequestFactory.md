@@ -5,7 +5,8 @@
 
 ## Responsibilities
 - Accept an operation plus values or an existing `RestOperationBinding`.
-- Validate the base API URI and required inputs.
+- Validate the base API URI, HTTP method token, relative operation path, and required inputs.
+- Reject absolute/network paths, query/fragment-bearing paths, and literal or percent-encoded dot segments that could escape the API base path.
 - Apply supported path, query, header, and cookie parameter behavior as implemented.
 - Produce a request without performing network I/O.
 
