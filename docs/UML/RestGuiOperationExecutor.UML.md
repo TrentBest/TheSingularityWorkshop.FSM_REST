@@ -2,7 +2,7 @@
 
 **Author / Workshop moniker:** @TrentBest  
 **Target:** TheSingularityWorkshop.FSM_REST.RestGuiOperationExecutor  
-**Source:** [RestGuiOperationExecutor.cs](../../src/FSM_REST/RestGuiOperationExecutor.cs)  
+**Source:** [RestGuiOperationExecutor.cs](../../src/FSM_REST.GUI/RestGuiOperationExecutor.cs)  
 **Provenance:** Manually authored and source-checked; not generated.
 
 ## Class diagram
