@@ -98,7 +98,7 @@ public static class RestRequestFactory
         }
 
         var pathPlaceholders = System.Text.RegularExpressions.Regex.Matches(
-                operation.Path, @"\\{([^{}]+)\\}")
+                operation.Path, @"\{([^{}]+)\}")
             .Select(match => match.Groups[1].Value)
             .ToHashSet(StringComparer.Ordinal);
         var declaredPathParameterNames = operation.Parameters
