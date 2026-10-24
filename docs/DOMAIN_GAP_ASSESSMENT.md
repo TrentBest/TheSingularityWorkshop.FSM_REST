@@ -56,7 +56,7 @@ The earlier **20/20** figure referred to production C# files having companion Ma
 3. Add tests for JSON null, empty body, malformed JSON, non-JSON media types, response headers, and HTTP error payloads.
 
 ### P1 — adapter boundaries and fidelity
-1. Reconcile OpenAPI importer placement with the neutral-core boundary.
+1. Keep the now-separated OpenAPI provider package outside core and verify its package dependency graph.
 2. Build fixture-driven OpenAPI tests for path-level/operation-level parameter overrides, local/external/cyclic/missing references, security warnings, request bodies, responses, and unsupported constructs.
 3. Test FSM_COS and GUI adapters independently at their contracts and ensure the core package does not acquire their dependencies.
 
