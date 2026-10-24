@@ -1,8 +1,8 @@
 # OpenApiImportResult — UML and Use Cases
 
 **Author / Workshop moniker:** @TrentBest  
-**Target:** `TheSingularityWorkshop.FSM_REST.OpenApiImportResult`  
-**Source:** [OpenApiJsonImporter.cs](../../src/FSM_REST/OpenApiJsonImporter.cs)  
+**Target:** `TheSingularityWorkshop.FSM_REST.OpenApi.OpenApiImportResult`  
+**Source:** [OpenApiJsonImporter.cs](../../src/FSM_REST.OpenApi/OpenApiJsonImporter.cs)  
 **Provenance:** Manually authored and checked against the declared record; not generated.
 
 ## Purpose
