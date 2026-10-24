@@ -33,7 +33,7 @@ Follow the capability recipe below, then run the repository's documented build a
 
 ## 🟪 05 Documentation and theory
 
-[Gallery: concepts, examples, visual provenance, and verification](Gallery.md) · [Consumer guide](docs/CONSUMING.md) · [Capability recipe](#the-capability-recipe) · [Development](#development) · [License](#license)
+[Architecture contract](docs/ARCHITECTURE.md) · [Gallery: concepts, examples, visual provenance, and verification](Gallery.md) · [Consumer guide](docs/CONSUMING.md) · [Capability recipe](#the-capability-recipe) · [Development](#development) · [License](#license)
 
 ---
 
@@ -237,7 +237,7 @@ RestApiDescriptor
     Experience
 ~~~
 
-The core includes `OpenApiJsonImporter` for an initial OpenAPI 3.x JSON subset, including supported local component references. `OpenApiRestApiConnection.ConnectAsync` can download a definition URL, choose a concrete declared server (or the definition origin), and execute imported operations by `operationId`. `RestResponse.Deserialize<T>()` deserializes JSON into a consumer-owned model; it does not perform API-schema validation.
+The optional `TheSingularityWorkshop.FSM_Rest.OpenApi` package provides `OpenApiJsonImporter` for an initial OpenAPI 3.x JSON subset, including supported local component references. `OpenApiRestApiConnection.ConnectAsync` can download a definition URL, choose a concrete declared server (or the definition origin), and execute imported operations by `operationId`. `RestResponse.Deserialize<T>()` deserializes JSON into a consumer-owned model; it does not perform API-schema validation.
 
 `RestGuiMapping` connects an operation identity to renderer-neutral presentation metadata, GUI inputs, application-state source paths, and an optional result target. `RestGuiOperationExecutor` resolves mapped values through host-supplied callbacks, invokes the connected operation, and hands the response to the host's result publisher. The GUI adapter remains responsible for rendering controls, implementing state access, and applying authorization/error policy. YAML, external references, server-variable substitution, full schema semantics, and provider-specific behavior remain outside this initial implementation. Hand-authored descriptors and other provider adapters remain valid inputs.
 
@@ -347,6 +347,7 @@ A REST operation can be mapped to a button, form, table action, detail view, wor
 | FSM_COS | runtime MicroBundle composition |
 | FSM_REST | REST capability and transport substrate |
 | FSM_Rest.COS | optional REST-to-FSM_COS MicroBundle integration |
+| FSM_Rest.OpenApi | optional OpenAPI JSON import and definition-URL connection |
 | FSM_Serialization | serialized representation |
 | GUI | visual manifestation |
 
@@ -358,7 +359,7 @@ Concrete protocol/domain packages remain separately owned and publishable. FSM_R
 
 Alpha 4 makes the documented capability model directly composable: runtime operation values are separated from reusable operation descriptors. The optional REST MicroBundle adapter is now isolated in `TheSingularityWorkshop.FSM_Rest.COS`, so the core REST package does not depend on FSM_COS.
 
-The core REST package includes an initial OpenAPI 3.x JSON importer and a definition-URL connection path, but it is not a full OpenAPI runtime. It intentionally does **not** include:
+The optional OpenAPI package includes an initial OpenAPI 3.x JSON importer and a definition-URL connection path, but it is not a full OpenAPI runtime. The neutral core does not include protocol-description importers. It intentionally does **not** include:
 
 - YAML parsing, external `$ref` resolution, server-variable substitution, or complete schema/composition validation;
 - authentication implementations or credential acquisition;
@@ -385,6 +386,7 @@ dotnet restore TheSingularityWorkshop.FSM_REST.slnx
 dotnet build TheSingularityWorkshop.FSM_REST.slnx --configuration Release
 dotnet test tests/FSM_REST.Tests/FSM_REST.Tests.csproj --configuration Release
 dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --output ./artifacts
+dotnet pack src/FSM_REST.OpenApi/FSM_REST.OpenApi.csproj --configuration Release --output ./artifacts
 dotnet pack src/FSM_REST.COS/FSM_REST.COS.csproj --configuration Release --output ./artifacts
 ~~~
 
