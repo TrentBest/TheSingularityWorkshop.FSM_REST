@@ -65,7 +65,7 @@ Dependencies point inward toward the neutral model. Core must not depend on FSM_
 - **Package:** inspect IDs, versions, target frameworks, readme/license/XML docs, and dependency graphs.
 - **Consumer proof:** a clean consumer restores the intended packages and executes the documented happy path.
 
-A green build proves only the code and checks run by that workflow. It does not establish complete REST semantics, full OpenAPI conformance, production service reliability, or release approval.
+The repository's `scripts/check_architecture.py` is the CI guard for these package boundaries; it rejects core references to the OpenAPI, GUI-execution, and COS adapter types. A green build proves only the code and checks run by that workflow. It does not establish complete REST semantics, full OpenAPI conformance, production service reliability, or release approval.
 
 ## Near-term completion sequence
 
