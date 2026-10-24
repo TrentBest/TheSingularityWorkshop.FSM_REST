@@ -33,7 +33,7 @@ Run the [deterministic end-to-end demo](https://github.com/TrentBest/TheSingular
 
 ## 🟪 05 Documentation and theory
 
-[Architecture contract](docs/ARCHITECTURE.md) · [Gallery: concepts, examples, visual provenance, and verification](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/Gallery.md) · [Consumer guide](docs/CONSUMING.md) · [Capability recipe](#the-capability-recipe) · [Development](#development) · [License](#license)
+[Architecture contract](docs/ARCHITECTURE.md) · [Release notes](docs/RELEASE_NOTES.md) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Gallery: concepts, examples, visual provenance, and verification](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/Gallery.md) · [Consumer guide](docs/CONSUMING.md) · [Capability recipe](#the-capability-recipe) · [Development](#development) · [License](#license)
 
 ---
 
