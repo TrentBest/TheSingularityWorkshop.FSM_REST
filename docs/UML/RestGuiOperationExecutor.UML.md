@@ -51,7 +51,7 @@ classDiagram
 The executor is host-framework-neutral. It does not render controls, implement loading/error state, deserialize domain models, authorize requests, or define retries. Callback and connection failures remain observable.
 
 ## Verification
-- [Source](../../src/FSM_REST/RestGuiOperationExecutor.cs)
+- [Source](../../src/FSM_REST.GUI/RestGuiOperationExecutor.cs)
 - [Mapping](../../src/FSM_REST/RestGuiMapping.cs)
 - [Consumer guide](../CONSUMING.md)
 - [Tests](../../tests/FSM_REST.Tests/RestGuiOperationExecutorTests.cs)
