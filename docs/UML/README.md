@@ -5,8 +5,8 @@
 
 ## Architecture views
 
-- [FSM_REST Core UML](FSM_REST.Core.UML.md) — descriptor, binding, request construction, transport, response.
-- [REST request execution](RestRequestExecution.UML.md) — execution boundary and transport substitution.
+- [FSM_REST Core UML](Architecture/FSM_REST.Core.UML.md) — descriptor, binding, request construction, transport, response.
+- [REST request execution](Architecture/RestRequestExecution.UML.md) — execution boundary and transport substitution.
 - [RestApiDescriptor](RestApiDescriptorUML.md) — API description record and expected consumers.
 - [RestOperationDescriptor](RestOperationDescriptor.UML.md) — reusable operation metadata.
 - [RestGuiMapping](RestGuiMapping.UML.md) — presentation and host-state mapping metadata.
