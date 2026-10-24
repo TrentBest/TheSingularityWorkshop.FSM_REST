@@ -59,10 +59,21 @@ All 20 previously inventoried production C# files plus `src/FSM_REST/RestFsmExec
 
 The [Architecture Contract](ARCHITECTURE.md) now defines package boundaries and verification levels. A separate [Domain Gap Assessment](DOMAIN_GAP_ASSESSMENT.md) records implemented capabilities, explicit boundaries, and missing behavioral/semantic coverage. OpenAPI import and connection code has been moved into `src/FSM_REST.OpenApi`; GUI operation execution now lives in `src/FSM_REST.GUI` and accepts a neutral descriptor plus injected transport. This is intentionally not a readiness percentage. Initial P0 correctness work now rejects unsafe operation paths (absolute/network paths, query/fragment injection, and literal or percent-encoded dot segments) and malformed HTTP method tokens; regression tests cover those boundaries and query-value percent encoding. CI evidence must be recorded only after the latest implementation commit finishes.
 
+## Exact-SHA verification evidence
+
+- **Verified branch:** `development`
+- **Verified commit:** [`f9d282b55d3731d4598185ee8b0add20764cbbf9`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/f9d282b55d3731d4598185ee8b0add20764cbbf9)
+- **Workflow:** [Package FSM REST run 40059507396](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40059507396) — completed successfully.
+- **Build-and-test job:** passed documentation contract, architecture boundary, UML/image-link checks, restore/build, test with coverage, deterministic end-to-end demo, package packing, and packed-NuGet artifact audit.
+- **Source-integration job:** passed restore, build, and tests against the source-integrated MicroBundleDomain solution.
+- **NuGet publication:** skipped. This run did not publish packages.
+
+This evidence verifies the recorded commit only. Any subsequent source or workflow change requires a new exact-SHA run before the evidence can be treated as current.
+
 ## Evidence and completion rule
 Do not mark documentation 100% ready until production sources are reconciled against companions, every public class/record/interface has verified UML/use-case coverage, local links and examples are checked, and documentation/full CI passes at the exact SHA. A prior code CI pass at SHA 32e26834a2e6a9e7c3cfbe80ee64a9dff6e9d296 predates these documentation commits. A documentation contract check is now wired into the main build workflow; final verification must cite a successful run at the latest documentation SHA.
 
-**Current documentation readiness: in progress (estimated 65%).** The source inventory is now 21 files with companions, architecture diagrams have a dedicated folder, and local UML links are enforced in CI. Remaining work: reconcile every public type to a target-centered UML page, resolve link-check findings, audit visual provenance, and capture successful exact-SHA CI evidence. Do not treat the 20/20 companion count as a completeness or correctness percentage.
+**Current documentation readiness: in progress (estimated 65%).** The source inventory is now 21 files with companions, architecture diagrams have a dedicated folder, and local UML links are enforced in CI. Remaining work: reconcile every public type to a target-centered UML page, audit visual provenance and technical fidelity of companion pages, and repeat exact-SHA CI after subsequent changes. The current UML relative-link/image-path checker passes at the verified commit. Do not treat the 20/20 companion count as a completeness or correctness percentage.
 
 ## Next sequence
 1. Complete the domain assessment and implement P0 correctness/contract gaps before treating documentation completeness as release readiness.
