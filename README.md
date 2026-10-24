@@ -5,7 +5,7 @@
 
 > **A reusable REST capability and transport substrate—not a REST API implementation.**
 
-FSM_REST supplies the forms from which REST-facing capabilities can be composed. Domain-specific MicroBundles own the behavior and meaning of each capability.
+FSM_REST supplies the forms from which REST-facing capabilities can be composed. Its core directly consumes FSM_API and offers an opt-in FSM-backed request lifecycle; domain-specific MicroBundles still own the behavior and meaning of each capability.
 
 ```mermaid
 flowchart TD
