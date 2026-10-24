@@ -27,7 +27,7 @@ The development tree contains **20 production C# source files** across core REST
 | GUI adapter | Companion and target-centered UML present | Verify emitted metadata and renderer limitations |
 | FSM_COS adapter | Companion and target-centered UML present | Verify against current MicroBundleDomain contract |
 | Visual provenance | Partially documented | Audit each SVG/recipe and classify evidence |
-| Documentation CI | Not yet established | Add robust companion/UML/local-link checks |
+| Documentation CI | Minimum contract checker added; first enforcement run exposed three legacy UML metadata gaps, now patched | Verify the patched pages pass; extend checks only where robust, including local links |
 | Generated UML / GUI.SVG | Not claimed | Source-to-model generation remains future work |
 
 ## Production source inventory
@@ -54,14 +54,14 @@ All 20 listed production C# files now have neighboring Markdown companions:
 - src/FSM_REST.GUI/RestGuiNodeFactory.cs
 
 ## Evidence and completion rule
-Do not mark documentation 100% ready until production sources are reconciled against companions, every public class/record/interface has verified UML/use-case coverage, local links and examples are checked, and documentation/full CI passes at the exact SHA. The code CI pass at SHA 32e26834a2e6a9e7c3cfbe80ee64a9dff6e9d296 predates these documentation commits and does not verify them.
+Do not mark documentation 100% ready until production sources are reconciled against companions, every public class/record/interface has verified UML/use-case coverage, local links and examples are checked, and documentation/full CI passes at the exact SHA. A prior code CI pass at SHA 32e26834a2e6a9e7c3cfbe80ee64a9dff6e9d296 predates these documentation commits. A documentation contract check is now wired into the main build workflow; final verification must cite a successful run at the latest documentation SHA.
 
 **Current documentation readiness: in progress.** Percentage withheld until the remaining UML denominator, link audit, visual provenance, and CI evidence are reconciled.
 
 ## Next sequence
-1. Audit all new companions and UML pages against the exact source signatures and relationship kinds.
-2. Add target-centered UML for any remaining public types, including importer result/auxiliary types where applicable.
+1. Verify the latest documentation contract-checker run after adding explicit provenance metadata to three legacy UML pages.
+2. Audit all public types against target-centered UML pages, including same-file and auxiliary public declarations.
 3. Audit Gallery visuals and recipes; distinguish implemented behavior, manual explanation, and proposed future behavior.
-4. Add CI checks for missing companions, UML/use-case coverage, and broken local links where robust.
+4. Audit local Markdown links and add a robust local-link CI check if repository conventions allow without false positives.
 5. Run documentation checks and full CI; record exact SHA and evidence.
 6. Keep NuGet publication approval-gated; do not publish as part of documentation work.
