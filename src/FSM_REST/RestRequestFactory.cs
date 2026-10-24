@@ -69,6 +69,32 @@ public static class RestRequestFactory
                 "The REST base URI must not contain a query or fragment.",
                 nameof(baseUri));
 
+        if (string.IsNullOrWhiteSpace(operation.Method) ||
+            operation.Method.Any(char.IsWhiteSpace))
+            throw new ArgumentException("The REST operation must declare a non-empty HTTP method token.", nameof(operation));
+
+        if (string.IsNullOrWhiteSpace(operation.Path))
+            throw new ArgumentException("The REST operation path must not be empty.", nameof(operation));
+
+        if (operation.Path.Contains('?') || operation.Path.Contains('#') ||
+            operation.Path.StartsWith("//", StringComparison.Ordinal) ||
+            System.Text.RegularExpressions.Regex.IsMatch(
+                operation.Path, @"^[A-Za-z][A-Za-z0-9+.-]*:"))
+            throw new ArgumentException(
+                "The REST operation path must be a relative path without a query or fragment.",
+                nameof(operation));
+
+        // Relative URI resolution normalizes dot segments and could otherwise escape the API base path.
+        // Check decoded segments too, so encoded dot-segment variants cannot bypass the boundary.
+        foreach (var segment in operation.Path.Split('/'))
+        {
+            var decodedSegment = Uri.UnescapeDataString(segment);
+            if (decodedSegment is "." or "..")
+                throw new ArgumentException(
+                    "The REST operation path must not contain dot segments.",
+                    nameof(operation));
+        }
+
         var values = binding.Parameters;
         var requestHeaders = headers is null
             ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
