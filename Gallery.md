@@ -61,6 +61,16 @@ The optional `src/FSM_REST.COS` project defines `RestMicroBundle`, an adapter th
 - [FSM_COS adapter source](src/FSM_REST.COS/RestMicroBundle.cs)
 - [MicroBundle theory](docs/MICROBUNDLE.md)
 
+## 9. Model request execution with FSM_API
+
+The core package directly references `TheSingularityWorkshop.FSM_API` and offers `RestFsmExecutor.SendAsync` as an opt-in lifecycle wrapper around an existing `IRestTransport`. The shared FSM definition describes `Ready → Sending → Completed/Failed/Cancelled`; each invocation creates its own context and FSM instance, then destroys that instance in `finally`.
+
+- [RestFsmExecutor type page](docs/RestFsmExecutor.md) — lifecycle semantics, example, dependency boundary, and remaining verification needs.
+- [RestFsmExecutor UML and use cases](docs/UML/RestFsmExecutor.UML.md) — manually maintained, source-checked neighborhood and use-case view.
+- Source: [RestFsmExecutor.cs](src/FSM_REST/RestFsmExecutor.cs) · [Core project dependency](src/FSM_REST/FSM_REST.csproj).
+
+**Semantic boundary:** `Completed` means the transport returned a response. An HTTP 4xx/5xx response is not automatically an FSM failure; inspect the response status separately. The current source has explicit lifecycle handling, but this page does not claim those paths have fresh test evidence. Require exact-SHA CI and tests for normal completion, transport failure, requested cancellation, non-success HTTP status, concurrent calls, and instance cleanup before release.
+
 ## Visual guides
 
 - [Capability recipe](docs/assets/fsm-rest-capability-recipe.svg)
