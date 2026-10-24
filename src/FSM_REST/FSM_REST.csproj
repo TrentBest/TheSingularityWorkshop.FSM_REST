@@ -9,13 +9,13 @@
     <Authors>Trent Best</Authors>
     <Company>The Singularity Workshop</Company>
     <Description>Framework-agnostic REST capability descriptors and transport boundary for the FSM ecosystem.</Description>
-    <PackageTags>REST;API;reflection;transport;GUI;FSM;TheSingularityWorkshop</PackageTags>
+    <PackageTags>REST;API;reflection;transport;FSM;TheSingularityWorkshop</PackageTags>
     <PackageReadmeFile>README.md</PackageReadmeFile>
     <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
     <PackageProjectUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</PackageProjectUrl>
     <RepositoryUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
-    <PackageReleaseNotes>Alpha 4: separates runtime operation binding from request construction and adds a first-class REST MicroBundle adapter for FSM_COS composition.</PackageReleaseNotes>
+    <PackageReleaseNotes>Alpha 4: separates runtime operation binding from request construction; protocol-description importers remain optional packages.</PackageReleaseNotes>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);CS1591</NoWarn>
   </PropertyGroup>
