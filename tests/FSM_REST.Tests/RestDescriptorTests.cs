@@ -319,4 +319,22 @@ public sealed class RestDescriptorTests
         Assert.Equal("operation", exception.ParamName);
     }
 
+
+    [Fact]
+    public void RequestFactoryRejectsUndeclaredRuntimeParameters()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/users", "listUsers", null, null,
+            [new RestParameterDescriptor("page", "query", false, "integer", null, null)],
+            null);
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            RestRequestFactory.Create(
+                operation,
+                new Uri("https://example.test/api"),
+                new Dictionary<string, string?> { ["paeg"] = "2" }));
+
+        Assert.Equal("binding", exception.ParamName);
+        Assert.Contains("paeg", exception.Message);
+    }
 }
