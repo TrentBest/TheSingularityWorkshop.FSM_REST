@@ -63,16 +63,17 @@ The owner-provided NuGet Gallery snapshot confirms `TheSingularityWorkshop.FSM_R
 
 The [Architecture Contract](ARCHITECTURE.md) now defines package boundaries and verification levels. A separate [Domain Gap Assessment](DOMAIN_GAP_ASSESSMENT.md) records implemented capabilities, explicit boundaries, and missing behavioral/semantic coverage. OpenAPI import and connection code has been moved into `src/FSM_REST.OpenApi`; GUI operation execution now lives in `src/FSM_REST.GUI` and accepts a neutral descriptor plus injected transport. This is intentionally not a readiness percentage. Initial P0 correctness work now rejects unsafe operation paths (absolute/network paths, query/fragment injection, and literal or percent-encoded dot segments) and malformed HTTP method tokens; regression tests cover those boundaries and query-value percent encoding. CI evidence must be recorded only after the latest implementation commit finishes.
 
-## Exact-SHA verification evidence
+## Latest exact-SHA verification evidence
 
 - **Branch:** `development`
-- **Verified current commit:** [`1b206aa042bb46e7dcc19939e1fb37f39bdcbc80`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/1b206aa042bb46e7dcc19939e1fb37f39bdcbc80).
-- **Workflow:** [Package FSM REST run 40067875729](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40067875729) — completed successfully on this exact SHA.
+- **Verified commit:** [`140b15910f081f0b8b8699e26a42f1c26cc24543`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/140b15910f081f0b8b8699e26a42f1c26cc24543).
+- **Workflow:** [Package FSM REST run 40069560306](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40069560306) — completed successfully on this exact SHA.
 - **Build-and-test:** passed, including documentation contract, architecture boundary and UML link/image checks; restore/build/test with coverage, deterministic demo, NuGet pack, package audit, and artifact uploads passed.
 - **Source integration:** passed, including restore/build/test against MicroBundleDomain repository sources.
 - **NuGet publication:** skipped; no packages were published.
-- **Artifacts:** NuGet package artifact `12549079838` (`fsm-rest-nuget-package`) and test-results artifact `12550265889`; both are unexpired and tied to this exact SHA.
-- **Evidence scope:** this confirms CI for the current `development` head. The package artifact is a CI-produced candidate; package contents must be reviewed against the release checklist before release approval.
+- **Artifacts:** package artifact `12551185011` (`fsm-rest-nuget-package`) and test-results artifact `12550672757`; both are unexpired and tied to this exact SHA.
+- **Package archive SHA-256:** `cf1510ceefa5ce5fe21e8e72d222c22fad475ba6700e3b4b799411f61c0815da`.
+- **Evidence scope:** this is the latest recorded successful CI snapshot. A later tracker-only commit must pass CI before the resulting repository head can be considered release-verified. The artifact is a CI-produced candidate; package contents still require release review and explicit publication approval.
 
 ## Evidence and completion rule
 Do not mark documentation 100% ready until production sources are reconciled against companions, every public class/record/interface has verified UML/use-case coverage, local links and examples are checked, and documentation/full CI passes at the exact SHA. A prior code CI pass at SHA 32e26834a2e6a9e7c3cfbe80ee64a9dff6e9d296 predates these documentation commits. A documentation contract check is now wired into the main build workflow; final verification must cite a successful run at the latest documentation SHA.
