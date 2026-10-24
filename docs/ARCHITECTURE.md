@@ -12,7 +12,7 @@ FSM_REST is a reusable REST capability substrate. It describes an operation, bin
 
 ```mermaid
 flowchart TD
-    FSMAPI[FSM_API execution engine] --> Core[REST Core + FSM_API-backed lifecycle]
+    Core[REST Core + FSM_API-backed lifecycle] --> FSMAPI[FSM_API execution engine]
     Provider[Optional provider: OpenAPI / future formats] -->|descriptors| Core[REST Core + FSM_API-backed lifecycle]
     Core --> Request[Request construction]
     Request --> Transport[IRestTransport]
