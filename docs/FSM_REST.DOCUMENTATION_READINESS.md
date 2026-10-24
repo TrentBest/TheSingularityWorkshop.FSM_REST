@@ -45,6 +45,7 @@ All 20 previously inventoried production C# files plus `src/FSM_REST/RestFsmExec
 - src/FSM_REST/RestRequest.cs
 - src/FSM_REST/RestRequestBodyDescriptor.cs
 - src/FSM_REST/RestRequestFactory.cs
+- src/FSM_REST/RestFsmExecutor.cs
 - src/FSM_REST/RestResponse.cs
 - src/FSM_REST/RestResponseDescriptor.cs
 - src/FSM_REST.COS/RestApiDescriptorExtensions.cs
