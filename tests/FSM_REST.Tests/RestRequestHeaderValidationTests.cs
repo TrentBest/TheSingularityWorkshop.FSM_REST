@@ -49,6 +49,37 @@ public sealed class RestRequestHeaderValidationTests
     }
 
     [Fact]
+    public void RequestFactoryRejectsPathParameterDeclarationMissingFromTemplate()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/items", "getItem", null, null,
+            [new RestParameterDescriptor("id", "path", true, "string", null, null)],
+            null);
+
+        var exception = Assert.Throws<ArgumentException>(() => RestRequestFactory.Create(
+            operation,
+            new Uri("https://example.test/api"),
+            new Dictionary<string, string?> { ["id"] = "42" }));
+
+        Assert.Contains("do not appear in the operation path", exception.Message);
+    }
+
+    [Fact]
+    public void RequestFactoryRejectsUndeclaredPathTemplateParameter()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/items/{id}", "getItem", null, null,
+            Array.Empty<RestParameterDescriptor>(),
+            null);
+
+        var exception = Assert.Throws<ArgumentException>(() => RestRequestFactory.Create(
+            operation,
+            new Uri("https://example.test/api")));
+
+        Assert.Contains("undeclared path parameter", exception.Message);
+    }
+
+    [Fact]
     public void RequestFactoryAcceptsOrdinaryHeadersAndTabs()
     {
         var operation = new RestOperationDescriptor(
