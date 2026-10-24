@@ -26,7 +26,11 @@ var request = RestRequestFactory.Create(
 
 Request construction does not send the request. It is a separate, testable step.
 
-## 3. Send through a replaceable transport
+## 3. Run the complete core path
+
+The deterministic [REST capability demo](samples/RestCapabilityDemo/Program.md) exercises descriptor → binding → request → transport → response with an in-memory handler. It requires no live service or credentials and is run by CI.
+
+## 4. Send through a replaceable transport
 
 `IRestTransport` is the communication boundary. `HttpClientRestTransport` is the provided HTTP adapter; a host or test can substitute another implementation without changing capability descriptors.
 
@@ -38,19 +42,19 @@ RestResponse response = await transport.SendAsync(request);
 
 This example assumes `operation` has already been described and `request` constructed. The transport reports status, headers, and body. `RestResponse.Deserialize<T>()` can deserialize JSON into a consumer-owned type; schema validation and domain meaning remain downstream.
 
-## 4. Connect from a definition URL
+## 5. Connect from a definition URL
 
 The optional `src/FSM_REST.OpenApi` project provides `OpenApiRestApiConnection.ConnectAsync`, which downloads a supported OpenAPI 3.x JSON document, imports the operation catalogue, selects the first concrete server, and exposes operation execution by `operationId`. The caller owns the `HttpClient` and authentication policy. See the [consumer guide](docs/CONSUMING.md) for the complete flow.
 
-## 5. Map an operation to GUI and data
+## 6. Map an operation to GUI and data
 
 `RestGuiMapping` describes a renderer-neutral presentation hint, operation identity, GUI input mappings, optional application-state source paths, a result target, and loading/error-state intent. `RestGuiInputMapping` maps declared API parameters either to a state path or to user-provided input. Construction validates that mappings refer to declared parameters and rejects duplicates. `RestGuiOperationExecutor` resolves source paths through a host callback, combines those values with user-entered inputs, invokes the operation, and publishes the raw response to the configured result target through a host callback. A GUI adapter still needs to render controls and implement the state callbacks; deserialize the result into a consumer-owned model when typed GUI data is required.
 
-## 6. Import an OpenAPI definition (optional extension)
+## 7. Import an OpenAPI definition (optional extension)
 
 The core package does not parse OpenAPI. The separate `TheSingularityWorkshop.FSM_Rest.OpenApi` package imports a supported JSON subset and reports fidelity warnings. See [the OpenAPI package README](src/FSM_REST.OpenApi/README.md) and [importer tests](tests/FSM_REST.Tests/OpenApiJsonImporterTests.cs).
 
-## 7. Carry a capability into FSM_COS
+## 8. Carry a capability into FSM_COS
 
 The optional `src/FSM_REST.COS` project defines `RestMicroBundle`, an adapter that carries a `RestApiDescriptor` as an `IMicroBundle`. It is integration, not a dependency required by the core transport model.
 
