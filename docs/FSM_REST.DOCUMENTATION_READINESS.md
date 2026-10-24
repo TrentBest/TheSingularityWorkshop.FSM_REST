@@ -53,15 +53,19 @@ All 20 listed production C# files now have neighboring Markdown companions:
 - src/FSM_REST.COS/RestMicroBundle.cs
 - src/FSM_REST.GUI/RestGuiNodeFactory.cs
 
+## Domain assessment / implementation status
+
+A separate [Domain Gap Assessment](DOMAIN_GAP_ASSESSMENT.md) now records implemented capabilities, explicit boundaries, and the missing behavioral/semantic coverage. This is intentionally not a readiness percentage. Initial P0 correctness work now rejects unsafe operation paths (absolute/network paths, query/fragment injection, and literal or percent-encoded dot segments) and malformed HTTP method tokens; regression tests cover those boundaries and query-value percent encoding. CI evidence must be recorded only after the latest implementation commit finishes.
+
 ## Evidence and completion rule
 Do not mark documentation 100% ready until production sources are reconciled against companions, every public class/record/interface has verified UML/use-case coverage, local links and examples are checked, and documentation/full CI passes at the exact SHA. A prior code CI pass at SHA 32e26834a2e6a9e7c3cfbe80ee64a9dff6e9d296 predates these documentation commits. A documentation contract check is now wired into the main build workflow; final verification must cite a successful run at the latest documentation SHA.
 
 **Current documentation readiness: in progress.** Percentage withheld until the remaining UML denominator, link audit, visual provenance, and CI evidence are reconciled.
 
 ## Next sequence
-1. Verify the latest documentation contract-checker run after adding explicit provenance metadata to three legacy UML pages.
-2. Audit all public types against target-centered UML pages, including same-file and auxiliary public declarations.
-3. Audit Gallery visuals and recipes; distinguish implemented behavior, manual explanation, and proposed future behavior.
-4. Audit local Markdown links and add a robust local-link CI check if repository conventions allow without false positives.
+1. Complete the domain assessment and implement P0 correctness/contract gaps before treating documentation completeness as release readiness.
+2. Reconcile the OpenAPI importer/connection placement with the previously agreed provider boundary; test the optional package independently.
+3. Audit all public types against target-centered UML pages, including same-file and auxiliary public declarations.
+4. Audit Gallery visuals, recipes, and local Markdown links; distinguish implemented behavior, manual explanation, and proposed future behavior.
 5. Run documentation checks and full CI; record exact SHA and evidence.
 6. Keep NuGet publication approval-gated; do not publish as part of documentation work.
