@@ -1,7 +1,10 @@
 # RestOperationDescriptor — UML Class Card
 
 **Owner / author:** Trent Best  
-**Purpose:** Describe one reusable REST operation capability without binding it to a specific API-description format, transport implementation, GUI, or domain.
+**Purpose:** Describe one reusable REST operation capability without binding it to a specific **Provenance:** Source-grounded UML class card; manually maintained, not generated.
+**Source:** [RestOperationDescriptor.cs](../../src/FSM_REST/RestOperationDescriptor.cs)
+
+PI-description format, transport implementation, GUI, or domain.
 
 ## Class card
 
