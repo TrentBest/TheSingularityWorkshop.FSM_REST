@@ -42,7 +42,7 @@
 Every production C# file has a neighboring Markdown companion. Examples:
 - [RestApiDescriptor source companion](../../src/FSM_REST/RestApiDescriptor.md)
 - [RestGuiMapping source companion](../../src/FSM_REST/RestGuiMapping.md)
-- [RestGuiOperationExecutor source companion](../../src/FSM_REST/RestGuiOperationExecutor.md)
+- [RestGuiOperationExecutor source companion](../../src/FSM_REST.GUI/RestGuiOperationExecutor.md)
 - [RestGuiNodeFactory source companion](../../src/FSM_REST.GUI/RestGuiNodeFactory.md)
 - [RestMicroBundle source companion](../../src/FSM_REST.COS/RestMicroBundle.md)
 
