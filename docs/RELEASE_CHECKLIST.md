@@ -2,6 +2,10 @@
 
 Use this checklist for a candidate package release. It is a verification gate, not a declaration that a particular version is ready. Confirm the current package version, target frameworks, dependencies, and upstream compatibility from the checked-out source and CI; do not inherit version or prerequisite claims from historical branch documents.
 
+## Release notes
+
+- [x] Added [release notes](RELEASE_NOTES.md) describing the current candidate package set, architecture boundaries, compatibility, known limitations, and upgrade guidance. Review these notes against the final exact candidate before publication.
+
 ## Latest candidate artifact inspection
 
 - **Verified development commit:** [`cd716549d68926168aa5a00dad9dd68f9df3e286`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/cd716549d68926168aa5a00dad9dd68f9df3e286).
