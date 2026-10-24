@@ -29,13 +29,26 @@
 - [RestResponse](RestResponse.UML.md)
 - [RestResponseDescriptor](RestResponseDescriptor.UML.md)
 
+## Integration groups
+
+Integration diagrams are grouped by boundary so consumers can find optional adapters without confusing them with the dependency-light core:
+
+- [GUI integration UML](GUI/README.md) — presentation mapping, input binding, node creation, and GUI operation execution.
+- [OpenAPI integration UML](OpenAPI/README.md) — OpenAPI JSON import and definition-URL connection.
+- [FSM_COS / MicroBundleDomain integration UML](FSM_COS/README.md) — composition adapter and descriptor conversion helpers. FSM_REST core depends directly on FSM_API, not FSM_COS.
+
+The target-specific pages remain linked below for direct access.
+
 ## Optional integration targets
 
-- [OpenApiJsonImporter](OpenApiJsonImporter.UML.md) — optional OpenAPI JSON provider extension.
-- [OpenApiRestApiConnection](OpenApiRestApiConnection.UML.md) — optional definition-URL connection adapter.
-
-- [RestMicroBundle](RestMicroBundle.UML.md) — MicroBundleDomain adapter for FSM_COS.
-- [RestApiDescriptorExtensions](RestApiDescriptorExtensions.UML.md) — optional conversion helper for the COS adapter.
+- [OpenApiJsonImporter](OpenApiJsonImporter.UML.md)
+- [OpenApiRestApiConnection](OpenApiRestApiConnection.UML.md)
+- [RestMicroBundle](RestMicroBundle.UML.md)
+- [RestApiDescriptorExtensions](RestApiDescriptorExtensions.UML.md)
+- [RestGuiInputMapping](RestGuiInputMapping.UML.md)
+- [RestGuiMapping](RestGuiMapping.UML.md)
+- [RestGuiNodeFactory](RestGuiNodeFactory.UML.md)
+- [RestGuiOperationExecutor](RestGuiOperationExecutor.UML.md)
 
 ## Source companion pages
 
