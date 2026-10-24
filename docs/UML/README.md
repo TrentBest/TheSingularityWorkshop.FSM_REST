@@ -5,6 +5,8 @@
 
 ## Architecture views
 
+- [FSM-backed REST execution](Architecture/RestFsmExecutor.UML.md) — FSM_API lifecycle around transport execution.
+
 - [FSM_REST Core UML](Architecture/FSM_REST.Core.UML.md) — descriptor, binding, request construction, transport, response.
 - [REST request execution](Architecture/RestRequestExecution.UML.md) — execution boundary and transport substitution.
 - [RestApiDescriptor](RestApiDescriptorUML.md) — API description record and expected consumers.
