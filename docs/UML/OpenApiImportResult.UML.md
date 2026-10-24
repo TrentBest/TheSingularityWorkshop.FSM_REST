@@ -40,7 +40,7 @@ The diagram shows the importer/result contract, not every internal parsing helpe
 
 ## Verification and provenance
 
-- Source: [OpenApiJsonImporter.cs](../../src/FSM_REST/OpenApiJsonImporter.cs), where this public record is declared alongside the importer.
+- Source: [OpenApiJsonImporter.cs](../../src/FSM_REST.OpenApi/OpenApiJsonImporter.cs), where this public record is declared alongside the importer.
 - Related UML: [OpenApiJsonImporter](OpenApiJsonImporter.UML.md), [RestApiDescriptor](RestApiDescriptorUML.md), and [UML index](README.md).
 - Tests: [OpenAPI importer tests](../../tests/FSM_REST.Tests/OpenApiJsonImporterTests.cs).
 - Manually authored; no AST/reflection generation or runtime capture is claimed.
