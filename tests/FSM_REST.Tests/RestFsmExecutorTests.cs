@@ -1,3 +1,4 @@
+using TheSingularityWorkshop.FSM_REST;
 using Xunit;
 
 namespace TheSingularityWorkshop.FSM_REST.Tests;
