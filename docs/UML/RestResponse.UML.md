@@ -31,6 +31,6 @@ The diagram is deliberately focused on the target and its direct architectural r
 
 ## Verification and limits
 - Source: [RestResponse.cs](../../src/FSM_REST/RestResponse.cs)
-- Related UML: [core architecture](FSM_REST.Core.UML.md) and [UML index](README.md)
+- Related UML: [core architecture](Architecture/FSM_REST.Core.UML.md) and [UML index](README.md)
 - Tests: [FSM_REST tests](../../tests/FSM_REST.Tests/)
 - Re-check the diagram when public members, dependency relationships, or behavior change.
