@@ -66,14 +66,13 @@ The [Architecture Contract](ARCHITECTURE.md) now defines package boundaries and 
 ## Exact-SHA verification evidence
 
 - **Branch:** `development`
-- **Historically verified commit:** [`5154960223d230a92e0e7166e20f56ec4c51299b`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/5154960223d230a92e0e7166e20f56ec4c51299b)
-- **Historical workflow:** [Package FSM REST run 40061158845](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40061158845) — completed successfully at that exact SHA.
-- **Build-and-test job:** passed at the historical SHA.
-- **Source-integration job:** passed at the historical SHA.
-- **NuGet publication job:** skipped; no packages were published.
-- **Current development head at the time of this audit:** [`f3ccd9f6313b60a9044216e5ee234d97e87bb29f`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/f3ccd9f6313b60a9044216e5ee234d97e87bb29f) — current combined status lookup returned no status checks, and the connector's commit workflow lookup only reports PR-triggered runs. Therefore current-head CI is **unverified**, not passed.
-
-The successful run above is historical evidence only; it does not validate the current development head or later documentation changes. Do not treat it as current release evidence.
+- **Verified commit:** [`d1da34479950f1403a4c3e3259be18ceec3820a7`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/d1da34479950f1403a4c3e3259be18ceec3820a7).
+- **Workflow:** [Package FSM REST run 40066883956](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40066883956) — completed successfully on this exact SHA.
+- **Build-and-test:** passed, including documentation contract, architecture boundary and UML link/image checks; restore/build/test with coverage, deterministic end-to-end demo, NuGet pack, package audit, and artifact uploads all passed.
+- **Source integration:** passed, including restore/build/test against MicroBundleDomain repository sources.
+- **NuGet publication:** skipped; no packages were published.
+- **Package artifact:** workflow artifact `12550025624`, `fsm-rest-nuget-package`, SHA-256 `ce25f6fbdcab15ac6492915a81122041d684b5e02bf6fd5ab1bf6b503e154617`.
+- **Evidence scope:** these results validate commit `d1da344`. This readiness-tracker edit creates a newer commit; the new SHA must complete CI before it can be called the verified current head.
 
 ## Evidence and completion rule
 Do not mark documentation 100% ready until production sources are reconciled against companions, every public class/record/interface has verified UML/use-case coverage, local links and examples are checked, and documentation/full CI passes at the exact SHA. A prior code CI pass at SHA 32e26834a2e6a9e7c3cfbe80ee64a9dff6e9d296 predates these documentation commits. A documentation contract check is now wired into the main build workflow; final verification must cite a successful run at the latest documentation SHA.
