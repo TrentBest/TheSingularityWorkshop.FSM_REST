@@ -29,11 +29,11 @@ Define the capability boundary, bind the required inputs, and let the host decid
 
 ## 🟢 04 See it in a minute
 
-Run the [deterministic end-to-end demo](samples/RestCapabilityDemo/Program.md), then follow the capability recipe below. The demo uses a controlled in-memory HTTP handler, so it requires no live endpoint or credentials.
+Run the [deterministic end-to-end demo](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/samples/RestCapabilityDemo/Program.md), then follow the capability recipe below. The demo uses a controlled in-memory HTTP handler, so it requires no live endpoint or credentials.
 
 ## 🟪 05 Documentation and theory
 
-[Architecture contract](docs/ARCHITECTURE.md) · [Gallery: concepts, examples, visual provenance, and verification](Gallery.md) · [Consumer guide](docs/CONSUMING.md) · [Capability recipe](#the-capability-recipe) · [Development](#development) · [License](#license)
+[Architecture contract](docs/ARCHITECTURE.md) · [Gallery: concepts, examples, visual provenance, and verification](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/Gallery.md) · [Consumer guide](docs/CONSUMING.md) · [Capability recipe](#the-capability-recipe) · [Development](#development) · [License](#license)
 
 ---
 
@@ -370,14 +370,14 @@ Authentication, credential acquisition, concrete GUI rendering, application-stat
 
 ## Documentation map
 
-- [Gallery](Gallery.md) — implementation-grounded tour and verified boundaries.
+- [Gallery](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/Gallery.md) — implementation-grounded tour and verified boundaries.
 - [Domain definition](docs/DOMAIN.md) — owned concepts, explicit non-goals, and package boundaries.
 - [Theory](docs/THEORY.md) — why capability descriptions and runtime results are separate.
 - [Reflection model](docs/REFLECTION.md) — descriptor semantics and execution flow.
 - [MicroBundle integration](docs/MICROBUNDLE.md) — composition boundary and optional FSM_COS adapter.
-- [Core UML and use cases](docs/UML/FSM_REST.Core.UML.md) — source-grounded package relationships.
+- [Core UML and use cases](docs/UML/Architecture/FSM_REST.Core.UML.md) — source-grounded package relationships.
 - [RestOperationDescriptor class card](docs/UML/RestOperationDescriptor.UML.md) — focused class responsibilities and use cases.
-- [Request execution UML](docs/UML/RestRequestExecution.UML.md) — request construction, transport substitution, response handling, and test coverage.
+- [Request execution UML](docs/UML/Architecture/RestRequestExecution.UML.md) — request construction, transport substitution, response handling, and test coverage.
 
 ## Development
 

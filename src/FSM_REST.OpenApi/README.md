@@ -26,6 +26,6 @@ foreach (var warning in imported.Warnings)
 var api = imported.Api;
 ```
 
-See the [repository README](../../README.md), [Gallery](../../Gallery.md), and [domain gap assessment](../../docs/DOMAIN_GAP_ASSESSMENT.md).
+See the [repository README](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/README.md), [Gallery](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/Gallery.md), and [domain gap assessment](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/docs/DOMAIN_GAP_ASSESSMENT.md).
 
-MIT licensed. See [LICENSE.txt](../../LICENSE.txt).
+MIT licensed. See [LICENSE.txt](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/LICENSE.txt).
