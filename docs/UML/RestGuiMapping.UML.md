@@ -54,7 +54,7 @@ Source-path syntax and state semantics belong to the host. This class does not p
 ## Verification
 - [Source](../../src/FSM_REST/RestGuiMapping.cs)
 - [Input mapping](../../src/FSM_REST/RestGuiInputMapping.cs)
-- [Executor](../../src/FSM_REST/RestGuiOperationExecutor.cs)
+- [Executor](../../src/FSM_REST.GUI/RestGuiOperationExecutor.cs)
 - [Tests](../../tests/FSM_REST.Tests/RestGuiMappingTests.cs)
 
 Re-check the diagram when public properties or validation behavior change.
