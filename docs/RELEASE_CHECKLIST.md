@@ -2,14 +2,14 @@
 
 Use this checklist for a candidate package release. It is a verification gate, not a declaration that a particular version is ready. Confirm the current package version, target frameworks, dependencies, and upstream compatibility from the checked-out source and CI; do not inherit version or prerequisite claims from historical branch documents.
 
-## Latest candidate audit snapshot
+## Latest CI verification (before this checklist edit)
 
-- **Candidate commit:** [`94038ddcfc59e2092d7673cee5569a8d6b0616a5`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/94038ddcfc59e2092d7673cee5569a8d6b0616a5) on `development`.
-- **CI run:** [Package FSM REST #40069735788](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40069735788) — build-and-test and source-integration passed on this exact SHA; publication was skipped.
-- **Package artifact:** workflow artifact `12550409529`, `fsm-rest-nuget-package`, ZIP SHA-256 `583bd9e8d18f1a4df0daa618b9d614b44c6a9599f2e44f2fd031fde571c48a47`.
-- **Inspected packages:** `TheSingularityWorkshop.FSM_Rest` `0.1.0-alpha.5` (depends on `TheSingularityWorkshop.FSM_API` `1.0.13`); `TheSingularityWorkshop.FSM_Rest.OpenApi` `0.1.0-alpha.1` (depends on core `0.1.0-alpha.5`); `TheSingularityWorkshop.FSM_Rest.COS` `0.1.0-alpha.1` (depends on core `0.1.0-alpha.5` and `TheSingularityWorkshop.MicroBundleDomain` `1.0.1`). All three contain a `net8.0` assembly, XML API documentation, README, and license file. Core has no MicroBundleDomain or FSM_COS dependency.
-- **Artifact inspection:** the archive contains exactly these three `.nupkg` files. Their nuspec dependency identities and versions match the intended package boundaries above. The packages contain XML docs, README, and license files. Repository metadata is configured in all three project files (`RepositoryUrl` and `RepositoryType=git`); the nuspecs were verified for package identity, version, dependencies, README/license entries, and framework assets.
-- **Scope of evidence:** this is the inspected package snapshot for the exact candidate SHA. Any subsequent source or documentation commit requires a new exact-SHA CI run; publication remains a separate, explicitly approved action.
+- **Verified development commit:** [`138189f08ee428a871dfeb5e48ccc0535fb8615b`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/138189f08ee428a871dfeb5e48ccc0535fb8615b).
+- **CI run:** [Package FSM REST #40070046580](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40070046580) — build-and-test and source-integration passed; the automated package audit passed; the publish job was skipped.
+- **CI-produced package artifact:** artifact `12550549314`, `fsm-rest-nuget-package`, ZIP SHA-256 `7be3fd815760375be04cd258edd6b575a99c3b33c62e93c74397ad501ab3dec6`. This is evidence of the successful workflow output, **not a claim that this newest ZIP was manually downloaded and inspected**.
+- **Package versions expected from the current project files:** core `TheSingularityWorkshop.FSM_Rest` `0.1.0-alpha.5` (depends on `TheSingularityWorkshop.FSM_API` `1.0.13`); `TheSingularityWorkshop.FSM_Rest.OpenApi` `0.1.0-alpha.1` (depends on core `0.1.0-alpha.5`); `TheSingularityWorkshop.FSM_Rest.COS` `0.1.0-alpha.1` (depends on core `0.1.0-alpha.5` and `TheSingularityWorkshop.MicroBundleDomain` `1.0.1`). All target `net8.0`. Confirm the packed nuspecs and assets for the exact release candidate before publication.
+- **Previous manually inspected artifact:** candidate commit [`94038ddcfc59e2092d7673cee5569a8d6b0616a5`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/94038ddcfc59e2092d7673cee5569a8d6b0616a5), CI run [#40069735788](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40069735788), artifact `12550409529`, ZIP SHA-256 `583bd9e8d18f1a4df0daa618b9d614b44c6a9599f2e44f2fd031fde571c48a47`. That archive contained the three expected `.nupkg` files; the nuspec dependency identities/versions, `net8.0` assets, XML docs, README/license entries, and repository metadata were inspected for that snapshot only.
+- **Evidence boundary:** CI success and the automated package audit do not replace a manual inspection of the exact artifact selected for release. Any subsequent source or documentation commit requires a fresh successful exact-SHA run and a matching artifact. Publication remains a separate, explicitly approved action.
 
 ## Package boundary
 
@@ -21,7 +21,7 @@ Use this checklist for a candidate package release. It is a verification gate, n
 ## Behavior and API
 
 - [x] Release build succeeds.
-- [x] Automated test suite passes on the candidate SHA; domain coverage gaps still listed in `DOMAIN_GAP_ASSESSMENT.md` must not be mistaken for comprehensive REST semantics.
+- [x] Automated test suite passes on the latest recorded CI SHA; domain coverage gaps listed in `DOMAIN_GAP_ASSESSMENT.md` must not be mistaken for comprehensive REST semantics.
 - [x] Coverage collection and upload complete; review the report for meaningful gaps rather than treating a percentage alone as proof.
 - [ ] Public XML documentation is generated and reviewed; resolve unexplained warnings and misleading API descriptions.
 - [ ] README examples can be followed against the current public API and do not depend on unpublished or stale APIs.
@@ -30,15 +30,15 @@ Use this checklist for a candidate package release. It is a verification gate, n
 
 ## CI and package inspection
 
-- [x] CI passed on the recorded candidate SHA, including core build/tests and source-integration build/tests. Re-run after any subsequent source change.
-- [x] Create the package artifact and inspect its nuspec, dependency groups, included files, license/readme metadata, and version for the recorded candidate.
-- [ ] Verify any first-party dependencies against the actual release plan; do not assume a dependency is stable or compatible based on a historical diagram.
+- [x] CI passed on the latest recorded development SHA, including core build/tests, source-integration build/tests, deterministic demo, and automated package audit. Re-run after this checklist edit and any subsequent source change.
+- [ ] Manually download and inspect the exact artifact selected for release: package identities/versions, nuspec dependencies, framework assets, XML docs, README/license, and repository metadata.
+- [ ] Verify first-party dependencies against the actual release plan; do not assume a dependency is stable or compatible based on a historical diagram.
 - [ ] Confirm repository documentation links remain useful from both the repository and the packed package.
 - [ ] Review the release notes for accurate scope, compatibility, known limitations, and upgrade guidance.
 
 ## Publication gate
 
-- [ ] Record the exact commit SHA, package version, CI run, and inspected artifact.
+- [ ] Record the exact commit SHA, package version, CI run, and inspected artifact for the final candidate.
 - [ ] Confirm the release owner has explicitly approved publication.
 - [ ] Keep publishing disabled/skipped until that explicit approval is given.
 - [ ] After an authorized publication, verify the published package metadata and download/install path.
