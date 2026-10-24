@@ -177,6 +177,37 @@ public sealed class RestDescriptorTests
         Assert.Equal("session=abc%20123", request.Headers["Cookie"]);
     }
 
+    [Theory]
+    [InlineData("/../admin")]
+    [InlineData("/%2e%2e/admin")]
+    [InlineData("https://evil.example/steal")]
+    [InlineData("//evil.example/steal")]
+    [InlineData("/users?admin=true")]
+    [InlineData("/users#fragment")]
+    public void RequestFactoryRejectsPathsThatEscapeOrAlterTheBaseUri(string path)
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", path, "unsafePath", null, null,
+            Array.Empty<RestParameterDescriptor>(), null);
+
+        Assert.Throws<ArgumentException>(() =>
+            RestRequestFactory.Create(operation, new Uri("https://example.test/api")));
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    [InlineData("GET /users")]
+    public void RequestFactoryRejectsInvalidHttpMethodToken(string method)
+    {
+        var operation = new RestOperationDescriptor(
+            method, "/users", "invalidMethod", null, null,
+            Array.Empty<RestParameterDescriptor>(), null);
+
+        Assert.Throws<ArgumentException>(() =>
+            RestRequestFactory.Create(operation, new Uri("https://example.test/api")));
+    }
+
     [Fact]
     public void RequestFactoryRejectsMissingRequiredParameter()
     {
