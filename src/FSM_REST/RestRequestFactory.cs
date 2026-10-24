@@ -69,9 +69,11 @@ public static class RestRequestFactory
                 "The REST base URI must not contain a query or fragment.",
                 nameof(baseUri));
 
+        const string methodTokenPunctuation = "!#$%&'*+-.^_\\u0060|~";
         if (string.IsNullOrWhiteSpace(operation.Method) ||
-            operation.Method.Any(char.IsWhiteSpace))
-            throw new ArgumentException("The REST operation must declare a non-empty HTTP method token.", nameof(operation));
+            operation.Method.Any(character =>
+                !char.IsAsciiLetterOrDigit(character) && !methodTokenPunctuation.Contains(character)))
+            throw new ArgumentException("The REST operation must declare a valid HTTP method token.", nameof(operation));
 
         if (string.IsNullOrWhiteSpace(operation.Path))
             throw new ArgumentException("The REST operation path must not be empty.", nameof(operation));
