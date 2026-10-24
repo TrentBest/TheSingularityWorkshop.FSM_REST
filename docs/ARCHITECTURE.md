@@ -72,7 +72,7 @@ A green build proves only the code and checks run by that workflow. It does not 
 1. Preserve these dependency boundaries and keep the core independent.
 2. Complete deterministic request/response/transport contract coverage, including cancellation, empty bodies, non-success statuses, malformed descriptors, and transport failures.
 3. Make unsupported binding semantics explicit; never silently pretend arrays, objects, or OpenAPI style/explode are fully supported.
-4. Add a runnable sample that exercises descriptor → binding → request → fake/controlled transport → response.
+4. A deterministic sample now exercises descriptor → binding → request → controlled transport → response; keep it in CI as a consumer smoke test.
 5. Verify optional package dependency graphs and consumer smoke tests in CI.
 6. Update the domain gap assessment from observed evidence; defer nonessential protocol features until an actual consumer requires them.
 
