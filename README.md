@@ -29,7 +29,7 @@ Define the capability boundary, bind the required inputs, and let the host decid
 
 ## 🟢 04 See it in a minute
 
-Follow the capability recipe below, then run the repository's documented build and tests. The quick example demonstrates composition contracts, not a promise that every external endpoint is available.
+Run the [deterministic end-to-end demo](samples/RestCapabilityDemo/Program.md), then follow the capability recipe below. The demo uses a controlled in-memory HTTP handler, so it requires no live endpoint or credentials.
 
 ## 🟪 05 Documentation and theory
 
