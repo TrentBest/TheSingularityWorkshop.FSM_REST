@@ -8,7 +8,10 @@ The central model is the operation descriptor. Runtime binding and request const
 classDiagram
     direction TB
 
-    class RestApiDescriptor {
+    class Rest**Provenance:** Source-grounded conceptual diagram; manually maintained, not generated.
+**Source:** [Core project](../../src/FSM_REST/FSM_REST.csproj)
+
+piDescriptor {
       +string Title
       +string Version
       +IReadOnlyList~RestOperationDescriptor~ Operations
