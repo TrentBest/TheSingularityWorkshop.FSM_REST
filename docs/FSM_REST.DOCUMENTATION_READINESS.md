@@ -66,13 +66,13 @@ The [Architecture Contract](ARCHITECTURE.md) now defines package boundaries and 
 ## Exact-SHA verification evidence
 
 - **Branch:** `development`
-- **Verified commit:** [`d1da34479950f1403a4c3e3259be18ceec3820a7`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/d1da34479950f1403a4c3e3259be18ceec3820a7).
-- **Workflow:** [Package FSM REST run 40066883956](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40066883956) — completed successfully on this exact SHA.
-- **Build-and-test:** passed, including documentation contract, architecture boundary and UML link/image checks; restore/build/test with coverage, deterministic end-to-end demo, NuGet pack, package audit, and artifact uploads all passed.
+- **Verified current commit:** [`1b206aa042bb46e7dcc19939e1fb37f39bdcbc80`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/1b206aa042bb46e7dcc19939e1fb37f39bdcbc80).
+- **Workflow:** [Package FSM REST run 40067875729](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40067875729) — completed successfully on this exact SHA.
+- **Build-and-test:** passed, including documentation contract, architecture boundary and UML link/image checks; restore/build/test with coverage, deterministic demo, NuGet pack, package audit, and artifact uploads passed.
 - **Source integration:** passed, including restore/build/test against MicroBundleDomain repository sources.
 - **NuGet publication:** skipped; no packages were published.
-- **Package artifact:** workflow artifact `12550025624`, `fsm-rest-nuget-package`, SHA-256 `ce25f6fbdcab15ac6492915a81122041d684b5e02bf6fd5ab1bf6b503e154617`.
-- **Evidence scope:** these results validate commit `d1da344`. This readiness-tracker edit creates a newer commit; the new SHA must complete CI before it can be called the verified current head.
+- **Artifacts:** NuGet package artifact `12549079838` (`fsm-rest-nuget-package`) and test-results artifact `12550265889`; both are unexpired and tied to this exact SHA.
+- **Evidence scope:** this confirms CI for the current `development` head. The package artifact is a CI-produced candidate; package contents must be reviewed against the release checklist before release approval.
 
 ## Evidence and completion rule
 Do not mark documentation 100% ready until production sources are reconciled against companions, every public class/record/interface has verified UML/use-case coverage, local links and examples are checked, and documentation/full CI passes at the exact SHA. A prior code CI pass at SHA 32e26834a2e6a9e7c3cfbe80ee64a9dff6e9d296 predates these documentation commits. A documentation contract check is now wired into the main build workflow; final verification must cite a successful run at the latest documentation SHA.
