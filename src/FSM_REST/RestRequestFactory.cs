@@ -113,6 +113,19 @@ public static class RestRequestFactory
             ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             : new Dictionary<string, string>(headers, StringComparer.OrdinalIgnoreCase);
 
+        foreach (var header in requestHeaders)
+        {
+            if (!IsHttpToken(header.Key))
+                throw new ArgumentException($"Invalid HTTP header name '{header.Key}'.", nameof(headers));
+
+            if (header.Value.Any(character =>
+                    character is '\\r' or '\\n' ||
+                    (char.IsControl(character) && character != '\\t')))
+                throw new ArgumentException(
+                    $"HTTP header '{header.Key}' contains an invalid control character.",
+                    nameof(headers));
+        }
+
         var path = operation.Path;
         var query = new List<string>();
         var cookies = new List<string>();
@@ -200,5 +213,15 @@ public static class RestRequestFactory
             requestHeaders,
             body,
             contentType);
+    }
+
+    private static bool IsHttpToken(string value)
+    {
+        if (string.IsNullOrEmpty(value))
+            return false;
+
+        const string punctuation = "!#$%&'*+-.^_`|~";
+        return value.All(character =>
+            char.IsAsciiLetterOrDigit(character) || punctuation.Contains(character));
     }
 }
