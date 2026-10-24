@@ -79,7 +79,7 @@ public static class RestFsmExecutor
 
     private sealed class ExecutionContext : IStateContext
     {
-        public string Name => "FSM_REST request execution";
+        public string Name { get; set; } = "FSM_REST request execution";
         public bool IsValid { get; set; } = true;
         public string TargetState { get; set; } = "Ready";
     }
