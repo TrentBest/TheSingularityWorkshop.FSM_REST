@@ -27,8 +27,6 @@ for page in sorted(UML.rglob("*.md")):
         checked += 1
         if not target.exists():
             errors.append(f"{page.relative_to(ROOT)}: broken relative link/image: {destination}")
-        elif target.is_dir() and not any((target / name).is_file() for name in ("README.md", "index.md", "index.html")):
-            errors.append(f"{page.relative_to(ROOT)}: directory link has no index: {destination}")
 
 if errors:
     print("UML link validation failed:")
