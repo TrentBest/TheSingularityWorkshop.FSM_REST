@@ -98,6 +98,17 @@ public static class RestRequestFactory
         }
 
         var values = binding.Parameters;
+        var declaredParameterNames = operation.Parameters
+            .Select(parameter => parameter.Name)
+            .ToHashSet(StringComparer.Ordinal);
+        var unknownParameterNames = values.Keys
+            .Where(name => !declaredParameterNames.Contains(name))
+            .OrderBy(name => name, StringComparer.Ordinal)
+            .ToArray();
+        if (unknownParameterNames.Length > 0)
+            throw new ArgumentException(
+                $"Runtime values were supplied for undeclared REST parameter(s): {string.Join(", ", unknownParameterNames)}.",
+                nameof(binding));
         var requestHeaders = headers is null
             ? new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
             : new Dictionary<string, string>(headers, StringComparer.OrdinalIgnoreCase);
