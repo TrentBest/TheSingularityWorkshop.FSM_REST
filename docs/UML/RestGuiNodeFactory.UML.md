@@ -67,7 +67,7 @@ The final relationship is a use-case relationship: the host dispatches the emitt
 ## Verification
 - [Source](../../src/FSM_REST.GUI/RestGuiNodeFactory.cs)
 - [Core mapping](../../src/FSM_REST/RestGuiMapping.cs)
-- [Executor](../../src/FSM_REST/RestGuiOperationExecutor.cs)
+- [Executor](../../src/FSM_REST.GUI/RestGuiOperationExecutor.cs)
 - [Tests](../../tests/FSM_REST.Tests/RestGuiNodeFactoryTests.cs)
 - [Consumer guide](../CONSUMING.md)
 
