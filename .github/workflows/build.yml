@@ -48,6 +48,9 @@ jobs:
           --results-directory ./TestResults
           --logger "trx;LogFileName=testresults.trx"
 
+      - name: Run deterministic end-to-end demo
+        run: dotnet run --project samples/RestCapabilityDemo/RestCapabilityDemo.csproj --configuration Release --no-build
+
       - name: Prepare coverage report
         shell: bash
         run: |
