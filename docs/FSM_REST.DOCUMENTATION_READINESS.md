@@ -62,18 +62,19 @@ The [Architecture Contract](ARCHITECTURE.md) now defines package boundaries and 
 ## Exact-SHA verification evidence
 
 - **Verified branch:** `development`
-- **Verified commit:** [`f9d282b55d3731d4598185ee8b0add20764cbbf9`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/f9d282b55d3731d4598185ee8b0add20764cbbf9)
-- **Workflow:** [Package FSM REST run 40059507396](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40059507396) — completed successfully.
-- **Build-and-test job:** passed documentation contract, architecture boundary, UML/image-link checks, restore/build, test with coverage, deterministic end-to-end demo, package packing, and packed-NuGet artifact audit.
+- **Verified commit:** [`269491e1855b25e5ce530ed9052cdd4240faca87`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/269491e1855b25e5ce530ed9052cdd4240faca87)
+- **Workflow:** [Package FSM REST run 40059795371](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40059795371) — completed successfully at this exact SHA.
+- **Build-and-test job:** passed documentation contract, architecture boundary, UML/image-link checks, restore/build, tests with coverage, deterministic end-to-end demo, package packing, and packed-NuGet artifact audit.
 - **Source-integration job:** passed restore, build, and tests against the source-integrated MicroBundleDomain solution.
 - **NuGet publication:** skipped. This run did not publish packages.
+- **Integration-index follow-up runs:** GUI [40059769999](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40059769999), OpenAPI [40059774347](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40059774347), and FSM_COS [40059779299](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40059779299) also completed successfully.
 
-This evidence verifies the recorded commit only. Any subsequent source or workflow change requires a new exact-SHA run before the evidence can be treated as current.
+The exact-SHA run validates the navigable integration-group indexes and current documentation checks at the recorded commit. This readiness-file update itself creates a newer commit, so its exact-SHA CI must finish before this evidence is considered current for the updated tracker.
 
 ## Evidence and completion rule
 Do not mark documentation 100% ready until production sources are reconciled against companions, every public class/record/interface has verified UML/use-case coverage, local links and examples are checked, and documentation/full CI passes at the exact SHA. A prior code CI pass at SHA 32e26834a2e6a9e7c3cfbe80ee64a9dff6e9d296 predates these documentation commits. A documentation contract check is now wired into the main build workflow; final verification must cite a successful run at the latest documentation SHA.
 
-**Current documentation readiness: in progress (estimated 65%).** The source inventory is now 21 files with companions, architecture diagrams have a dedicated folder, and local UML links are enforced in CI. Remaining work: reconcile every public type to a target-centered UML page, audit visual provenance and technical fidelity of companion pages, and repeat exact-SHA CI after subsequent changes. The current UML relative-link/image-path checker passes at the verified commit. Do not treat the 20/20 companion count as a completeness or correctness percentage.
+**Current documentation readiness: in progress (estimated 68%).** The source inventory is now 21 files with companions, architecture diagrams have a dedicated folder, and local UML links are enforced in CI. Remaining work: reconcile every public type to a target-centered UML page, audit visual provenance and technical fidelity of companion pages, and repeat exact-SHA CI after subsequent changes. The current UML relative-link/image-path checker passes at the verified commit. Do not treat the 20/20 companion count as a completeness or correctness percentage.
 
 ## Next sequence
 1. Complete the domain assessment and implement P0 correctness/contract gaps before treating documentation completeness as release readiness.
