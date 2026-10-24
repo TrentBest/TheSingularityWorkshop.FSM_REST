@@ -1,6 +1,9 @@
 # FSM_REST Request Execution UML
 
-**Author / workshop moniker:** @TrentBest  
+****Provenance:** Source-grounded execution overview; manually maintained, not generated.
+**Source:** [Request construction](../../src/FSM_REST/RestRequestFactory.cs) · [Transport contract](../../src/FSM_REST/IRestTransport.cs) · [HTTP adapter](../../src/FSM_REST/HttpClientRestTransport.cs)
+
+uthor / workshop moniker:** @TrentBest  
 **Purpose:** Explain the implementation boundary between describing a REST operation, constructing a concrete request, sending it, and interpreting the result.
 
 ## Class card
