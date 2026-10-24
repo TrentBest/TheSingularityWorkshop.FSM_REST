@@ -376,6 +376,7 @@ Authentication, credential acquisition, concrete GUI rendering, application-stat
 - [Reflection model](docs/REFLECTION.md) — descriptor semantics and execution flow.
 - [MicroBundle integration](docs/MICROBUNDLE.md) — composition boundary and optional FSM_COS adapter.
 - [Core UML and use cases](docs/UML/Architecture/FSM_REST.Core.UML.md) — source-grounded package relationships.
+- [RestFsmExecutor type page](docs/RestFsmExecutor.md) and [UML/use cases](docs/UML/RestFsmExecutor.UML.md) — FSM_API-backed request lifecycle and verification limits.
 - [RestOperationDescriptor class card](docs/UML/RestOperationDescriptor.UML.md) — focused class responsibilities and use cases.
 - [Request execution UML](docs/UML/Architecture/RestRequestExecution.UML.md) — request construction, transport substitution, response handling, and test coverage.
 
