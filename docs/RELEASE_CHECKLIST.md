@@ -7,7 +7,7 @@ Use this checklist for a candidate package release. It is a verification gate, n
 - [ ] Core package restores and builds without an FSM_COS dependency or unintended Workshop-package dependency.
 - [ ] FSM_COS integration remains in the separate `FSM_REST.COS` project/package; do not move composition adapters into core.
 - [ ] Packed NuGet metadata and dependency groups match the intended package boundary and supported target frameworks.
-- [ ] The package does not claim to implement authentication, retries, caching, endpoint discovery, OpenAPI/YAML parsing, domain schemas, GUI manifestation, or experience lifecycle unless those capabilities are explicitly implemented and tested.
+- [ ] The package does not claim to implement authentication, retries, caching, endpoint discovery, OpenAPI/YAML parsing, domain schemas, GUI manifestation, or experience lifecycle unless those capabilities are explicitly implemented and tested. OpenAPI support is provided by `TheSingularityWorkshop.FSM_Rest.OpenApi`, not core.
 
 ## Behavior and API
 
