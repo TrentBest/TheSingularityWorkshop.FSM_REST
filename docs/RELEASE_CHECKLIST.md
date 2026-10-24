@@ -4,12 +4,12 @@ Use this checklist for a candidate package release. It is a verification gate, n
 
 ## Latest candidate audit snapshot
 
-- **Candidate commit:** [`031562b080017b85b78cabed153cb8b7bdc2147c`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/031562b080017b85b78cabed153cb8b7bdc2147c) on `development`.
-- **CI run:** [Package FSM REST #40063906219](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40063906219) — build/test, source integration, deterministic demo, coverage upload, package audit, and artifact upload passed; publication was skipped.
-- **Latest checklist-commit validation:** [CI run #40065950126](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40065950126) passed on `c1827a8a23a90f61ac274e833112436b1c658cee` (documentation-only checklist update); build/test and source integration passed, package audit/artifact upload passed, and publication was skipped. This confirms the current branch commit is green but does not replace the separately identified package artifact snapshot below.
-- **Package artifact:** workflow artifact `12548278893`, `fsm-rest-nuget-package`, ZIP SHA-256 `75b3498b3a0e1c8ebd8ef07e6e0d990e3d4c16cdee2f0ea285df44496cf68801`.
+- **Candidate commit:** [`94038ddcfc59e2092d7673cee5569a8d6b0616a5`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/94038ddcfc59e2092d7673cee5569a8d6b0616a5) on `development`.
+- **CI run:** [Package FSM REST #40069735788](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40069735788) — build-and-test and source-integration passed on this exact SHA; publication was skipped.
+- **Package artifact:** workflow artifact `12550409529`, `fsm-rest-nuget-package`, ZIP SHA-256 `583bd9e8d18f1a4df0daa618b9d614b44c6a9599f2e44f2fd031fde571c48a47`.
 - **Inspected packages:** `TheSingularityWorkshop.FSM_Rest` `0.1.0-alpha.5` (depends on `TheSingularityWorkshop.FSM_API` `1.0.13`); `TheSingularityWorkshop.FSM_Rest.OpenApi` `0.1.0-alpha.1` (depends on core `0.1.0-alpha.5`); `TheSingularityWorkshop.FSM_Rest.COS` `0.1.0-alpha.1` (depends on core `0.1.0-alpha.5` and `TheSingularityWorkshop.MicroBundleDomain` `1.0.1`). All three contain a `net8.0` assembly, XML API documentation, README, and license file. Core has no MicroBundleDomain or FSM_COS dependency.
-- **Scope of evidence:** this snapshot documents the inspected artifacts from that run. Any source change requires a new exact-SHA CI run; publication remains a separate, explicitly approved action.
+- **Artifact inspection:** the archive contains exactly these three `.nupkg` files. Their nuspec dependency identities and versions match the intended package boundaries above. The packages contain XML docs, README, and license files. Repository metadata was not present in the inspected nuspecs and remains a consumer-discoverability improvement to evaluate; it is not being represented as verified.
+- **Scope of evidence:** this is the inspected package snapshot for the exact candidate SHA. Any subsequent source or documentation commit requires a new exact-SHA CI run; publication remains a separate, explicitly approved action.
 
 ## Package boundary
 
