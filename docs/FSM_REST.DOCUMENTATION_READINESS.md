@@ -55,6 +55,10 @@ All 20 previously inventoried production C# files plus `src/FSM_REST/RestFsmExec
 - src/FSM_REST.GUI/RestGuiNodeFactory.cs
 - src/FSM_REST.GUI/RestGuiOperationExecutor.cs
 
+## Published package baseline
+
+The owner-provided NuGet Gallery snapshot confirms `TheSingularityWorkshop.FSM_Rest` version **`0.1.0-alpha.4`** is the current published version shown, targeting .NET 8.0. The repository candidate `0.1.0-alpha.5` is therefore an update candidate, not a first release. The same snapshot shows `TheSingularityWorkshop.FSM_API` `1.0.13` and `TheSingularityWorkshop.MicroBundleDomain` `1.0.1`; verify dependency metadata from the packed artifacts before publication. NuGet publication remains explicitly approval-gated.
+
 ## Domain assessment / implementation status
 
 The [Architecture Contract](ARCHITECTURE.md) now defines package boundaries and verification levels. A separate [Domain Gap Assessment](DOMAIN_GAP_ASSESSMENT.md) records implemented capabilities, explicit boundaries, and missing behavioral/semantic coverage. OpenAPI import and connection code has been moved into `src/FSM_REST.OpenApi`; GUI operation execution now lives in `src/FSM_REST.GUI` and accepts a neutral descriptor plus injected transport. This is intentionally not a readiness percentage. Initial P0 correctness work now rejects unsafe operation paths (absolute/network paths, query/fragment injection, and literal or percent-encoded dot segments) and malformed HTTP method tokens; regression tests cover those boundaries and query-value percent encoding. CI evidence must be recorded only after the latest implementation commit finishes.
@@ -62,14 +66,14 @@ The [Architecture Contract](ARCHITECTURE.md) now defines package boundaries and 
 ## Exact-SHA verification evidence
 
 - **Verified branch:** `development`
-- **Verified commit:** [`269491e1855b25e5ce530ed9052cdd4240faca87`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/269491e1855b25e5ce530ed9052cdd4240faca87)
-- **Workflow:** [Package FSM REST run 40059795371](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40059795371) — completed successfully at this exact SHA.
-- **Build-and-test job:** passed documentation contract, architecture boundary, UML/image-link checks, restore/build, tests with coverage, deterministic end-to-end demo, package packing, and packed-NuGet artifact audit.
-- **Source-integration job:** passed restore, build, and tests against the source-integrated MicroBundleDomain solution.
-- **NuGet publication:** skipped. This run did not publish packages.
-- **Integration-index follow-up runs:** GUI [40059769999](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40059769999), OpenAPI [40059774347](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40059774347), and FSM_COS [40059779299](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40059779299) also completed successfully.
+- **Verified branch:** `development`
+- **Verified commit:** [`5154960223d230a92e0e7166e20f56ec4c51299b`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/5154960223d230a92e0e7166e20f56ec4c51299b)
+- **Workflow:** [Package FSM REST run 40061158845](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40061158845) — completed successfully at this exact SHA.
+- **Build-and-test job:** passed.
+- **Source-integration job:** passed.
+- **NuGet publication job:** skipped; no packages were published.
 
-The exact-SHA run validates the navigable integration-group indexes and current documentation checks at the recorded commit. This readiness-file update itself creates a newer commit, so its exact-SHA CI must finish before this evidence is considered current for the updated tracker.
+This exact-SHA run validates the branch-reconciliation documentation update against the repository's build/test and source-integration workflows. The current readiness tracker update will itself create a newer commit, so that new SHA must complete CI before it is treated as current evidence.
 
 ## Evidence and completion rule
 Do not mark documentation 100% ready until production sources are reconciled against companions, every public class/record/interface has verified UML/use-case coverage, local links and examples are checked, and documentation/full CI passes at the exact SHA. A prior code CI pass at SHA 32e26834a2e6a9e7c3cfbe80ee64a9dff6e9d296 predates these documentation commits. A documentation contract check is now wired into the main build workflow; final verification must cite a successful run at the latest documentation SHA.
