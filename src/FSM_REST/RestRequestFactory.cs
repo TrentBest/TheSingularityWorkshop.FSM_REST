@@ -158,10 +158,24 @@ public static class RestRequestFactory
                     break;
 
                 case "header":
+                    if (!IsHttpToken(parameter.Name))
+                        throw new ArgumentException(
+                            $"Invalid HTTP header parameter name '{parameter.Name}'.",
+                            nameof(operation));
+                    if (value.Any(character =>
+                            character is '\r' or '\n' ||
+                            (char.IsControl(character) && character != '\t')))
+                        throw new ArgumentException(
+                            $"HTTP header parameter '{parameter.Name}' contains an invalid control character.",
+                            nameof(binding));
                     requestHeaders[parameter.Name] = value;
                     break;
 
                 case "cookie":
+                    if (!IsHttpToken(parameter.Name))
+                        throw new ArgumentException(
+                            $"Invalid cookie parameter name '{parameter.Name}'.",
+                            nameof(operation));
                     cookies.Add($"{parameter.Name}={Uri.EscapeDataString(value)}");
                     break;
 
