@@ -17,8 +17,8 @@ public static class RestFsmExecutor
 
     static RestFsmExecutor()
     {
-        FSM_API.Create.CreateProcessingGroup(ProcessingGroup);
-        FSM_API.Create.CreateFiniteStateMachine(DefinitionName, 0, ProcessingGroup)
+        TheSingularityWorkshop.FSM_API.FSM_API.Create.CreateProcessingGroup(ProcessingGroup);
+        TheSingularityWorkshop.FSM_API.FSM_API.Create.CreateFiniteStateMachine(DefinitionName, 0, ProcessingGroup)
             .State("Ready", null, null, null)
             .State("Sending", null, null, null)
             .State("Completed", null, null, null)
@@ -41,7 +41,7 @@ public static class RestFsmExecutor
         ArgumentNullException.ThrowIfNull(transport);
 
         var context = new ExecutionContext();
-        var handle = FSM_API.Create.CreateInstance(DefinitionName, context, ProcessingGroup);
+        var handle = TheSingularityWorkshop.FSM_API.FSM_API.Create.CreateInstance(DefinitionName, context, ProcessingGroup);
         try
         {
             context.TargetState = "Sending";
@@ -73,7 +73,7 @@ public static class RestFsmExecutor
         }
         finally
         {
-            FSM_API.Interaction.DestroyInstance(handle);
+            TheSingularityWorkshop.FSM_API.FSM_API.Interaction.DestroyInstance(handle);
         }
     }
 
