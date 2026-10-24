@@ -95,7 +95,7 @@ jobs:
 
           expected = {
               "TheSingularityWorkshop.FSM_Rest": {
-                  "version": "0.1.0-alpha.4",
+                  "version": "0.1.0-alpha.5",
                   "dll_prefix": "lib/net8.0/",
                   "required_files": ["README.md", "LICENSE.txt"],
                   "required_dependencies": ["TheSingularityWorkshop.FSM_API"],
