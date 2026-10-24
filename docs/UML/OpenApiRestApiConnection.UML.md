@@ -32,7 +32,7 @@ The diagram is deliberately focused on the target and its direct architectural r
 2. **Respect the boundary.** Use this type for its declared role; do not infer network behavior, authorization, schema validation, or runtime rendering unless explicitly implemented by the related component.
 
 ## Verification and limits
-- Source: [OpenApiRestApiConnection.cs](../../src/FSM_REST/OpenApiRestApiConnection.cs)
-- Related UML: [core architecture](FSM_REST.Core.UML.md) and [UML index](README.md)
+- Source: [OpenApiRestApiConnection.cs](../../src/FSM_REST.OpenApi/OpenApiRestApiConnection.cs)
+- Related UML: [core architecture](Architecture/FSM_REST.Core.UML.md) and [UML index](README.md)
 - Tests: [FSM_REST tests](../../tests/FSM_REST.Tests/)
 - Re-check the diagram when public members, dependency relationships, or behavior change.
