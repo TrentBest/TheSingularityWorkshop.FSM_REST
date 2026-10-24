@@ -15,24 +15,24 @@
 - Links, diagrams, examples, package boundaries, and claims are checked; publishing remains approval-gated.
 
 ## Baseline inventory
-The development tree contains **20 production C# source files** across core REST, optional OpenAPI provider, optional FSM_COS adapter, and optional GUI adapter. Test sources are excluded.
+The development tree contains **21 production C# source files** across core REST, optional OpenAPI provider, optional FSM_COS adapter, and optional GUI adapter. Test sources are excluded.
 
 | Area | State | Remaining work |
 |---|---|---|
 | README / five-part entry | Present | Audit claims and accessibility/readability |
 | Gallery | Present | Check each visual against source and runnable recipe |
 | Consumer guide | Present | Link per-class docs and UML index |
-| Source companions | **20/20 present** | Review technical accuracy and verify links |
-| UML index and architecture | Expanded | Audit every public type, relationships, and use cases |
+| Source companions | **21/21 present** | Review technical accuracy and verify links |
+| UML index and architecture | Architecture diagrams grouped under `docs/UML/Architecture/`; FSM_API lifecycle diagram added | Audit every public type, relationships, use cases, and link-check findings |
 | OpenAPI provider | Separate project/package; source companions and UML present | Verify fidelity warnings, package dependency graph, and consumer examples |
 | GUI adapter | Companion and target-centered UML present | Verify emitted metadata and renderer limitations; keep execution independent of OpenAPI |
 | FSM_COS adapter | Companion and target-centered UML present | Verify against current MicroBundleDomain contract |
 | Visual provenance | Partially documented | Audit each SVG/recipe and classify evidence |
-| Documentation CI | Minimum contract checker added; first enforcement run exposed three legacy UML metadata gaps, now patched | Verify the patched pages pass; extend checks only where robust, including local links |
+| Documentation CI | Source-companion contract, architecture guard, and recursive UML relative-link/image-path checker are wired into CI | Verify exact-SHA CI and resolve any link-check findings |
 | Generated UML / GUI.SVG | Not claimed | Source-to-model generation remains future work |
 
 ## Production source inventory
-All 20 listed production C# files now have neighboring Markdown companions:
+All 20 previously inventoried production C# files plus `src/FSM_REST/RestFsmExecutor.cs` now have neighboring Markdown companions:
 - src/FSM_REST/HttpClientRestTransport.cs
 - src/FSM_REST/IRestTransport.cs
 - src/FSM_REST/RestApiDescriptor.cs
@@ -61,7 +61,7 @@ The [Architecture Contract](ARCHITECTURE.md) now defines package boundaries and 
 ## Evidence and completion rule
 Do not mark documentation 100% ready until production sources are reconciled against companions, every public class/record/interface has verified UML/use-case coverage, local links and examples are checked, and documentation/full CI passes at the exact SHA. A prior code CI pass at SHA 32e26834a2e6a9e7c3cfbe80ee64a9dff6e9d296 predates these documentation commits. A documentation contract check is now wired into the main build workflow; final verification must cite a successful run at the latest documentation SHA.
 
-**Current documentation readiness: in progress.** Structural boundary work is materially improved; the remaining denominator, local-link audit, visual provenance, and final exact-SHA CI evidence still need reconciliation. Do not treat the 20/20 companion count as a completeness or correctness percentage.
+**Current documentation readiness: in progress (estimated 65%).** The source inventory is now 21 files with companions, architecture diagrams have a dedicated folder, and local UML links are enforced in CI. Remaining work: reconcile every public type to a target-centered UML page, resolve link-check findings, audit visual provenance, and capture successful exact-SHA CI evidence. Do not treat the 20/20 companion count as a completeness or correctness percentage.
 
 ## Next sequence
 1. Complete the domain assessment and implement P0 correctness/contract gaps before treating documentation completeness as release readiness.
