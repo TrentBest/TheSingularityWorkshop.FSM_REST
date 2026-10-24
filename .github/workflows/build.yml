@@ -152,7 +152,6 @@ jobs:
                   if missing:
                       raise SystemExit(f"{package_id}: missing required package files: {missing}")
                   if not any(name.startswith(rule["dll_prefix"]) and name.endswith(".dll") for name in names):
-                  if not any(name.startswith(rule["dll_prefix"]) and name.endswith(".dll") for name in names):
                       raise SystemExit(f"{package_id}: missing net8.0 assembly")
                   if not any(name.startswith(rule["dll_prefix"]) and name.endswith(".xml") for name in names):
                       raise SystemExit(f"{package_id}: missing XML API documentation")
