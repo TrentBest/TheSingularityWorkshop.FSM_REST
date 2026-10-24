@@ -65,15 +65,15 @@ The [Architecture Contract](ARCHITECTURE.md) now defines package boundaries and 
 
 ## Exact-SHA verification evidence
 
-- **Verified branch:** `development`
-- **Verified branch:** `development`
-- **Verified commit:** [`5154960223d230a92e0e7166e20f56ec4c51299b`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/5154960223d230a92e0e7166e20f56ec4c51299b)
-- **Workflow:** [Package FSM REST run 40061158845](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40061158845) — completed successfully at this exact SHA.
-- **Build-and-test job:** passed.
-- **Source-integration job:** passed.
+- **Branch:** `development`
+- **Historically verified commit:** [`5154960223d230a92e0e7166e20f56ec4c51299b`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/5154960223d230a92e0e7166e20f56ec4c51299b)
+- **Historical workflow:** [Package FSM REST run 40061158845](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40061158845) — completed successfully at that exact SHA.
+- **Build-and-test job:** passed at the historical SHA.
+- **Source-integration job:** passed at the historical SHA.
 - **NuGet publication job:** skipped; no packages were published.
+- **Current development head at the time of this audit:** [`f3ccd9f6313b60a9044216e5ee234d97e87bb29f`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/f3ccd9f6313b60a9044216e5ee234d97e87bb29f) — current combined status lookup returned no status checks, and the connector's commit workflow lookup only reports PR-triggered runs. Therefore current-head CI is **unverified**, not passed.
 
-This exact-SHA run validates the branch-reconciliation documentation update against the repository's build/test and source-integration workflows. The current readiness tracker update will itself create a newer commit, so that new SHA must complete CI before it is treated as current evidence.
+The successful run above is historical evidence only; it does not validate the current development head or later documentation changes. Do not treat it as current release evidence.
 
 ## Evidence and completion rule
 Do not mark documentation 100% ready until production sources are reconciled against companions, every public class/record/interface has verified UML/use-case coverage, local links and examples are checked, and documentation/full CI passes at the exact SHA. A prior code CI pass at SHA 32e26834a2e6a9e7c3cfbe80ee64a9dff6e9d296 predates these documentation commits. A documentation contract check is now wired into the main build workflow; final verification must cite a successful run at the latest documentation SHA.
