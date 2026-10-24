@@ -12,7 +12,7 @@ FSM_REST is a reusable REST capability substrate. It describes an operation, bin
 
 ```mermaid
 flowchart TD
-    Provider[Optional provider: OpenAPI / future formats] -->|descriptors| Core[REST Core]
+    Provider[Optional provider: OpenAPI / future formats] -->|descriptors| Core[REST Core + FSM_API]
     Core --> Request[Request construction]
     Request --> Transport[IRestTransport]
     Transport --> Response[RestResponse]
@@ -51,7 +51,7 @@ Dependencies point inward toward the neutral model. Core must not depend on FSM_
 
 | Package/project | Owns | Must not own |
 |---|---|---|
-| `src/FSM_REST` / `TheSingularityWorkshop.FSM_Rest` | Neutral descriptors, binding, request factory, transport, response | OpenAPI parser, COS, GUI, auth policy |
+| `src/FSM_REST` / `TheSingularityWorkshop.FSM_Rest` | Neutral descriptors, binding, request factory, transport, response, FSM_API-backed execution lifecycle | OpenAPI parser, COS, GUI, auth policy |
 | `src/FSM_REST.OpenApi` / `TheSingularityWorkshop.FSM_Rest.OpenApi` | Initial OpenAPI 3.x JSON import and definition-URL connection | Core REST contracts, full conformance claims |
 | `src/FSM_REST.COS` / `TheSingularityWorkshop.FSM_Rest.COS` | REST-to-MicroBundle adapter | Core transport/model ownership |
 | `src/FSM_REST.GUI` | Optional GUI mapping adapter | Core REST dependency on GUI |
@@ -64,6 +64,8 @@ Dependencies point inward toward the neutral model. Core must not depend on FSM_
 - **Integration:** cross-package tests using fake transports or controlled handlers; live external services are not required for deterministic CI.
 - **Package:** inspect IDs, versions, target frameworks, readme/license/XML docs, and dependency graphs.
 - **Consumer proof:** a clean consumer restores the intended packages and executes the documented happy path.
+
+The core package directly references `TheSingularityWorkshop.FSM_API` and exposes `RestFsmExecutor` as an opt-in FSM-governed execution path. The FSM tracks transport lifecycle (`Ready → Sending → Completed/Failed/Cancelled`); HTTP non-success status remains a completed transport result, not an FSM failure. Direct transport use remains available.
 
 The repository's `scripts/check_architecture.py` is the CI guard for these package boundaries; it rejects core references to the OpenAPI, GUI-execution, and COS adapter types. A green build proves only the code and checks run by that workflow. It does not establish complete REST semantics, full OpenAPI conformance, production service reliability, or release approval.
 
