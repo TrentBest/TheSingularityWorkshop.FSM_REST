@@ -97,6 +97,32 @@ public static class RestRequestFactory
                     nameof(operation));
         }
 
+        var pathPlaceholders = System.Text.RegularExpressions.Regex.Matches(
+                operation.Path, @"\\{([^{}]+)\\}")
+            .Select(match => match.Groups[1].Value)
+            .ToHashSet(StringComparer.Ordinal);
+        var declaredPathParameterNames = operation.Parameters
+            .Where(parameter => string.Equals(parameter.Location, "path", StringComparison.OrdinalIgnoreCase))
+            .Select(parameter => parameter.Name)
+            .ToHashSet(StringComparer.Ordinal);
+        var missingPathDeclarations = pathPlaceholders
+            .Where(name => !declaredPathParameterNames.Contains(name))
+            .OrderBy(name => name, StringComparer.Ordinal)
+            .ToArray();
+        if (missingPathDeclarations.Length > 0)
+            throw new ArgumentException(
+                $"The operation path contains undeclared path parameter(s): {string.Join(", ", missingPathDeclarations)}.",
+                nameof(operation));
+
+        var unusedPathDeclarations = declaredPathParameterNames
+            .Where(name => !pathPlaceholders.Contains(name))
+            .OrderBy(name => name, StringComparer.Ordinal)
+            .ToArray();
+        if (unusedPathDeclarations.Length > 0)
+            throw new ArgumentException(
+                $"Path parameter declaration(s) do not appear in the operation path: {string.Join(", ", unusedPathDeclarations)}.",
+                nameof(operation));
+
         var values = binding.Parameters;
         var declaredParameterNames = operation.Parameters
             .Select(parameter => parameter.Name)
