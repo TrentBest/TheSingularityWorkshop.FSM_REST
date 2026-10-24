@@ -152,6 +152,38 @@ public sealed class RestTransportTests
         await Assert.ThrowsAsync<ArgumentNullException>(() => transport.SendAsync(null!));
     }
 
+    [Fact]
+    public async Task FsmExecutorTracksTransportCompletionWithoutReclassifyingHttpStatus()
+    {
+        var transport = new DelegateTransport((_, _) => Task.FromResult(
+            new RestResponse(404, "Not Found", new Dictionary<string, string>(), "missing")));
+
+        var response = await RestFsmExecutor.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/missing")),
+            transport);
+
+        Assert.Equal(404, response.StatusCode);
+        Assert.False(response.IsSuccessStatusCode);
+    }
+
+    [Fact]
+    public async Task FsmExecutorPropagatesTransportFailure()
+    {
+        var transport = new DelegateTransport((_, _) =>
+            Task.FromException<RestResponse>(new HttpRequestException("offline")));
+
+        await Assert.ThrowsAsync<HttpRequestException>(() => RestFsmExecutor.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/offline")),
+            transport));
+    }
+
+    private sealed class DelegateTransport(
+        Func<RestRequest, CancellationToken, Task<RestResponse>> send) : IRestTransport
+    {
+        public Task<RestResponse> SendAsync(RestRequest request, CancellationToken cancellationToken = default) =>
+            send(request, cancellationToken);
+    }
+
     private sealed class BlockingHandler : HttpMessageHandler
     {
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
