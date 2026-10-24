@@ -24,4 +24,7 @@
     <None Include="../../LICENSE.txt" Pack="true" PackagePath="" />
     <None Include="../../docs/**/*" Pack="true" PackagePath="docs/%(RecursiveDir)%(Filename)%(Extension)" />
   </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="TheSingularityWorkshop.FSM_API" Version="1.0.13" />
+  </ItemGroup>
 </Project>
