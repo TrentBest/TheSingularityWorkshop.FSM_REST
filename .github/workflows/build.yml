@@ -27,6 +27,9 @@ jobs:
       - name: Check documentation contract
         run: python3 scripts/check_documentation.py
 
+      - name: Check architecture boundaries
+        run: python3 scripts/check_architecture.py
+
       - name: Setup .NET
         uses: actions/setup-dotnet@v6
         with:
