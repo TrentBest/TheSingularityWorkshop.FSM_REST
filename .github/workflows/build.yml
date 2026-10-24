@@ -95,6 +95,7 @@ jobs:
                   "version": "0.1.0-alpha.4",
                   "dll_prefix": "lib/net8.0/",
                   "required_files": ["README.md", "LICENSE.txt"],
+                  "required_dependencies": ["TheSingularityWorkshop.FSM_API"],
                   "forbidden_dependencies": ["TheSingularityWorkshop.MicroBundleDomain", "TheSingularityWorkshop.FSM_COS"],
               },
               "TheSingularityWorkshop.FSM_Rest.OpenApi": {
