@@ -1,4 +1,5 @@
 using TheSingularityWorkshop.FSM_REST;
+using TheSingularityWorkshop.FSM_REST.OpenApi;
 using Xunit;
 
 namespace TheSingularityWorkshop.FSM_REST.Tests;
