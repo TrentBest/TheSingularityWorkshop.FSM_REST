@@ -69,7 +69,7 @@ public static class RestRequestFactory
                 "The REST base URI must not contain a query or fragment.",
                 nameof(baseUri));
 
-        const string methodTokenPunctuation = "!#$%&'*+-.^_\\u0060|~";
+        const string methodTokenPunctuation = "!#$%&'*+-.^_\u0060|~";
         if (string.IsNullOrWhiteSpace(operation.Method) ||
             operation.Method.Any(character =>
                 !char.IsAsciiLetterOrDigit(character) && !methodTokenPunctuation.Contains(character)))
