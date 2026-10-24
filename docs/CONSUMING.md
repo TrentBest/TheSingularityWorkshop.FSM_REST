@@ -1,6 +1,6 @@
 # Consuming FSM_REST
 
-This guide shows the supported path from an API description to one outbound request and one observed response. FSM_REST includes an initial OpenAPI 3.x JSON importer, but it is not a complete OpenAPI runtime, authentication system, or domain client.
+This guide shows the supported path from an API description to one outbound request and one observed response. The optional `TheSingularityWorkshop.FSM_Rest.OpenApi` package includes an initial OpenAPI 3.x JSON importer, but it is not a complete OpenAPI runtime, authentication system, or domain client.
 
 ## Connect from a definition URL
 
@@ -9,6 +9,7 @@ When the API publishes a Swagger/OpenAPI 3.x JSON document, pass its URL to `Ope
 ```csharp
 using System.Net.Http;
 using TheSingularityWorkshop.FSM_REST;
+using TheSingularityWorkshop.FSM_REST.OpenApi;
 
 using var client = new HttpClient();
 // Configure client.DefaultRequestHeaders or a handler for the API's authentication policy.
@@ -33,7 +34,7 @@ The supplied `HttpClient` is used both to retrieve the definition and to call th
 
 ## Map an operation into a GUI and application data
 
-An imported operation can be mapped to renderer-neutral GUI metadata without adding a GUI-framework dependency to FSM_REST. The GUI adapter chooses the concrete controls; the mapping declares which operation inputs come from application state, which are supplied by the user, and where the result should be stored.
+An imported operation can be mapped to renderer-neutral GUI metadata through the optional GUI adapter. The importer and GUI executor are separate optional packages; neither is a dependency of the neutral core. The GUI adapter chooses the concrete controls; the mapping declares which operation inputs come from application state, which are supplied by the user, and where the result should be stored.
 
 ```csharp
 var operation = connection.Api.Operations.Single(item => item.OperationId == "getPerson");
@@ -55,11 +56,13 @@ var guiMapping = new RestGuiMapping(
     showErrorState: true);
 ```
 
-A GUI adapter can render this mapping as an action/detail view. Use `RestGuiOperationExecutor.ExecuteAsync` to resolve `selection.personId`, invoke the operation with the resolved `id`, and publish the response to `views.person` through a host-supplied callback. Inputs without a `SourcePath` are collected from the user and passed through `userInputs`. The `presentation` value is a renderer-neutral hint, not a promise that FSM_REST itself generates controls.
+A GUI adapter can render this mapping as an action/detail view. Use `RestGuiOperationExecutor.ExecuteAsync` to resolve `selection.personId`, invoke the operation with the resolved `id`, and publish the response to `views.person` through a host-supplied callback. The executor accepts the neutral API descriptor, base URI, and transport directly; it does not require an OpenAPI connection. Inputs without a `SourcePath` are collected from the user and passed through `userInputs`. The `presentation` value is a renderer-neutral hint, not a promise that FSM_REST itself generates controls.
 
 ```csharp
 RestResponse response = await RestGuiOperationExecutor.ExecuteAsync(
-    connection,
+    connection.Api,
+    connection.BaseUri,
+    new HttpClientRestTransport(client),
     guiMapping,
     resolveSource: path => applicationState.ReadString(path),
     userInputs: formValues,
@@ -156,7 +159,7 @@ Use `response.Deserialize<T>()` when the response is JSON and the consuming appl
 
 ## Scope and limitations
 
-FSM_REST provides a neutral descriptor/binding/request/transport/response path, an `OpenApiJsonImporter` for OpenAPI 3.x JSON, and `OpenApiRestApiConnection` for loading a definition URL and invoking imported operations. The importer reads operation paths, parameters, request-body media/schema hints, and response metadata. It does not itself:
+FSM_REST core provides a neutral descriptor/binding/request/transport/response path. The optional `TheSingularityWorkshop.FSM_Rest.OpenApi` package provides `OpenApiJsonImporter` for OpenAPI 3.x JSON and `OpenApiRestApiConnection` for loading a definition URL and invoking imported operations. The importer reads operation paths, parameters, request-body media/schema hints, and response metadata. It does not itself:
 
 - load YAML definitions, resolve external references, substitute server variables, select among multiple server environments, or fully implement the OpenAPI standard (including composed schemas and complete validation);
 - implement array/object parameter serialization styles, `style`/`explode`, or schema-driven body validation;
