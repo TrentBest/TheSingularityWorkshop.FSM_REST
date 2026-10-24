@@ -2,20 +2,20 @@
 
 Use this checklist for a candidate package release. It is a verification gate, not a declaration that a particular version is ready. Confirm the current package version, target frameworks, dependencies, and upstream compatibility from the checked-out source and CI; do not inherit version or prerequisite claims from historical branch documents.
 
-## Latest candidate artifact inspection (before the documentation-link fix)
+## Latest candidate artifact inspection
 
-- **Verified development commit:** [`5c41f1f5cef9225b4da9d1313d7fb11227d83cb1`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/5c41f1f5cef9225b4da9d1313d7fb11227d83cb1).
-- **CI run:** [Package FSM REST #40071303552](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40071303552) — build-and-test and source-integration passed; the automated package audit passed; the publish job was skipped.
-- **Exact package artifact inspected:** artifact `12551087258`, `fsm-rest-nuget-package`, ZIP SHA-256 `a575c812b7e40b9aa67524838cbf3fb390088a2794e4bdd30eace201b6fc62d3`. The archive contains exactly three packages: core `TheSingularityWorkshop.FSM_Rest.0.1.0-alpha.5.nupkg`, `TheSingularityWorkshop.FSM_Rest.OpenApi.0.1.0-alpha.1.nupkg`, and `TheSingularityWorkshop.FSM_Rest.COS.0.1.0-alpha.1.nupkg`.
-- **Manual inspection findings:** all three nuspecs identify repository URL `https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST` and commit `5c41f1f5cef9225b4da9d1313d7fb11227d83cb1`; each has `net8.0` dependency metadata, XML documentation, README and license entries. Core depends on `TheSingularityWorkshop.FSM_API` `1.0.13` and does not declare MicroBundleDomain. OpenApi depends on core `0.1.0-alpha.5`. COS depends on core `0.1.0-alpha.5` and `TheSingularityWorkshop.MicroBundleDomain` `1.0.1`. The package versions and dependency boundaries match the current project files.
-- **Per-package SHA-256:** core `a7a117ddb813c8975f2e24c25b799cb0182dd7a73f3ca9d12a9e006e6a27ce67`; OpenApi `428db817b02d6a474817b3ed9fc7485b98c3184629dcadb7ed688d72518f65cd`; COS `8b3cd0d293568373a194beccd50cb87a07c11c355346345cff7e1457cd459c27`.
-- **Evidence boundary:** this inspection is for the exact artifact and commit listed above. Any subsequent source or documentation commit requires a fresh successful exact-SHA run and a matching artifact. Publication remains a separate, explicitly approved action.
-
+- **Verified development commit:** [`cd716549d68926168aa5a00dad9dd68f9df3e286`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/cd716549d68926168aa5a00dad9dd68f9df3e286).
+- **CI run:** [Package FSM REST #40118238040](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40118238040) — build-and-test and source-integration passed; publish job was skipped as intended.
+- **Exact package artifact inspected:** artifact `12570032974`, `fsm-rest-nuget-package`, ZIP SHA-256 `bb6fb99905573449b7511a17a995242d3caaff5c4806d6a8a189805a3544759e`. The archive contains exactly three packages: core `TheSingularityWorkshop.FSM_Rest.0.1.0-alpha.5.nupkg`, `TheSingularityWorkshop.FSM_Rest.OpenApi.0.1.0-alpha.1.nupkg`, and `TheSingularityWorkshop.FSM_Rest.COS.0.1.0-alpha.1.nupkg`.
+- **Manual inspection findings:** all three nuspecs identify repository URL `https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST` and commit `cd716549d68926168aa5a00dad9dd68f9df3e286`; each has `net8.0` dependency metadata, XML documentation, README and license entries. Core depends on `TheSingularityWorkshop.FSM_API` `1.0.13` and does not declare MicroBundleDomain. OpenApi depends on core `0.1.0-alpha.5`. COS depends on core `0.1.0-alpha.5` and `TheSingularityWorkshop.MicroBundleDomain` `1.0.1`.
+- **Per-package SHA-256:** core `b5a91993a2cb6dcbc98254cf7948ac6d74a6b9025a14605a572a1e0e30b961b6`; OpenApi `63157b7d04c1332178705b20920c9402b547771882966f451dab37def3c31c91`; COS `8821e940d5bb5d7b6d020731d5cc71147f33a0705fb886c361943d3820a85f23`.
+- **Packaged README-link audit:** core (29 links), OpenApi (4), and COS (1) were inspected; zero unresolved local paths and no stale repository-relative `../../` paths remained in the new artifact.
+- **Evidence boundary:** this inspection applies only to the exact artifact and commit above. Any subsequent source or documentation commit requires a fresh successful exact-SHA run and a matching artifact. Publication remains a separate, explicitly approved action.
 ## Package boundary
 
 - [ ] Core package restores and builds without an FSM_COS dependency or unintended Workshop-package dependency.
 - [ ] FSM_COS integration remains in the separate `FSM_REST.COS` project/package; do not move composition adapters into core.
-- [ ] Packed NuGet metadata and dependency groups match the intended package boundary and supported target frameworks.
+- [x] Packed NuGet metadata and dependency groups match the intended package boundary and the current `net8.0` target.
 - [ ] The package does not claim to implement authentication, retries, caching, endpoint discovery, OpenAPI/YAML parsing, domain schemas, GUI manifestation, or experience lifecycle unless those capabilities are explicitly implemented and tested. OpenAPI support is provided by `TheSingularityWorkshop.FSM_Rest.OpenApi`, not core.
 
 ## Behavior and API
@@ -30,10 +30,10 @@ Use this checklist for a candidate package release. It is a verification gate, n
 
 ## CI and package inspection
 
-- [x] CI passed on the latest recorded development SHA, including core build/tests, source-integration build/tests, deterministic demo, and automated package audit. Re-run after this checklist edit and any subsequent source change.
-- [x] Manually download and inspect the exact artifact selected for release: package identities/versions, nuspec dependencies, framework assets, XML docs, README/license, and repository metadata (artifact `12551087258`, SHA-256 recorded above).
-- [ ] Verify first-party dependencies against the actual release plan; do not assume a dependency is stable or compatible based on a historical diagram.
-- [ ] Confirm repository documentation links remain useful from both the repository and the packed package. The inspected artifact exposed missing/stale relative README links (Gallery/demo docs and UML paths in core; repository-level links in OpenApi); a documentation-only fix is now being prepared and must be verified in the next exact-SHA artifact.
+- [x] CI passed on commit `cd716549d68926168aa5a00dad9dd68f9df3e286` (run #40118238040), including build-and-test and source-integration. This checklist-only update itself will require a fresh run before its content is treated as current release evidence.
+- [x] Manually download and inspect the exact candidate artifact: package identities/versions, nuspec dependencies, framework assets, XML docs, README/license, repository metadata, and packaged README links (artifact `12570032974`, SHA-256 recorded above).
+- [x] Verify first-party package dependencies and intended core/optional-adapter boundaries against the current candidate artifact. Broader ecosystem target-framework compatibility remains a separate release consideration.
+- [x] Confirm repository documentation links remain useful from both the repository and the packed package. The exact current artifact was re-inspected after the documentation-link repair; packaged README links had zero unresolved local paths.
 - [ ] Review the release notes for accurate scope, compatibility, known limitations, and upgrade guidance.
 
 ## Publication gate
