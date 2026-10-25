@@ -57,12 +57,12 @@ public static class RestFsmExecutor
             }
             catch (OperationCanceledException exception) when (cancellationToken.IsCancellationRequested)
             {
-                TryRecordTerminalState(handle, context, "Cancelled", exception);
+                TryRecordTerminalState(() => handle.Update(ProcessingGroup), context, "Cancelled", exception);
                 throw;
             }
             catch (Exception exception)
             {
-                TryRecordTerminalState(handle, context, "Failed", exception);
+                TryRecordTerminalState(() => handle.Update(ProcessingGroup), context, "Failed", exception);
                 throw;
             }
 
@@ -79,7 +79,7 @@ public static class RestFsmExecutor
     }
 
     private static void TryRecordTerminalState(
-        dynamic handle,
+        Action recordState,
         ExecutionContext context,
         string targetState,
         Exception originalException)
@@ -87,7 +87,7 @@ public static class RestFsmExecutor
         context.TargetState = targetState;
         try
         {
-            handle.Update(ProcessingGroup);
+            recordState();
         }
         catch (Exception lifecycleException)
         {
