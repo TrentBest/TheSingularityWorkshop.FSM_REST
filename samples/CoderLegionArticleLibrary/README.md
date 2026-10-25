@@ -29,7 +29,11 @@ From the repository root:
 dotnet run --project samples/CoderLegionArticleLibrary -- list 100
 ```
 
-Each page is fetched using `GET /posts?page=N`. Results include the post ID, title, author, date, and the short description supplied by the list endpoint. The sample stops when it reaches an empty page or the specified page cap.
+Each page is fetched using `GET /posts?page=N`. Results include the post ID, title, author, date, and the short description supplied by the list endpoint. The current implementation stops when it reaches an empty `data` array or the specified page cap. **This is the sample's current stopping rule, not yet a verified CoderLegion pagination contract.** Until authoritative documentation confirms that an empty array definitively marks the end of the feed, an empty page must not be treated as proof that the user's full article archive was retrieved. If the page cap is reached, the scan is bounded and may be partial.
+
+### Pagination contract limitation
+
+Before relying on the listing as a complete archive, verify CoderLegion's authoritative pagination rules: page-number convention, empty-page semantics, and any documented total-count or next-page signal. Do not infer undocumented metadata. Until verified, report the result as a scan of the pages actually fetched, not a proven complete archive.
 
 ## Retrieve a complete article
 
