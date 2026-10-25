@@ -75,6 +75,12 @@ The [Architecture Contract](ARCHITECTURE.md) now defines package boundaries and 
 - **Package archive SHA-256:** `cf1510ceefa5ce5fe21e8e72d222c22fad475ba6700e3b4b799411f61c0815da`.
 - **Evidence scope:** this is the latest recorded successful CI snapshot. A later tracker-only commit must pass CI before the resulting repository head can be considered release-verified. The artifact is a CI-produced candidate; package contents still require release review and explicit publication approval.
 
+## Current development delta (not yet CI-verified)
+
+- The FSM-backed REST executor now has four source-level regression cases: HTTP 404 as a completed transport response, transport exception propagation, requested cancellation, and unsolicited cancellation. These tests are present in `tests/FSM_REST.Tests/RestFsmExecutorTests.cs`; their presence is not evidence that they pass.
+- The executor guide now records this test inventory and explicitly retains concurrent-invocation coverage, lifecycle cleanup coverage, and exception masking during a failed FSM lifecycle update as open items.
+- Latest recorded change in this sequence: documentation update commit [`45f41dae28c66a2ab3b4d0d8979f3b670f7cc55c`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/45f41dae28c66a2ab3b4d0d8979f3b670f7cc55c). This is not a successful CI claim. The historical exact-SHA evidence above does not cover this change or the subsequent executor tests.
+
 ## Evidence and completion rule
 Do not mark documentation 100% ready until production sources are reconciled against companions, every public class/record/interface has verified UML/use-case coverage, local links and examples are checked, and documentation/full CI passes at the exact SHA. A prior code CI pass at SHA 32e26834a2e6a9e7c3cfbe80ee64a9dff6e9d296 predates these documentation commits. A documentation contract check is now wired into the main build workflow; final verification must cite a successful run at the latest documentation SHA.
 
