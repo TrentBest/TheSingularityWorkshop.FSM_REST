@@ -71,7 +71,7 @@ The exact FSM_API handle type is intentionally shown as a conceptual role here r
 - Register the shared `TheSingularityWorkshop.FSM_REST.Execution` definition in the `FSM_REST` processing group.
 - Define `Ready`, `Sending`, `Completed`, `Failed`, and `Cancelled` states and guarded transitions.
 - Create a separate context and instance for each request.
-- Record transport outcome, preserve the returned response, rethrow exceptions, and destroy the instance in `finally`.
+- Record transport outcome, preserve the returned response, rethrow transport exceptions even if terminal-state recording fails, and destroy the instance in `finally`.
 
 ## Non-responsibilities
 
@@ -97,7 +97,7 @@ The exact FSM_API handle type is intentionally shown as a conceptual role here r
 - **Goal:** Preserve the original exception while attempting to mark the FSM lifecycle as failed.
 - **Trigger:** Transport throws an exception other than a requested cancellation.
 - **Expected outcome:** The executor requests `Failed`, updates the FSM, and rethrows; the handle is destroyed in `finally`.
-- **Failure caveat:** If the FSM update itself throws, it may supersede the original transport exception. Add a regression test before claiming exception preservation under FSM failures.
+- **Failure caveat:** Source now catches an exception from terminal-state recording and attempts to attach it to the original transport exception's `Data` under `FSM_REST.LifecycleRecordingException`. This behavior is not yet directly tested; `DestroyInstance` throwing during `finally` remains a separate cleanup edge.
 - **Evidence:** Source-checked; not independently executed here.
 
 ### 3. Record requested cancellation
