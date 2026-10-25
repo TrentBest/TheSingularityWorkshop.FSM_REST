@@ -48,6 +48,19 @@ public sealed class RestFsmExecutorTests
             () => RestFsmExecutor.SendAsync(Request, transport, cancellation.Token));
     }
 
+    [Fact]
+    public async Task SendAsync_RethrowsUnrequestedCancellationAsTransportFailure()
+    {
+        var expected = new OperationCanceledException("transport cancellation without caller cancellation");
+        var transport = new DelegateTransport((_, _) =>
+            Task.FromException<RestResponse>(expected));
+
+        var actual = await Assert.ThrowsAsync<OperationCanceledException>(
+            () => RestFsmExecutor.SendAsync(Request, transport));
+
+        Assert.Same(expected, actual);
+    }
+
     private sealed class DelegateTransport(
         Func<RestRequest, CancellationToken, Task<RestResponse>> send) : IRestTransport
     {
