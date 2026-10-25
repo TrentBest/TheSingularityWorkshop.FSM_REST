@@ -8,13 +8,16 @@ Use this checklist for a candidate package release. It is a verification gate, n
 
 ## Latest candidate artifact inspection
 
-- **Verified development commit:** [`6934a2a80a6b5951f74cf8195b39573cdafdc278`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/6934a2a80a6b5951f74cf8195b39573cdafdc278).
-- **CI run:** [Package FSM REST #40119874076](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40119874076) — build-and-test and source-integration passed; publish job was skipped as intended.
-- **Exact package artifact inspected:** artifact `12570755744`, `fsm-rest-nuget-package`, ZIP SHA-256 `25b82da0fd1dd9ca8d75b79025b1d6ed963f3fc4684be6159a38da8612667182`. The archive contains exactly three packages: core `TheSingularityWorkshop.FSM_Rest.0.1.0-alpha.5.nupkg`, `TheSingularityWorkshop.FSM_Rest.OpenApi.0.1.0-alpha.1.nupkg`, and `TheSingularityWorkshop.FSM_Rest.COS.0.1.0-alpha.1.nupkg`.
-- **Manual inspection findings:** all three nuspecs identify repository URL `https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST` and commit `6934a2a80a6b5951f74cf8195b39573cdafdc278`; each has `net8.0` dependency metadata, XML documentation, README and license entries. Core depends on `TheSingularityWorkshop.FSM_API` `1.0.13` and does not declare MicroBundleDomain. OpenApi depends on core `0.1.0-alpha.5`. COS depends on core `0.1.0-alpha.5` and `TheSingularityWorkshop.MicroBundleDomain` `1.0.1`.
-- **Per-package SHA-256:** core `f5be72571d6a1244a86614c9260617b200ec2e795db8513827e7a69ac4649f4d`; OpenApi `07ae665fbfc8d50e10916e95b0d1babb1fb3ec6154211b1dce59b25ea12e2134`; COS `e32b772cea94e543f426b51f7ae5dd441a6b9bbf2d2233cdc01d1b16a5cf6e3c`.
-- **Packaged README-link audit:** core (31 links), OpenApi (4), and COS (1) were inspected; zero unresolved local paths and no stale repository-relative `../../` paths remained in the new artifact.
-- **Evidence boundary:** this inspection applies only to the exact artifact and commit above. This checklist update is a subsequent documentation commit; a fresh successful exact-SHA run and matching artifact are still required for the final candidate. Publication remains a separate, explicitly approved action.
+- **Last inspected implementation candidate:** [`cb03e7e049da391d11cc7accdc9a8acf0e609610`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/cb03e7e049da391d11cc7accdc9a8acf0e609610) on `development`.
+- **Exact-SHA CI run:** [Package FSM REST #40164358155](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40164358155) — build-and-test and source-integration passed; NuGet publication was skipped.
+- **Test result:** 71 passed, 0 failed.
+- **Package archive:** artifact `12587164237`, `fsm-rest-nuget-package.zip`; SHA-256 `cabe7184ad278d9bd765bfa803abd8495f7386f68b4a642140a71925320dc7d8`.
+- **Core package:** `TheSingularityWorkshop.FSM_Rest.0.1.0-alpha.5.nupkg`; SHA-256 `ffa0c85a9193873238dab239a2ac6197605a8071f870aa27774b82bfb86f20e2`.
+- **OpenAPI package:** `TheSingularityWorkshop.FSM_Rest.OpenApi.0.1.0-alpha.1.nupkg`; SHA-256 `4b9cee5b30d8df344f5ad4f585a4f5d6fcc39d2755150f858d72ddd79279156d`.
+- **FSM_COS adapter package:** `TheSingularityWorkshop.FSM_Rest.COS.0.1.0-alpha.1.nupkg`; SHA-256 `8637b86778ccc439bbc6425572df5aae70f986358ee998ca3656903c99ce33d0`.
+- **Manual package inspection:** the three package nuspecs identify the exact commit above; the core package depends on FSM_API `1.0.13` without a MicroBundleDomain dependency, OpenAPI depends on core alpha.5, and COS depends on core alpha.5 plus MicroBundleDomain `1.0.1`. All three packaged READMEs were checked and no unresolved local links were found.
+- **Evidence boundary:** this inspection applies only to the exact implementation SHA and artifacts listed here. Subsequent documentation changes create a newer candidate and require a fresh successful exact-SHA CI run plus matching artifact inspection before release. Publication remains a separate, explicitly approved action.
+
 ## Package boundary
 
 - [ ] Core package restores and builds without an FSM_COS dependency or unintended Workshop-package dependency.
