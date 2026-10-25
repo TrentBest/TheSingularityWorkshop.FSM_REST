@@ -65,21 +65,24 @@ The [Architecture Contract](ARCHITECTURE.md) now defines package boundaries and 
 
 ## Latest exact-SHA verification evidence
 
-- **Branch:** `development`
-- **Verified commit:** [`140b15910f081f0b8b8699e26a42f1c26cc24543`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/140b15910f081f0b8b8699e26a42f1c26cc24543).
-- **Workflow:** [Package FSM REST run 40069560306](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40069560306) — completed successfully on this exact SHA.
-- **Build-and-test:** passed, including documentation contract, architecture boundary and UML link/image checks; restore/build/test with coverage, deterministic demo, NuGet pack, package audit, and artifact uploads passed.
-- **Source integration:** passed, including restore/build/test against MicroBundleDomain repository sources.
-- **NuGet publication:** skipped; no packages were published.
-- **Artifacts:** package artifact `12551185011` (`fsm-rest-nuget-package`) and test-results artifact `12550672757`; both are unexpired and tied to this exact SHA.
-- **Package archive SHA-256:** `cf1510ceefa5ce5fe21e8e72d222c22fad475ba6700e3b4b799411f61c0815da`.
-- **Evidence scope:** this is the latest recorded successful CI snapshot. A later tracker-only commit must pass CI before the resulting repository head can be considered release-verified. The artifact is a CI-produced candidate; package contents still require release review and explicit publication approval.
+- **Verified branch head at inspection:** `development`, commit [`cb03e7e049da391d11cc7accdc9a8acf0e609610`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/cb03e7e049da391d11cc7accdc9a8acf0e609610).
+- **CI:** [Package FSM REST run #40164358155](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40164358155) completed successfully against that exact SHA. Build/test and source-integration passed; `publish_nuget` was skipped.
+- **Tests:** 71 passed, 0 failed in the test-results artifact associated with that run.
+- **Package archive:** artifact `12587164237`, `fsm-rest-nuget-package.zip`; SHA-256 `cabe7184ad278d9bd765bfa803abd8495f7386f68b4a642140a71925320dc7d8`.
+- **Core package:** `TheSingularityWorkshop.FSM_Rest.0.1.0-alpha.5.nupkg`; SHA-256 `ffa0c85a9193873238dab239a2ac6197605a8071f870aa27774b82bfb86f20e2`.
+- **OpenAPI package:** `TheSingularityWorkshop.FSM_Rest.OpenApi.0.1.0-alpha.1.nupkg`; SHA-256 `4b9cee5b30d8df344f5ad4f585a4f5d6fcc39d2755150f858d72ddd79279156d`.
+- **FSM_COS adapter package:** `TheSingularityWorkshop.FSM_Rest.COS.0.1.0-alpha.1.nupkg`; SHA-256 `8637b86778ccc439bbc6425572df5aae70f986358ee998ca3656903c99ce33d0`.
+- **Artifact review:** package nuspecs identify the exact commit above; core depends on FSM_API `1.0.13` without a MicroBundleDomain dependency, OpenAPI depends on core alpha.5, and COS depends on core alpha.5 plus MicroBundleDomain `1.0.1`. All three packaged READMEs were checked; no unresolved local links were found.
+- **Evidence boundary:** these results verify the candidate at the stated SHA only. Any subsequent documentation or source commit needs its own successful exact-SHA CI run and candidate-artifact inspection before it can become final release evidence.
 
-## Current development delta (not yet CI-verified)
+## Remaining documentation and release gaps
 
-- The FSM-backed REST executor now has five source-level regression cases: HTTP 404 as a completed transport response, transport exception propagation, requested cancellation, unsolicited cancellation, and overlapping invocations returning their own responses. These tests are present in `tests/FSM_REST.Tests/RestFsmExecutorTests.cs`; their presence is not evidence that they pass.
-- The executor now best-effort records `Failed`/`Cancelled` without replacing the original transport exception. A lifecycle-recording failure is attached under `FSM_REST.LifecycleRecordingException`; a cleanup failure during propagation is attached separately under `FSM_REST.CleanupException`, so one does not overwrite the other. If cleanup alone fails after success, it surfaces. These exception-preservation paths are source-reviewed but not yet tested or CI-verified. Deterministic fault-injection coverage for lifecycle-recording and `DestroyInstance` failures remains open.
-- Recent implementation commits: [`ad61da04953f436fba0b35d219dde7b15a3612d6`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/ad61da04953f436fba0b35d219dde7b15a3612d6) adds best-effort terminal-state recording; [`dca8570d3b6cff3614472324471de7bd4bad6c7b`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/dca8570d3b6cff3614472324471de7bd4bad6c7b) separates lifecycle-recording and cleanup exception keys. The concurrency regression test was added in [`9af6af61688af5ec6b1509325ae6376cd64bc036`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/9af6af61688af5ec6b1509325ae6376cd64bc036). Recent companion/UML updates document the executor lifecycle, its source/test limits, and optional GUI integration boundaries. The latest UML clarification is [`03d8dcd2e30beef621c8f2958173a3c935b6d04c`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/03d8dcd2e30beef621c8f2958173a3c935b6d04c), which now distinguishes lifecycle-recording failures (`FSM_REST.LifecycleRecordingException`) from cleanup failures (`FSM_REST.CleanupException`) and states that deterministic fault-injection coverage remains open. These changes are not being represented as CI-verified; the historical exact-SHA evidence above does not cover them.
+- **Documentation readiness estimate: 68%.** This is a human review estimate, not test coverage or release readiness.
+- **Reader experience:** the README now links to the shared FSM_COS documentation and visual standards and uses the shared five-part entry journey. Continue simplifying duplicated explanations and ensure every image teaches one identifiable idea.
+- **Visual fidelity and provenance:** audit each SVG against current source, give every visual a clear caption/text equivalent, and distinguish conceptual, source-checked, generated, and runtime-observed material. UML pages remain manually authored/source-checked unless a generation pipeline is explicitly demonstrated.
+- **Public contract review:** inspect XML docs, consumer examples, and package-level guidance against the exact candidate API.
+- **Exception-path coverage:** deterministic fault-injection tests for lifecycle-recording and FSM instance cleanup failures remain open. The five executor regression tests (HTTP non-success response, transport failure, requested cancellation, unrequested cancellation, and concurrent response independence) are covered by the latest 71/71 CI run; that does not close the separate fault-injection gap.
+- **Release owner review:** release notes and all unchecked checklist items still require review. Publication remains disabled until explicitly approved.
 
 ## Evidence and completion rule
 Do not mark documentation 100% ready until production sources are reconciled against companions, every public class/record/interface has verified UML/use-case coverage, local links and examples are checked, and documentation/full CI passes at the exact SHA. A prior code CI pass at SHA 32e26834a2e6a9e7c3cfbe80ee64a9dff6e9d296 predates these documentation commits. A documentation contract check is now wired into the main build workflow; final verification must cite a successful run at the latest documentation SHA.
