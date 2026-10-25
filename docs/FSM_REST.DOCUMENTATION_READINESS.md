@@ -121,3 +121,13 @@ This is a source-level feasibility assessment, **not** a test result and **not**
 - Manual coverage review cross-checked the production source inventory and UML index across core and optional integration folders; this confirms navigation coverage at the reviewed tree, not generated semantic completeness or runtime behavior.
 - Gallery review confirmed its recipe examples and optional integration sections state the relevant source paths and boundaries; diagrams remain explanatory/manual, not runtime-observed or source-generated. A detailed SVG geometry/claim audit remains open.
 - **Readiness remains 68%.** The successful run validates the current commit only; any later commit requires its own exact-SHA verification.
+
+
+## CoderLegion real-service sample (2026-10-25)
+
+- Added `samples/CoderLegionArticleLibrary`, a .NET 8 read-only console sample using FSM_REST operation descriptors, `RestOperationExecutor`, and `IRestTransport`.
+- Supported operations: paginated `GET /posts?page=N` and full-detail `GET /posts/{id}`, based on the CoderLegion API contract supplied in the work session.
+- Credentials are read from `CODERLEGION_API_KEY`; the sample recommends a Personal API Key and does not embed credentials. Optional `CODERLEGION_HANDLE` filters results client-side because the supplied contract describes `GET /posts` as a browse endpoint, not a dedicated own-posts listing.
+- The Gallery links the recipe. This is a live, credential-gated integration example; it has **not** yet been run against CoderLegion, so endpoint behavior and account-specific access remain unverified.
+- Write operations are intentionally excluded. Next increment after read verification: local draft save/preview, create-options metadata, then user-confirmed create/edit calls with no automatic publishing.
+- Readiness remains **68%** until the new sample builds and exact-SHA CI passes. This feature addition does not by itself increase documentation or release readiness.
