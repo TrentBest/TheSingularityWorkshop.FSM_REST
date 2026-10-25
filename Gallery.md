@@ -121,3 +121,8 @@ FSM_REST supports an initial OpenAPI 3.x JSON subset and can connect to a defini
 ## Maintainer note: branch cleanup
 
 Before removing any surplus branch, use the [branch reconciliation ledger](docs/BRANCH_RECONCILIATION.md). It records the comparison against `development` and calls out candidate material that needs review; it does not authorize automatic deletion.
+
+
+## Integration handoff: The Architect
+
+The cross-repository integration brief for the LLM working in [The Architect](https://github.com/TrentBest/The) is maintained in [TheLLM.md](TheLLM.md). It defines the intended article-library and verified-statistics experience, the FSM_REST integration boundary, semantic focus/TerminalAi handoff, security requirements, and automated plus authorized live-service acceptance tests. Statistics endpoints and fields must be confirmed from the current CoderLegion API contract and actual responses before they are presented as facts.
