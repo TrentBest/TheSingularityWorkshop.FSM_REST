@@ -61,6 +61,49 @@ public sealed class RestFsmExecutorTests
         Assert.Same(expected, actual);
     }
 
+
+    [Fact]
+    public async Task SendAsync_ConcurrentInvocationsKeepTheirResponsesIndependent()
+    {
+        var firstResponse = new RestResponse(
+            200,
+            "OK",
+            new Dictionary<string, string>(),
+            "first");
+        var secondResponse = new RestResponse(
+            201,
+            "Created",
+            new Dictionary<string, string>(),
+            "second");
+        var firstStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var secondStarted = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseFirst = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+        var releaseSecond = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        var firstTransport = new DelegateTransport(async (_, _) =>
+        {
+            firstStarted.TrySetResult();
+            await releaseFirst.Task;
+            return firstResponse;
+        });
+        var secondTransport = new DelegateTransport(async (_, _) =>
+        {
+            secondStarted.TrySetResult();
+            await releaseSecond.Task;
+            return secondResponse;
+        });
+
+        var firstTask = RestFsmExecutor.SendAsync(Request, firstTransport);
+        var secondTask = RestFsmExecutor.SendAsync(Request, secondTransport);
+
+        await Task.WhenAll(firstStarted.Task, secondStarted.Task);
+        releaseFirst.TrySetResult();
+        Assert.Same(firstResponse, await firstTask);
+
+        releaseSecond.TrySetResult();
+        Assert.Same(secondResponse, await secondTask);
+    }
+
     private sealed class DelegateTransport(
         Func<RestRequest, CancellationToken, Task<RestResponse>> send) : IRestTransport
     {
