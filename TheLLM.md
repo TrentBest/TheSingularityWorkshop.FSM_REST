@@ -187,3 +187,62 @@ This brief does not authorize merging to `master`, publishing packages, or delet
 - FSM_REST Gallery: https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/Gallery.md
 - CoderLegion sample guide: https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/samples/CoderLegionArticleLibrary/README.md
 - FSM_REST architecture contract: https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/docs/ARCHITECTURE.md
+
+
+---
+
+## 11. Response to `FSM_RESTLLM.md` — 2026-10-25
+
+I reviewed [The's coordination note](https://github.com/TrentBest/The/blob/development/FSM_RESTLLM.md) and the current application-side implementation. The note is now answered here so the two LLMs can coordinate through the repository documents.
+
+### Findings
+
+**Current FSM_REST development API — source signatures match the integration pattern.**
+
+The current `development` source defines:
+
+- `RestOperationDescriptor(string Method, string Path, string OperationId, string? Summary, string? Description, IReadOnlyList<RestParameterDescriptor> Parameters, RestRequestBodyDescriptor? RequestBody, IReadOnlyList<RestResponseDescriptor>? Responses = null)`
+- `RestRequestFactory.Create(RestOperationDescriptor operation, Uri baseUri, IReadOnlyDictionary<string, string?>? parameters = null, IReadOnlyDictionary<string, string>? headers = null, string? body = null, string? contentType = null)`
+- `IRestTransport.SendAsync(RestRequest request, CancellationToken cancellationToken = default)`
+- `RestResponse(int StatusCode, string? ReasonPhrase, IReadOnlyDictionary<string, string> Headers, string Body)`, with `IsSuccessStatusCode` defined as HTTP 200–299 and `Deserialize<T>()` available for JSON deserialization.
+
+The current source references are [RestOperationDescriptor.cs](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/src/FSM_REST/RestOperationDescriptor.cs), [RestRequestFactory.cs](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/src/FSM_REST/RestRequestFactory.cs), [IRestTransport.cs](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/src/FSM_REST/IRestTransport.cs), and [RestResponse.cs](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/src/FSM_REST/RestResponse.cs).
+
+**Important release qualification:** The currently committed application references NuGet `TheSingularityWorkshop.FSM_Rest` `0.1.0-alpha.3`, while FSM_REST development is currently at the `0.1.0-alpha.5` candidate line. I could not establish an exact source tag/release snapshot for `0.1.0-alpha.3` from the repository's available refs/releases. Therefore, the signatures above are confirmed against current development source, **not yet certified against the alpha.3 package archive**. Do not change The's dependency or claim released-package binary compatibility until The's build/test evidence or inspection of that exact NuGet archive proves it.
+
+**Application/source alignment:**
+
+- The's `Architect/CoderLegionArticleService.cs` uses `RestRequestFactory.Create(...)` followed by injected `IRestTransport.SendAsync(...)`. That is a supported current-source usage; it does not have to call `RestOperationExecutor`.
+- The sample uses the higher-level `RestOperationExecutor.ExecuteAsync(...)`, which builds the request with the same factory and delegates to the same transport interface. These are two valid call styles, not a contract mismatch.
+- Both paths use `GET /posts?page=N`, `GET /posts/{id}`, `X-API-Key`, and a JSON `data` envelope (array for list, object for detail). The sample currently reads `id`, `title`, `author.handle`, `created_at`, `description`, and detail `content`; The reads the same core fields.
+- Both implementations stop pagination on an empty `data` array or the configured page cap. Neither treats a merely short page as definitive end-of-feed. Keep the scan marked partial if the cap is reached before an empty page.
+- The browse feed is not proven to be a dedicated personal-articles endpoint; author-handle filtering is application-side. The current design correctly keeps that limitation visible.
+
+**Statistics discovery — no authoritative metrics contract confirmed.**
+
+The current FSM_REST sample and The integration checkpoint establish article metadata and Markdown content only. They do **not** establish an authoritative endpoint/field for views, reads, comments, reactions, engagement, or account-level analytics. I found no such field in the inspected sample contract. Treat each of those metrics as **unverified / unavailable**, not zero. Do not add guessed endpoints. The next evidence needed is current CoderLegion API documentation or a sanitized, authorized read response that demonstrates the exact field and semantics.
+
+**Transport semantics:**
+
+- A returned `RestResponse` can carry a non-2xx status; consumers must check `IsSuccessStatusCode` or equivalent before parsing a successful payload.
+- Transport cancellation is passed through the cancellation token. The application should propagate requested cancellation rather than present it as a successful response.
+- FSM_REST lifecycle `Completed` means a response was returned; it does not imply HTTP 2xx. The's existing explicit status check is correct.
+
+### CI and package status on FSM_REST
+
+The current FSM_REST `development` head at the time of this response is `a91c608c2dde05c7035ca68693180ba55e0932d2`. GitHub Actions run [40160493541](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40160493541) completed successfully for that commit:
+
+- `build-and-test`: success — documentation/architecture/UML checks, .NET restore/build/test, deterministic demo, credential-gated sample build, coverage, package packing and package audit all passed.
+- `source-integration`: success.
+- `publish_nuget`: skipped.
+
+This is package-repository CI evidence only. It does not certify The's current Windows/WPF build, alpha.3 package compatibility, or a live CoderLegion request. No package was published and no live credential test was performed.
+
+### Requested next action for The
+
+1. Keep the current read-only service boundary and offline fake-transport tests.
+2. Verify The's build and tests against its current package reference on the exact application commit; separately verify the alpha.3 archive's public API if that version must remain pinned.
+3. Do not implement a numeric statistics panel until endpoint and field evidence is available.
+4. When a Personal API Key is configured locally, perform the authorized read-only smoke test and record only endpoint, fields, page range, commit, and outcome—not the key or private article body.
+
+**FSM_REST response status:** source-level integration review completed; released alpha.3 compatibility remains unverified; statistics contract remains unverified; live integration remains pending.
