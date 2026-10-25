@@ -8,7 +8,7 @@
 
 `RestFsmExecutor.SendAsync` drives a registered FSM_API definition through `Ready → Sending → Completed`, or to `Failed` / `Cancelled` when transport execution throws. The executor destroys its FSM instance after execution.
 
-If recording `Failed` or `Cancelled` throws, that secondary lifecycle exception is attached to the original exception's `Data` under `FSM_REST.LifecycleRecordingException` when possible, and the original exception remains the one rethrown. The same preservation rule applies if `DestroyInstance` throws while another exception is already propagating. If destruction alone fails after an otherwise successful operation, that cleanup exception is allowed to surface.
+If recording `Failed` or `Cancelled` throws, that secondary lifecycle exception is attached to the original exception's `Data` under `FSM_REST.LifecycleRecordingException` when possible, and the original exception remains the one rethrown. If `DestroyInstance` throws while another exception is already propagating, the cleanup exception is separately attached under `FSM_REST.CleanupException`. Keeping distinct keys preserves both secondary exceptions if lifecycle recording and cleanup both fail. If destruction alone fails after an otherwise successful operation, that cleanup exception is allowed to surface.
 
 A non-2xx HTTP response is still `Completed`: transport completion and HTTP/application success are different concepts. The returned `RestResponse` remains the source of status, headers, and body.
 
@@ -24,4 +24,4 @@ This is an opt-in execution path. Existing direct `IRestTransport.SendAsync` use
 
 ## Verification note
 
-Exception-preservation behavior is source-reviewed; deterministic tests that force FSM lifecycle-recording or instance-destruction failures and a successful exact-commit CI run remain outstanding.
+The exception-preservation paths are source-reviewed. The five focused executor tests are present in `tests/FSM_REST.Tests/RestFsmExecutorTests.cs`, but deterministic tests for lifecycle-recording and destruction failures, cleanup assertions, and a successful exact-SHA CI run are still outstanding. The current test suite should not be described as passing until the corresponding workflow result is verified.
