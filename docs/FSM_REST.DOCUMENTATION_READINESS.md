@@ -77,8 +77,8 @@ The [Architecture Contract](ARCHITECTURE.md) now defines package boundaries and 
 
 ## Current development delta (not yet CI-verified)
 
-- The FSM-backed REST executor now has four source-level regression cases: HTTP 404 as a completed transport response, transport exception propagation, requested cancellation, and unsolicited cancellation. These tests are present in `tests/FSM_REST.Tests/RestFsmExecutorTests.cs`; their presence is not evidence that they pass.
-- The executor guide now records this test inventory and explicitly retains concurrent-invocation coverage, lifecycle cleanup coverage, and exception masking during a failed FSM lifecycle update as open items.
+- The FSM-backed REST executor now has five source-level regression cases: HTTP 404 as a completed transport response, transport exception propagation, requested cancellation, unsolicited cancellation, and overlapping invocations returning their own responses. These tests are present in `tests/FSM_REST.Tests/RestFsmExecutorTests.cs`; their presence is not evidence that they pass.
+- The executor guide now records the concurrency regression case. Explicit lifecycle cleanup assertions and exception masking during a failed FSM lifecycle update remain open items.
 - Latest recorded change in this sequence: documentation update commit [`45f41dae28c66a2ab3b4d0d8979f3b670f7cc55c`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/45f41dae28c66a2ab3b4d0d8979f3b670f7cc55c). This is not a successful CI claim. The historical exact-SHA evidence above does not cover this change or the subsequent executor tests.
 
 ## Evidence and completion rule
