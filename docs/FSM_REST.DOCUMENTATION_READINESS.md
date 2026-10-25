@@ -93,3 +93,16 @@ Do not mark documentation 100% ready until production sources are reconciled aga
 4. Audit Gallery visuals, recipes, and local Markdown links; distinguish implemented behavior, manual explanation, and proposed future behavior.
 5. Run documentation checks and full CI; record exact SHA and evidence.
 6. Keep NuGet publication approval-gated; do not publish as part of documentation work.
+
+
+## FSM_API fault-injection feasibility audit (2026-10-25)
+
+Source inspected on the FSM_API `development` ref:
+- `FSM_API/FSM_API.Interaction.cs` exposes a static `DestroyInstance(FSMHandle)` entry point; the integration has no injected cleanup service or transport-like seam for substituting that call.
+- `FSM_API/FSM_API.Internal.cs` removes the handle from its registered bucket and calls `handle.DestroyHandle()`. It catches `KeyNotFoundException` and reports that condition through the API's internal error event path; null or unregistered handles are also reported through that path rather than surfaced as a normal cleanup exception.
+- `FSM_API/FSMHandle.cs` documents that `IsValid` mirrors `Context.IsValid`; it is not a destruction flag. A context made invalid is skipped by scheduling but remains registered until explicit destruction.
+
+**Testing implication:** a normal, deterministic test that forces `DestroyInstance` to throw is not available through the current `RestFsmExecutor` dependency surface. Adding a production-only callback/delegate solely to manufacture this failure would enlarge the API surface for a test seam. Prefer first testing observable lifecycle outcomes and exception preservation with the current public API; if deterministic fault injection remains a release requirement, introduce a deliberately designed internal abstraction only if it can be kept out of the public package contract. The same constraint applies to terminal-state recording: the executor owns a concrete FSM_API handle and static API calls, so a test cannot simply substitute a throwing recorder.
+
+This is a source-level feasibility assessment, **not** a test result and **not** evidence that exception paths are impossible. The REST implementation's secondary-exception handling remains untested until an appropriate seam or naturally reproducible failure is established. FSM_API source inspected at repository ref `development`; this note does not claim the REST package CI passed.
+
