@@ -21,7 +21,9 @@ if not (uml_dir / "README.md").is_file():
 
 # Every target page (not the index) must state use cases and identify its source.
 if uml_dir.is_dir():
-    for page in sorted(uml_dir.glob("*.md")):
+    # UML indexes live at multiple levels; validate every target page recursively.
+    # README.md files are navigation indexes, not target class/use-case pages.
+    for page in sorted(uml_dir.rglob("*.md")):
         if page.name == "README.md":
             continue
         content = page.read_text(encoding="utf-8")
@@ -40,5 +42,5 @@ if errors:
     sys.exit(1)
 
 source_count = sum(1 for p in (ROOT / "src").rglob("*.cs") if not any(part in {"bin", "obj"} for part in p.parts))
-uml_count = sum(1 for p in uml_dir.glob("*.md") if p.name != "README.md")
+uml_count = sum(1 for p in uml_dir.rglob("*.md") if p.name != "README.md")
 print(f"Documentation contract passed: {source_count} source companions checked; {uml_count} UML target pages checked.")
