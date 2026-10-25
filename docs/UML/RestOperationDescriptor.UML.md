@@ -1,10 +1,22 @@
 # RestOperationDescriptor — UML Class Card
 
 **Owner / author:** Trent Best  
-**Purpose:** Describe one reusable REST operation capability without binding it to a specific **Provenance:** Source-grounded UML class card; manually maintained, not generated.
-**Source:** [RestOperationDescriptor.cs](../../src/FSM_REST/RestOperationDescriptor.cs)
+**Purpose:** Describe one reusable REST operation capability without binding it to a specific API-description format, transport implementation, GUI, or domain.  
+**Evidence:** Source-checked manually against `src/FSM_REST/RestOperationDescriptor.cs`; not generated or runtime-captured.  
+**Scan scope:** The target declaration and directly related descriptor/binding types shown below; not a repository-wide consumer scan.
 
-PI-description format, transport implementation, GUI, or domain.
+## Target-centered neighborhood
+
+```mermaid
+flowchart TB
+    Consumer["Provider / application"] -->|"authors or adapts"| Api["RestApiDescriptor"]
+    Api -->|"contains operations"| Target["RestOperationDescriptor"]
+    Binding["RestOperationBinding"] -->|"references for one invocation"| Target
+    Target -->|"declares"| Parameter["RestParameterDescriptor"]
+    Target -->|"optionally describes"| Body["RestRequestBodyDescriptor"]
+    Target -->|"documents responses"| Response["RestResponseDescriptor"]
+    Package["FSM_REST core"] --- Target
+```
 
 ## Class card
 
@@ -50,7 +62,7 @@ classDiagram
 ## Responsibilities
 
 - Store operation metadata: method, relative path, operation identity, human-readable text, parameters, optional body description, and response descriptions.
-- Provide a simple downstream label through `PaletteLabel`.
+- Provide a concise downstream label through `PaletteLabel`.
 - Expose response metadata through `ResponseDescriptors`, returning an empty collection when no response descriptors were supplied.
 
 ## Non-responsibilities
@@ -59,11 +71,32 @@ This record does not parse external documents, bind runtime parameter values, co
 
 ## Use cases
 
-1. **Provider translation:** map an external description or authored capability into a stable neutral operation representation.
-2. **Capability palette:** provide a concise display label without making the descriptor depend on GUI code.
-3. **Invocation:** pair the reusable descriptor with runtime values using `RestOperationBinding`.
-4. **Inspection:** allow downstream composition layers to inspect request and response metadata before execution.
+### 1. Translate a provider capability
 
-## Source
+- **Actor:** Provider adapter or application author.
+- **Goal:** Represent an operation in the neutral FSM_REST model.
+- **Trigger/preconditions:** An authored or imported operation description is available.
+- **Expected outcome:** An operation descriptor carries method, path, identity, parameter metadata, optional request-body metadata, and response descriptions.
+- **Alternative:** Unsupported source-format details must be handled or reported by the importing adapter; this descriptor does not preserve every external format feature by itself.
+- **Evidence:** Source-checked; importer behavior must be verified against its own tests.
 
-[RestOperationDescriptor.cs](../../src/FSM_REST/RestOperationDescriptor.cs)
+### 2. Bind an invocation
+
+- **Actor:** Request-building layer.
+- **Goal:** Pair reusable operation metadata with values for one call.
+- **Trigger/preconditions:** A descriptor and invocation parameter values are available.
+- **Expected outcome:** A separate `RestOperationBinding` represents that invocation without mutating the reusable descriptor.
+- **Evidence:** Source-checked; request construction and transport are separate responsibilities.
+
+### 3. Inspect operation metadata
+
+- **Actor:** Consumer, palette, or composition layer.
+- **Goal:** Inspect the operation contract before creating a request.
+- **Expected outcome:** Downstream code can read operation identity, parameters, body description, and response metadata without depending on a GUI or transport implementation.
+- **Evidence:** Source-checked; a class diagram does not establish runtime behavior.
+
+## Source and related documentation
+
+- [RestOperationDescriptor.cs](../../src/FSM_REST/RestOperationDescriptor.cs)
+- [FSM_REST Gallery](../../Gallery.md)
+- [Architecture contract](../ARCHITECTURE.md)
