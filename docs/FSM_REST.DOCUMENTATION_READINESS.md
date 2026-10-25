@@ -106,3 +106,9 @@ Source inspected on the FSM_API `development` ref:
 
 This is a source-level feasibility assessment, **not** a test result and **not** evidence that exception paths are impossible. The REST implementation's secondary-exception handling remains untested until an appropriate seam or naturally reproducible failure is established. FSM_API source inspected at repository ref `development`; this note does not claim the REST package CI passed.
 
+## UML coverage gate audit (2026-10-25)
+
+- The UML index now links directly to [OpenApiImportResult](UML/OpenApiImportResult.UML.md), an optional OpenAPI provider result type that reports the normalized API descriptor and fidelity warnings. Index change: [`e1e015ae97f41c280cac642b2a25b3aca0064917`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/e1e015ae97f41c280cac642b2a25b3aca0064917).
+- Audit found that `scripts/check_documentation.py` previously used a top-level-only glob for UML target pages, while this repository deliberately groups pages under nested `Architecture/`, `GUI/`, `OpenAPI/`, and `FSM_COS/` directories. The checker now walks `docs/UML` recursively and counts target pages recursively, excluding `README.md` navigation indexes at every level. Change: [`67282bd51794c96609b50882679b32c9484ba196`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/67282bd51794c96609b50882679b32c9484ba196).
+- This is a gate-coverage improvement, not proof that every page passes the strengthened check. The recursive contract and link checks must run in CI against the current head; no new successful exact-SHA CI result is confirmed yet.
+- **Readiness remains 68%.** Do not raise it based solely on adding an index link or broadening a validator. The next evidence step is to verify every nested target page satisfies the contract and inspect the complete Gallery/recipe/link surface, then record exact-SHA CI.
