@@ -2,7 +2,7 @@
 
 **Target:** Request construction and transport execution.  
 **Provenance:** Source-grounded overview, manually maintained and not generated.  
-**Sources:** [Request construction](../../../src/FSM_REST/RestRequestFactory.cs), [transport contract](../../../src/FSM_REST/IRestTransport.cs), [HTTP adapter](../../../src/FSM_REST/HttpClientRestTransport.cs), [response envelope](../../../src/FSM_REST/RestResponse.cs).
+**Source:** [Request construction](../../../src/FSM_REST/RestRequestFactory.cs), [transport contract](../../../src/FSM_REST/IRestTransport.cs), [HTTP adapter](../../../src/FSM_REST/HttpClientRestTransport.cs), [response envelope](../../../src/FSM_REST/RestResponse.cs).
 
 ## Execution path
 
