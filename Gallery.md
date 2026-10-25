@@ -1,6 +1,43 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Renderer/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
+**Maintainer / Workshop moniker:** @TrentBest · [Shared documentation standard](https://github.com/TrentBest/TheSingularityWorkshop.FSM_COS/blob/development/DOCUMENTATION_STANDARD.md) · [Living UML and data-card visual standard](https://github.com/TrentBest/TheSingularityWorkshop.FSM_COS/blob/development/docs/UML_VISUAL_STYLE.md)
+
 # FSM_REST Gallery
 
-FSM_REST provides a neutral model for describing REST capabilities and a replaceable boundary for executing requests. The [architecture contract](docs/ARCHITECTURE.md) defines the package boundaries and verification levels. This gallery links the concepts to the implementation rather than implying that every planned REST ecosystem feature is present.
+FSM_REST describes REST capabilities separately from the changing data returned when those capabilities run. It provides a neutral operation/request model and a replaceable transport boundary; optional packages connect supported OpenAPI descriptions, FSM_COS MicroBundles, and renderer-neutral GUI mappings.
+
+<p align="center">
+  <img src="docs/assets/fsm-rest-capability-recipe.svg" alt="A reusable REST capability description becomes a bound request, crosses a replaceable transport boundary, and returns changing response data." width="900">
+</p>
+
+*What this visual teaches:* the reusable recipe and the runtime result are different things. This is a human-authored explanatory SVG, not a generated UML view or a captured runtime trace. Check the [architecture contract](docs/ARCHITECTURE.md) for package boundaries and verification levels.
+
+## 🟦 01 — What is this gallery?
+
+Follow the exhibits from describing an operation to constructing a request, sending it through a replaceable transport, and optionally connecting external descriptions or Workshop adapters. Each exhibit links to source, tests, or a deeper guide.
+
+## 🟣 02 — Why keep the boundary small?
+
+REST capabilities should be reusable without forcing the neutral core to own a particular API description format, GUI framework, domain policy, or live response payload. The exhibits call out what the core guarantees and what remains the host's responsibility.
+
+## 🩵 03 — How should I explore it?
+
+Start with the deterministic [REST capability demo](samples/RestCapabilityDemo/Program.md) for a no-credentials, in-memory path. Then choose the exhibit matching your task below. For a practical consumer setup, use the [consumer guide](docs/CONSUMING.md); for design rationale, use [Theory](docs/THEORY.md).
+
+## 🟢 04 — See it in a minute
+
+Run the [deterministic end-to-end demo](samples/RestCapabilityDemo/Program.md). It exercises descriptor → binding → request → transport → response with an in-memory HTTP handler; CI runs it, and it does not require a live endpoint or credentials. Follow the sample's command and expected output so you can distinguish a runnable proof from an illustrative diagram.
+
+## 🟪 05 — Choose your next step
+
+- **Build a consumer:** [Consumer guide](docs/CONSUMING.md).
+- **Understand the model:** [Reflection and descriptor model](docs/REFLECTION.md) · [Theory](docs/THEORY.md).
+- **Understand composition:** [MicroBundle integration](docs/MICROBUNDLE.md) · [FSM_COS adapter](src/FSM_REST.COS/RestMicroBundle.cs).
+- **Check exact contracts:** [Architecture contract](docs/ARCHITECTURE.md) · [UML index](docs/UML/).
+- **Evaluate a candidate:** [Release checklist](docs/RELEASE_CHECKLIST.md) and current exact-SHA CI.
+
+## Exhibits
 
 ## 1. Describe a capability
 
