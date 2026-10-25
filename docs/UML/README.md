@@ -5,7 +5,7 @@
 
 ## Architecture views
 
-- [FSM-backed REST execution](Architecture/RestFsmExecutor.UML.md) — FSM_API lifecycle around transport execution.
+- [RestFsmExecutor](RestFsmExecutor.UML.md) — FSM_API lifecycle around transport execution, with use cases and explicit source/test evidence limits.
 
 - [FSM_REST Core UML](Architecture/FSM_REST.Core.UML.md) — descriptor, binding, request construction, transport, response.
 - [REST request execution](Architecture/RestRequestExecution.UML.md) — execution boundary and transport substitution.
@@ -17,6 +17,8 @@
 - [RestGuiNodeFactory](RestGuiNodeFactory.UML.md) — optional Workshop GUI tree adapter.
 
 ## Core source targets
+
+- [RestFsmExecutor](RestFsmExecutor.UML.md)
 
 - [HttpClientRestTransport](HttpClientRestTransport.UML.md)
 - [IRestTransport](IRestTransport.UML.md)
@@ -53,6 +55,7 @@ The target-specific pages remain linked below for direct access.
 ## Source companion pages
 
 Every production C# file has a neighboring Markdown companion. Examples:
+- [RestFsmExecutor source companion](../RestFsmExecutor.md)
 - [RestApiDescriptor source companion](../../src/FSM_REST/RestApiDescriptor.md)
 - [RestGuiMapping source companion](../../src/FSM_REST/RestGuiMapping.md)
 - [RestGuiOperationExecutor source companion](../../src/FSM_REST.GUI/RestGuiOperationExecutor.md)
@@ -62,6 +65,10 @@ Every production C# file has a neighboring Markdown companion. Examples:
 ## Coverage policy
 
 Each production source file must have a neighboring companion. Each public class, record, or interface must have a focused UML page or be explicitly represented as a target in a cohesive diagram with a use-case section. Pages identify their target, source, purpose, relationships, scope, provenance, and verification path.
+
+## Inventory status
+
+This index is a navigation aid, not a completed coverage audit. The listed pages are manually maintained unless each page explicitly identifies another provenance. The full required view inventory (sequence, control flow, lifecycle, architecture, data flow, test traceability, and applicability decisions) still needs a repository-wide reconciliation against source, projects, MicroBundles, and tests.
 
 ## Known gap
 
