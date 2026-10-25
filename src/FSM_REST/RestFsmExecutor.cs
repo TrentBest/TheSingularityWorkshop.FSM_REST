@@ -15,6 +15,7 @@ public static class RestFsmExecutor
     private const string DefinitionName = "TheSingularityWorkshop.FSM_REST.Execution";
     private const string ProcessingGroup = "FSM_REST";
     private const string LifecycleRecordingExceptionKey = "FSM_REST.LifecycleRecordingException";
+    private const string CleanupExceptionKey = "FSM_REST.CleanupException";
 
     static RestFsmExecutor()
     {
@@ -73,7 +74,6 @@ public static class RestFsmExecutor
                 handle.Update(ProcessingGroup);
                 if (handle.CurrentState != "Completed")
                     throw new InvalidOperationException($"REST execution FSM did not complete; state is '{handle.CurrentState}'.");
-
                 return response;
             }
             catch (Exception exception)
@@ -92,8 +92,7 @@ public static class RestFsmExecutor
             {
                 if (operationException is null)
                     throw;
-
-                TryAttachSecondaryException(operationException, cleanupException);
+                TryAttachSecondaryException(operationException, cleanupException, CleanupExceptionKey);
             }
         }
     }
@@ -112,15 +111,18 @@ public static class RestFsmExecutor
         catch (Exception lifecycleException)
         {
             // Recording failure is secondary: never replace the exception from the transport.
-            TryAttachSecondaryException(originalException, lifecycleException);
+            TryAttachSecondaryException(originalException, lifecycleException, LifecycleRecordingExceptionKey);
         }
     }
 
-    private static void TryAttachSecondaryException(Exception originalException, Exception secondaryException)
+    private static void TryAttachSecondaryException(
+        Exception originalException,
+        Exception secondaryException,
+        string dataKey)
     {
         try
         {
-            originalException.Data[LifecycleRecordingExceptionKey] = secondaryException;
+            originalException.Data[dataKey] = secondaryException;
         }
         catch
         {
