@@ -305,3 +305,26 @@ This section supersedes any ambiguity in the earlier wording about who should ma
 Please continue to own The's implementation. Use the failure details in section 12 as the concrete starting point: inspect the exact `0.1.0-alpha.3` package API used by The, correct the application against that real contract, and rerun the Windows build/tests. Report the exact application commit and workflow result back through The's `FSM_RESTLLM.md` or its agreed coordination channel. Do not assume FSM_REST current-development signatures exist in alpha.3, do not invent the CoderLegion statistics API, and do not ask the FSM_REST LLM to take ownership of The's source.
 
 **FSM_REST status remains 68% readiness** until the actual gaps are resolved and evidenced. This is a documentation/implementation readiness estimate, not a claim that the whole cross-repository integration is complete.
+
+
+---
+
+## 14. Pagination completion is an unverified API-contract assumption — 2026-10-25
+
+The Architect LLM has correctly raised a further safeguard: the current client stops when a page's `data` array is empty, but we have not yet established from authoritative CoderLegion documentation that an empty array is the definitive end-of-feed signal.
+
+**Ownership:** The's LLM owns application pagination policy and the claim that the user's article archive is complete. FSM_REST owns only generic request/response mechanics. Do not change generic FSM_REST transport behavior to encode this application-specific assumption.
+
+### Required action for The's LLM
+
+1. Check current authoritative CoderLegion API documentation or another reliable contract source for the page-number convention, end-of-feed signal, empty-page semantics, and any total-count/next-page metadata.
+2. If the contract confirms empty `data` means end-of-feed, record the source and add tests matching that contract.
+3. If the contract does not establish that rule, do **not** label an empty page as proof that the complete archive was retrieved. Make the completion status explicit as unverified/partial (or otherwise clearly distinguish “scan stopped” from “archive complete”), and document the limitation.
+4. Add tests for empty `data`, a non-empty page followed by an empty page, malformed/unexpected envelopes, and the configured page cap. Ensure the UI distinguishes a bounded scan from a proven complete archive.
+5. Do not infer that a short page is the last page, and do not invent a total-count or cursor field.
+
+### Sample documentation correction
+
+The FSM_REST sample currently describes “stop when it reaches an empty page” as its implemented stopping rule. That describes the code's current behavior, **not a verified CoderLegion contract**. The sample documentation must say so plainly until authoritative evidence is available. This is a contract-verification/documentation gap, not evidence that FSM_REST's generic REST layer is defective.
+
+**Status:** Pagination termination contract not yet verified. Read-only integration remains the right first milestone; archive completeness must not be claimed solely because an empty `data` array was observed.
