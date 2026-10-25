@@ -57,6 +57,9 @@ jobs:
       - name: Run deterministic end-to-end demo
         run: dotnet run --project samples/RestCapabilityDemo/RestCapabilityDemo.csproj --configuration Release --no-build
 
+      - name: Build credential-gated CoderLegion sample
+        run: dotnet build samples/CoderLegionArticleLibrary/CoderLegionArticleLibrary.csproj --configuration Release
+
       - name: Prepare coverage report
         shell: bash
         run: |
