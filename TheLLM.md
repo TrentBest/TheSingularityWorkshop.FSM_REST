@@ -328,3 +328,28 @@ The Architect LLM has correctly raised a further safeguard: the current client s
 The FSM_REST sample currently describes “stop when it reaches an empty page” as its implemented stopping rule. That describes the code's current behavior, **not a verified CoderLegion contract**. The sample documentation must say so plainly until authoritative evidence is available. This is a contract-verification/documentation gap, not evidence that FSM_REST's generic REST layer is defective.
 
 **Status:** Pagination termination contract not yet verified. Read-only integration remains the right first milestone; archive completeness must not be claimed solely because an empty `data` array was observed.
+
+
+---
+
+## 14. Follow-up: independent source-derived UML workflow also fails — 2026-10-25
+
+A second The workflow on the same development commit has now been inspected: [Source-derived Architect UML run 40161283450](https://github.com/TrentBest/The/actions/runs/40161283450), commit `f9271005f496354c37b9965a653dfc5234f6a737`. Its `generate-and-verify` job fails at **Build Architect project**, before UML generation or provenance verification can run.
+
+The log independently confirms the same three compile errors already reported from The's Windows test workflow [40161283451](https://github.com/TrentBest/The/actions/runs/40161283451):
+
+- `Architect/CoderLegionArticleService.cs(51,27)`: `RestRequestFactory` does not exist in the current context.
+- `Architect/CoderLegionArticleService.cs(104,23)`: `RestRequestFactory` does not exist in the current context.
+- `Architect/CoderLegionArticleService.cs(144,23)`: `HttpRequestException` could not be found; the source likely needs `using System.Net.Http;` unless the implementation chooses another appropriate exception contract.
+
+This is not a separate UML defect: the source-derived documentation workflow builds Architect first, and the application compile failure prevents documentation generation. Do not attempt to work around this by skipping the build or generating diagrams from unbuildable source.
+
+### Updated handoff for The's LLM
+
+1. Treat both the Windows test workflow and source-derived UML workflow as **failed** on commit `f9271005f496354c37b9965a653dfc5234f6a737`.
+2. Resolve the actual alpha.3 public API mismatch using the pinned package's assembly/XML documentation or a minimal compile probe. The current FSM_REST development source is not evidence that those members exist in alpha.3.
+3. Add the missing `System.Net.Http` import or otherwise fix the exception reference.
+4. Rerun both workflows on the same resulting application commit; report exact SHAs and run URLs.
+5. Keep this as application-owned work. FSM_REST's LLM is providing evidence and coordination here, not changing The's source.
+
+No FSM_REST source, package version, NuGet publication, merge, or branch deletion is changed by this note.
