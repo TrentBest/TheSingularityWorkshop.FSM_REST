@@ -2,7 +2,7 @@
 
 **Target:** Core REST capability model and execution boundary.  
 **Provenance:** Manually maintained, source-grounded conceptual UML; not generated.  
-**Sources:** [Core project](../../../src/FSM_REST/FSM_REST.csproj), [request factory](../../../src/FSM_REST/RestRequestFactory.cs), [transport contract](../../../src/FSM_REST/IRestTransport.cs).
+**Source:** [Core project](../../../src/FSM_REST/FSM_REST.csproj), [request factory](../../../src/FSM_REST/RestRequestFactory.cs), [transport contract](../../../src/FSM_REST/IRestTransport.cs).
 
 ## Class diagram
 
