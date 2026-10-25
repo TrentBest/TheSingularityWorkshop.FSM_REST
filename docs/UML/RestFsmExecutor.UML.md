@@ -2,6 +2,7 @@
 
 **Owner / author:** Trent Best  
 **Purpose:** Record the per-request transport lifecycle through FSM_API without confusing transport completion with HTTP business success.  
+**Source:** [RestFsmExecutor.cs](../src/FSM_REST/RestFsmExecutor.cs).  
 **Provenance:** Source-checked manually against `src/FSM_REST/RestFsmExecutor.cs` on `development`; not generated, not runtime-captured.  
 **Scan scope:** One source file plus the direct FSM_API package reference in `src/FSM_REST/FSM_REST.csproj`. This is not a repository-wide caller search.
 
