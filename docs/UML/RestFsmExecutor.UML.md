@@ -97,8 +97,10 @@ The exact FSM_API handle type is intentionally shown as a conceptual role here r
 - **Goal:** Preserve the original exception while attempting to mark the FSM lifecycle as failed.
 - **Trigger:** Transport throws an exception other than a requested cancellation.
 - **Expected outcome:** The executor requests `Failed`, updates the FSM, and rethrows; the handle is destroyed in `finally`.
-- **Failure caveat:** Source now catches an exception from terminal-state recording and attempts to attach it to the original transport exception's `Data` under `FSM_REST.LifecycleRecordingException`. This behavior is not yet directly tested; `DestroyInstance` throwing during `finally` remains a separate cleanup edge.
-- **Evidence:** Source-checked; not independently executed here.
+- **Failure caveat — lifecycle recording:** Source catches an exception from terminal-state recording and attempts to attach it to the original transport exception's `Data` under `FSM_REST.LifecycleRecordingException`. If writing to `Exception.Data` itself fails, the original transport exception is still preserved.
+- **Failure caveat — cleanup:** If `DestroyInstance` throws while another operation exception is already propagating, the cleanup exception is attached separately under `FSM_REST.CleanupException` so it does not replace the primary exception. If cleanup is the only failure after an otherwise successful operation, the cleanup exception surfaces to the caller.
+- **Test gap:** Neither secondary-exception path currently has deterministic fault-injection coverage. The five executor tests cover normal response, transport failure, requested cancellation, unsolicited cancellation, and overlapping calls only.
+- **Evidence:** These exception-preservation behaviors are source-checked, not independently executed or CI-verified at the current branch head.
 
 ### 3. Record requested cancellation
 
