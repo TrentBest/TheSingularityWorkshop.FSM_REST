@@ -36,7 +36,7 @@ Run the [deterministic end-to-end demo](https://github.com/TrentBest/TheSingular
 
 ## 🟪 05 Choose your next step
 
-[Start here: consumer guide](docs/CONSUMING.md) · [Architecture contract](docs/ARCHITECTURE.md) · [Release notes](docs/RELEASE_NOTES.md) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Gallery: concepts, examples, visual provenance, and verification](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/Gallery.md) · [Consumer guide](docs/CONSUMING.md) · [Capability recipe](#the-capability-recipe) · [Development](#development) · [License](#license)
+[Start here: consumer guide](docs/CONSUMING.md) · [Architecture contract](docs/ARCHITECTURE.md) · [Release notes](docs/RELEASE_NOTES.md) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Gallery: concepts, examples, visual provenance, and verification](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/Gallery.md) · [Capability recipe](#the-capability-recipe) · [Development](#development) · [License](#license)
 
 ---
 
@@ -44,10 +44,11 @@ Run the [deterministic end-to-end demo](https://github.com/TrentBest/TheSingular
 
 **REST capability and transport substrate for the FSM ecosystem.**
 
+[![Build](https://img.shields.io/github/actions/workflow/status/TrentBest/TheSingularityWorkshop.FSM_REST/build.yml?branch=development&style=flat-square&logo=github)](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/workflows/build.yml)
 [![NuGet](https://img.shields.io/nuget/v/TheSingularityWorkshop.FSM_Rest?style=flat-square&logo=nuget&logoColor=white)](https://www.nuget.org/packages/TheSingularityWorkshop.FSM_Rest)
 [![NuGet downloads](https://img.shields.io/nuget/dt/TheSingularityWorkshop.FSM_Rest?style=flat-square&logo=nuget&logoColor=white)](https://www.nuget.org/packages/TheSingularityWorkshop.FSM_Rest)
-[![Build](https://img.shields.io/github/actions/workflow/status/TrentBest/TheSingularityWorkshop.FSM_REST/build.yml?branch=development&style=flat-square&logo=github)](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/workflows/build.yml)
 [![Coverage](https://codecov.io/gh/TrentBest/TheSingularityWorkshop.FSM_REST/graph/badge.svg)](https://codecov.io/gh/TrentBest/TheSingularityWorkshop.FSM_REST)
+[![Last commit](https://img.shields.io/github/last-commit/TrentBest/TheSingularityWorkshop.FSM_REST/development?style=flat-square)](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commits/development)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE.txt)
 
 FSM_REST is intentionally **not an implementation of a REST API**, and it is not a container for every REST description format.
