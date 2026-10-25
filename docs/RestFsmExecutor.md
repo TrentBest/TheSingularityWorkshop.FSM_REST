@@ -32,8 +32,8 @@ The current implementation advances the FSM by updating the invocation context's
 - **Completed means the transport returned a response.** An HTTP 404 or 500 is not automatically an FSM failure; inspect `RestResponse.IsSuccessStatusCode` and the response content separately.
 - **Failed means transport/execution threw an exception** on the normal send path.
 - **Cancelled means an `OperationCanceledException` occurred while the supplied cancellation token was requested.** An unrelated cancellation exception follows the general failure path.
-- The executor rethrows transport exceptions after recording the corresponding lifecycle state. It does not convert them into response objects.
-- The instance is destroyed in `finally`; the state is an execution lifecycle, not a durable request history or telemetry store.
+- The executor rethrows transport exceptions after attempting to record the corresponding lifecycle state. If that terminal-state update throws, the recording exception is attached to the original exception's `Data` under `FSM_REST.LifecycleRecordingException`, and the original transport exception remains the one rethrown. This is implemented in source but still needs exact-SHA test/CI verification.
+- The instance is destroyed in `finally`; the state is an execution lifecycle, not a durable request history or telemetry store. Cleanup itself can still throw, so exception preservation during destruction remains a lifecycle edge to assess.
 - The static FSM definition and processing group are registered by the class initializer. This is source behavior, not a claim about cross-process persistence.
 
 ## Usage
@@ -57,7 +57,7 @@ This snippet is **source-checked**, not independently executed as part of this d
 
 ## Verification still required
 
-The current test source contains five focused cases: a non-success HTTP response (404), transport exception propagation, caller-requested cancellation, an unsolicited `OperationCanceledException`, and two overlapping invocations that must return their own responses. These tests are present in `tests/FSM_REST.Tests/RestFsmExecutorTests.cs`, but passing execution on the current development SHA has not yet been confirmed. Remaining lifecycle coverage includes explicit cleanup assertions after successful and exceptional paths. A further edge case needs explicit treatment: if `handle.Update` itself throws while the executor is recording `Failed` or `Cancelled`, that FSM error can replace the original transport exception. Do not claim exception preservation for that scenario until it is designed and tested. Use a successful exact-SHA CI run as evidence before release.
+The current test source contains five focused cases: a non-success HTTP response (404), transport exception propagation, caller-requested cancellation, an unsolicited `OperationCanceledException`, and two overlapping invocations that must return their own responses. These tests are present in `tests/FSM_REST.Tests/RestFsmExecutorTests.cs`, but passing execution on the current development SHA has not yet been confirmed. Remaining lifecycle coverage includes explicit cleanup assertions after successful and exceptional paths. The implementation now attempts to preserve the original transport exception if recording `Failed` or `Cancelled` throws, attaching the secondary exception to `Exception.Data`. This new behavior is source-reviewed but not yet covered by a deterministic test or exact-SHA CI. Cleanup failure from `DestroyInstance` also remains an edge to assess. Use a successful exact-SHA CI run as evidence before release.
 
 ## Dependencies
 
