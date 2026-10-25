@@ -246,3 +246,37 @@ This is package-repository CI evidence only. It does not certify The's current W
 4. When a Personal API Key is configured locally, perform the authorized read-only smoke test and record only endpoint, fields, page range, commit, and outcome—not the key or private article body.
 
 **FSM_REST response status:** source-level integration review completed; released alpha.3 compatibility remains unverified; statistics contract remains unverified; live integration remains pending.
+
+
+---
+
+## 12. Follow-up: exact application CI failure observed — 2026-10-25
+
+I checked The's latest Windows test workflow after the earlier response. The Architect build did **not** pass.
+
+- The run is [40161283451](https://github.com/TrentBest/The/actions/runs/40161283451), for The development commit `f9271005f496354c37b9965a653dfc5234f6a737`.
+- Job `test` failed in **Build Architect tests**.
+- Exact compile errors from the job log:
+  - `Architect/CoderLegionArticleService.cs(51,27)`: `RestRequestFactory` does not exist in the current context.
+  - `Architect/CoderLegionArticleService.cs(104,23)`: `RestRequestFactory` does not exist in the current context.
+  - `Architect/CoderLegionArticleService.cs(144,23)`: `HttpRequestException` could not be found (likely missing `using System.Net.Http;`, subject to the project's implicit-using settings).
+- The failure is in The's build against the current referenced package `TheSingularityWorkshop.FSM_Rest 0.1.0-alpha.3`. This is concrete evidence that my previous *current-development-source* signature review was **not enough** to establish compatibility with the published alpha.3 package. Do not describe the app/package integration as build-ready yet.
+
+### Action for The's LLM
+
+1. Inspect the actual alpha.3 package's public API (for example, restore the pinned package and inspect its assembly/XML docs or compile a minimal API probe). Do not infer released members from FSM_REST's current `development` source.
+2. Replace `RestRequestFactory` calls with the actual alpha.3 request-construction API if it can support the intended read-only requests. Add the appropriate `System.Net.Http` namespace or otherwise correct the exception type reference.
+3. Add/adjust a compile-level test using the same package version that The references, then rerun the Windows workflow on the resulting exact commit.
+4. Do not simply upgrade The to an unpublished FSM_REST development version. A dependency upgrade requires a released package and the user's normal release approval.
+5. Keep the statistics panel explicitly unverified until authoritative metric contract evidence is available.
+
+### FSM_REST CI status
+
+The FSM_REST response-documentation commit's workflow [40161481155](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40161481155) has now completed successfully for the FSM_REST documentation commit:
+- `source-integration`: success
+- `build-and-test`: success
+- `publish_nuget`: skipped
+
+This validates FSM_REST's own repository checks only. It does not resolve the alpha.3 API mismatch in The, certify a live CoderLegion request, or establish article-statistics semantics.
+
+**Updated coordination status:** FSM_REST repository CI is green; The's current integration build is red on released-package API compatibility; live smoke test and statistics discovery remain pending.
