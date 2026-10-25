@@ -1,4 +1,7 @@
-![The Singularity Workshop animated moniker](https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Renderer/development/docs/assets/moniker.svg)
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Renderer/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
+**Maintainer / Workshop moniker:** @TrentBest · [Shared documentation standard](https://github.com/TrentBest/TheSingularityWorkshop.FSM_COS/blob/development/DOCUMENTATION_STANDARD.md) · [Living UML and data-card visual standard](https://github.com/TrentBest/TheSingularityWorkshop.FSM_COS/blob/development/docs/UML_VISUAL_STYLE.md)
 
 # TheSingularityWorkshop.FSM_REST
 
@@ -23,7 +26,7 @@ It defines reusable capability and transport forms. It does not automatically im
 
 REST contracts, transport mechanics, and domain behavior change for different reasons. FSM_REST keeps the reusable capability and transport surface separate so an individual API's meaning and policy remain owned by its domain MicroBundle and host.
 
-## 🔺 03 How
+## 🩵 03 How
 
 Define the capability boundary, bind the required inputs, and let the host decide how the transport is invoked. A response is data crossing the boundary; it is not automatically the capability itself.
 
@@ -31,9 +34,9 @@ Define the capability boundary, bind the required inputs, and let the host decid
 
 Run the [deterministic end-to-end demo](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/samples/RestCapabilityDemo/Program.md), then follow the capability recipe below. The demo uses a controlled in-memory HTTP handler, so it requires no live endpoint or credentials.
 
-## 🟪 05 Documentation and theory
+## 🟪 05 Choose your next step
 
-[Architecture contract](docs/ARCHITECTURE.md) · [Release notes](docs/RELEASE_NOTES.md) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Gallery: concepts, examples, visual provenance, and verification](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/Gallery.md) · [Consumer guide](docs/CONSUMING.md) · [Capability recipe](#the-capability-recipe) · [Development](#development) · [License](#license)
+[Start here: consumer guide](docs/CONSUMING.md) · [Architecture contract](docs/ARCHITECTURE.md) · [Release notes](docs/RELEASE_NOTES.md) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Gallery: concepts, examples, visual provenance, and verification](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/Gallery.md) · [Consumer guide](docs/CONSUMING.md) · [Capability recipe](#the-capability-recipe) · [Development](#development) · [License](#license)
 
 ---
 
