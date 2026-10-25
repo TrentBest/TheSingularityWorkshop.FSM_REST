@@ -57,7 +57,7 @@ This snippet is **source-checked**, not independently executed as part of this d
 
 ## Verification still required
 
-The repository's release checklist requires explicit lifecycle tests for normal completion, transport exceptions, requested cancellation, non-success HTTP statuses, concurrent invocations, and cleanup. The implementation file alone does not prove those paths pass tests. Use the current exact-SHA CI run as evidence before release.
+The current test source contains four focused cases: a non-success HTTP response (404), transport exception propagation, caller-requested cancellation, and an unsolicited `OperationCanceledException`. These tests have been added to `tests/FSM_REST.Tests/RestFsmExecutorTests.cs`, but passing execution on the current development SHA has not yet been confirmed. Remaining lifecycle coverage includes concurrent invocations and cleanup after both successful and exceptional paths. A further edge case needs explicit treatment: if `handle.Update` itself throws while the executor is recording `Failed` or `Cancelled`, that FSM error can replace the original transport exception. Do not claim exception preservation for that scenario until it is designed and tested. Use a successful exact-SHA CI run as evidence before release.
 
 ## Dependencies
 
