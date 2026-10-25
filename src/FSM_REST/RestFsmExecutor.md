@@ -6,7 +6,9 @@
 
 ## Contract
 
-`RestFsmExecutor.SendAsync` drives a registered FSM_API definition through `Ready → Sending → Completed`, or to `Failed` / `Cancelled` when transport execution throws. The executor destroys its FSM instance in a `finally` block. If recording `Failed` or `Cancelled` itself throws, that secondary lifecycle exception is attached to the original transport exception's `Data` under `FSM_REST.LifecycleRecordingException`, and the original transport exception is rethrown.
+`RestFsmExecutor.SendAsync` drives a registered FSM_API definition through `Ready → Sending → Completed`, or to `Failed` / `Cancelled` when transport execution throws. The executor destroys its FSM instance after execution.
+
+If recording `Failed` or `Cancelled` throws, that secondary lifecycle exception is attached to the original exception's `Data` under `FSM_REST.LifecycleRecordingException` when possible, and the original exception remains the one rethrown. The same preservation rule applies if `DestroyInstance` throws while another exception is already propagating. If destruction alone fails after an otherwise successful operation, that cleanup exception is allowed to surface.
 
 A non-2xx HTTP response is still `Completed`: transport completion and HTTP/application success are different concepts. The returned `RestResponse` remains the source of status, headers, and body.
 
@@ -19,3 +21,7 @@ A non-2xx HTTP response is still `Completed`: transport completion and HTTP/appl
 ## Boundaries
 
 This is an opt-in execution path. Existing direct `IRestTransport.SendAsync` use remains available for callers that do not need lifecycle orchestration. Authentication, retries, and domain interpretation remain outside this executor.
+
+## Verification note
+
+Exception-preservation behavior is source-reviewed; deterministic tests that force FSM lifecycle-recording or instance-destruction failures and a successful exact-commit CI run remain outstanding.
