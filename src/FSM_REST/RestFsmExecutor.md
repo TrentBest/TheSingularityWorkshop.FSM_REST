@@ -6,7 +6,7 @@
 
 ## Contract
 
-`RestFsmExecutor.SendAsync` drives a registered FSM_API definition through `Ready → Sending → Completed`, or to `Failed` / `Cancelled` when transport execution throws. The executor destroys its FSM instance in a `finally` block.
+`RestFsmExecutor.SendAsync` drives a registered FSM_API definition through `Ready → Sending → Completed`, or to `Failed` / `Cancelled` when transport execution throws. The executor destroys its FSM instance in a `finally` block. If recording `Failed` or `Cancelled` itself throws, that secondary lifecycle exception is attached to the original transport exception's `Data` under `FSM_REST.LifecycleRecordingException`, and the original transport exception is rethrown.
 
 A non-2xx HTTP response is still `Completed`: transport completion and HTTP/application success are different concepts. The returned `RestResponse` remains the source of status, headers, and body.
 
