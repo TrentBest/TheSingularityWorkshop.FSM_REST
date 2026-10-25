@@ -135,7 +135,7 @@ if (args[0] == "show" && args.Length == 2 && int.TryParse(args[1], out var postI
     }
 
     Console.WriteLine(ReadString(post, "title") ?? "(untitled)");
-    Console.WriteLine($"Author: {ReadString(post, "author", "handle") ?? "(unknown)}");
+    Console.WriteLine($"Author: {ReadString(post, "author", "handle") ?? "(unknown)"}");
     Console.WriteLine($"Created: {ReadString(post, "created_at") ?? "(date unavailable)"}");
     Console.WriteLine();
     Console.WriteLine(ReadString(post, "content") ?? "(No content field returned.)");
