@@ -43,38 +43,58 @@ public static class RestFsmExecutor
 
         var context = new ExecutionContext();
         var handle = TheSingularityWorkshop.FSM_API.FSM_API.Create.CreateInstance(DefinitionName, context, ProcessingGroup);
+        Exception? operationException = null;
         try
         {
-            context.TargetState = "Sending";
-            handle.Update(ProcessingGroup);
-            if (handle.CurrentState != "Sending")
-                throw new InvalidOperationException($"REST execution FSM did not enter Sending; state is '{handle.CurrentState}'.");
-
-            RestResponse response;
             try
             {
-                response = await transport.SendAsync(request, cancellationToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException exception) when (cancellationToken.IsCancellationRequested)
-            {
-                TryRecordTerminalState(() => handle.Update(ProcessingGroup), context, "Cancelled", exception);
-                throw;
+                context.TargetState = "Sending";
+                handle.Update(ProcessingGroup);
+                if (handle.CurrentState != "Sending")
+                    throw new InvalidOperationException($"REST execution FSM did not enter Sending; state is '{handle.CurrentState}'.");
+
+                RestResponse response;
+                try
+                {
+                    response = await transport.SendAsync(request, cancellationToken).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException exception) when (cancellationToken.IsCancellationRequested)
+                {
+                    TryRecordTerminalState(() => handle.Update(ProcessingGroup), context, "Cancelled", exception);
+                    throw;
+                }
+                catch (Exception exception)
+                {
+                    TryRecordTerminalState(() => handle.Update(ProcessingGroup), context, "Failed", exception);
+                    throw;
+                }
+
+                context.TargetState = "Completed";
+                handle.Update(ProcessingGroup);
+                if (handle.CurrentState != "Completed")
+                    throw new InvalidOperationException($"REST execution FSM did not complete; state is '{handle.CurrentState}'.");
+
+                return response;
             }
             catch (Exception exception)
             {
-                TryRecordTerminalState(() => handle.Update(ProcessingGroup), context, "Failed", exception);
+                operationException = exception;
                 throw;
             }
-
-            context.TargetState = "Completed";
-            handle.Update(ProcessingGroup);
-            if (handle.CurrentState != "Completed")
-                throw new InvalidOperationException($"REST execution FSM did not complete; state is '{handle.CurrentState}'.");
-            return response;
         }
         finally
         {
-            TheSingularityWorkshop.FSM_API.FSM_API.Interaction.DestroyInstance(handle);
+            try
+            {
+                TheSingularityWorkshop.FSM_API.FSM_API.Interaction.DestroyInstance(handle);
+            }
+            catch (Exception cleanupException)
+            {
+                if (operationException is null)
+                    throw;
+
+                TryAttachSecondaryException(operationException, cleanupException);
+            }
         }
     }
 
@@ -92,14 +112,19 @@ public static class RestFsmExecutor
         catch (Exception lifecycleException)
         {
             // Recording failure is secondary: never replace the exception from the transport.
-            try
-            {
-                originalException.Data[LifecycleRecordingExceptionKey] = lifecycleException;
-            }
-            catch
-            {
-                // Preserve the original exception even if its Data dictionary cannot be updated.
-            }
+            TryAttachSecondaryException(originalException, lifecycleException);
+        }
+    }
+
+    private static void TryAttachSecondaryException(Exception originalException, Exception secondaryException)
+    {
+        try
+        {
+            originalException.Data[LifecycleRecordingExceptionKey] = secondaryException;
+        }
+        catch
+        {
+            // Preserve the original exception even if its Data dictionary cannot be updated.
         }
     }
 
