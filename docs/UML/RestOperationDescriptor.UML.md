@@ -2,7 +2,8 @@
 
 **Owner / author:** Trent Best  
 **Purpose:** Describe one reusable REST operation capability without binding it to a specific API-description format, transport implementation, GUI, or domain.  
-**Evidence:** Source-checked manually against `src/FSM_REST/RestOperationDescriptor.cs`; not generated or runtime-captured.  
+**Source:** [RestOperationDescriptor.cs](../../src/FSM_REST/RestOperationDescriptor.cs).  
+**Provenance:** Source-checked manually; not generated or runtime-captured.  
 **Scan scope:** The target declaration and directly related descriptor/binding types shown below; not a repository-wide consumer scan.
 
 ## Target-centered neighborhood
