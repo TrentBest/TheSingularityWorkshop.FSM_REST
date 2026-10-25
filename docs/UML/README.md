@@ -44,6 +44,7 @@ The target-specific pages remain linked below for direct access.
 ## Optional integration targets
 
 - [OpenApiJsonImporter](OpenApiJsonImporter.UML.md)
+- [OpenApiImportResult](OpenApiImportResult.UML.md) — import outcome and fidelity diagnostics returned by the optional OpenAPI provider.
 - [OpenApiRestApiConnection](OpenApiRestApiConnection.UML.md)
 - [RestMicroBundle](RestMicroBundle.UML.md)
 - [RestApiDescriptorExtensions](RestApiDescriptorExtensions.UML.md)
