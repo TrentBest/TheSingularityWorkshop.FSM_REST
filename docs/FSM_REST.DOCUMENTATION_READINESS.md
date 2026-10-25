@@ -131,3 +131,5 @@ This is a source-level feasibility assessment, **not** a test result and **not**
 - The Gallery links the recipe. This is a live, credential-gated integration example; it has **not** yet been run against CoderLegion, so endpoint behavior and account-specific access remain unverified.
 - Write operations are intentionally excluded. Next increment after read verification: local draft save/preview, create-options metadata, then user-confirmed create/edit calls with no automatic publishing.
 - Readiness remains **68%** until the new sample builds and exact-SHA CI passes. This feature addition does not by itself increase documentation or release readiness.
+
+- The main `build-and-test` workflow now compiles the CoderLegion sample without making network requests or requiring credentials. This validates compilation only; the live API calls remain a manual, Personal-Key-gated check.
