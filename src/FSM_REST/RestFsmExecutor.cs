@@ -14,6 +14,7 @@ public static class RestFsmExecutor
 {
     private const string DefinitionName = "TheSingularityWorkshop.FSM_REST.Execution";
     private const string ProcessingGroup = "FSM_REST";
+    private const string LifecycleRecordingExceptionKey = "FSM_REST.LifecycleRecordingException";
 
     static RestFsmExecutor()
     {
@@ -49,31 +50,56 @@ public static class RestFsmExecutor
             if (handle.CurrentState != "Sending")
                 throw new InvalidOperationException($"REST execution FSM did not enter Sending; state is '{handle.CurrentState}'.");
 
+            RestResponse response;
             try
             {
-                var response = await transport.SendAsync(request, cancellationToken).ConfigureAwait(false);
-                context.TargetState = "Completed";
-                handle.Update(ProcessingGroup);
-                if (handle.CurrentState != "Completed")
-                    throw new InvalidOperationException($"REST execution FSM did not complete; state is '{handle.CurrentState}'.");
-                return response;
+                response = await transport.SendAsync(request, cancellationToken).ConfigureAwait(false);
             }
-            catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+            catch (OperationCanceledException exception) when (cancellationToken.IsCancellationRequested)
             {
-                context.TargetState = "Cancelled";
-                handle.Update(ProcessingGroup);
+                TryRecordTerminalState(handle, context, "Cancelled", exception);
                 throw;
             }
-            catch
+            catch (Exception exception)
             {
-                context.TargetState = "Failed";
-                handle.Update(ProcessingGroup);
+                TryRecordTerminalState(handle, context, "Failed", exception);
                 throw;
             }
+
+            context.TargetState = "Completed";
+            handle.Update(ProcessingGroup);
+            if (handle.CurrentState != "Completed")
+                throw new InvalidOperationException($"REST execution FSM did not complete; state is '{handle.CurrentState}'.");
+            return response;
         }
         finally
         {
             TheSingularityWorkshop.FSM_API.FSM_API.Interaction.DestroyInstance(handle);
+        }
+    }
+
+    private static void TryRecordTerminalState(
+        dynamic handle,
+        ExecutionContext context,
+        string targetState,
+        Exception originalException)
+    {
+        context.TargetState = targetState;
+        try
+        {
+            handle.Update(ProcessingGroup);
+        }
+        catch (Exception lifecycleException)
+        {
+            // Recording failure is secondary: never replace the exception from the transport.
+            try
+            {
+                originalException.Data[LifecycleRecordingExceptionKey] = lifecycleException;
+            }
+            catch
+            {
+                // Preserve the original exception even if its Data dictionary cannot be updated.
+            }
         }
     }
 
