@@ -72,10 +72,8 @@ if (args[0] == "list")
             return 1;
         }
 
-        var countOnPage = 0;
         foreach (var post in data.EnumerateArray())
         {
-            countOnPage++;
             var handle = ReadString(post, "author", "handle");
             if (!string.IsNullOrWhiteSpace(authorHandle) &&
                 !string.Equals(handle, authorHandle, StringComparison.OrdinalIgnoreCase))
@@ -92,14 +90,16 @@ if (args[0] == "list")
             matched++;
         }
 
-        if (countOnPage == 0 || data.GetArrayLength() == 0)
+        if (data.GetArrayLength() == 0)
         {
-            Console.WriteLine($"Finished. Displayed {matched} matching post(s).");
+            Console.WriteLine($"Stopped after an empty data page (page {page}). Displayed {matched} matching post(s).");
+            Console.WriteLine("Pagination contract is unverified: an empty page is not proof that the full article archive was retrieved.");
             return 0;
         }
     }
 
     Console.WriteLine($"Stopped at the safety limit of {maxPages} page(s). Displayed {matched} matching post(s).");
+    Console.WriteLine("This bounded scan may be partial; it does not establish archive completeness.");
     Console.WriteLine("Run again with a larger max-pages value if you need to continue scanning.");
     return 0;
 }
