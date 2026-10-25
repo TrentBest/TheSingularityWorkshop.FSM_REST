@@ -71,6 +71,21 @@ The core package directly references `TheSingularityWorkshop.FSM_API` and offers
 
 **Semantic boundary:** `Completed` means the transport returned a response. An HTTP 4xx/5xx response is not automatically an FSM failure; inspect the response status separately. The current source has explicit lifecycle handling, but this page does not claim those paths have fresh test evidence. Require exact-SHA CI and tests for normal completion, transport failure, requested cancellation, non-success HTTP status, concurrent calls, and instance cleanup before release.
 
+## 10. Use FSM_REST against CoderLegion
+
+The [CoderLegion Article Library sample](samples/CoderLegionArticleLibrary/README.md) is a credential-gated, read-only integration against the supplied CoderLegion API contract. It describes `GET /posts?page=N` and `GET /posts/{id}` as ordinary FSM_REST operations, passes the Personal API Key as an explicit `X-API-Key` host header, and handles the response envelope downstream.
+
+From the repository root, set `CODERLEGION_API_KEY` in the environment and run:
+
+```powershell
+dotnet run --project samples/CoderLegionArticleLibrary -- list 100
+dotnet run --project samples/CoderLegionArticleLibrary -- show 101
+```
+
+Set `CODERLEGION_HANDLE` to filter list results to that author handle. `GET /posts` is documented as a paginated browse endpoint rather than a dedicated “my posts” endpoint, so this sample filters pages locally and caps the scan. It does not create, edit, or publish content. The sample is a live integration recipe, not a claim that a request has already succeeded; run it with a valid Personal API Key to verify the service contract in practice.
+
+This is the first real-service demonstration. Draft composition and explicit-confirmation publishing should follow only after the read-only path is verified.
+
 ## Visual guides
 
 - [Capability recipe](docs/assets/fsm-rest-capability-recipe.svg)
