@@ -2,6 +2,7 @@ using System.Net;
 using System.Text;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using StorefrontComparison;
 using TheSingularityWorkshop.FSM_REST;
 
 var liveFredMeyer = args.Length > 0 && args[0] == "--live-fred-meyer";
@@ -41,6 +42,24 @@ foreach (var provider in new[] { walmart, fredMeyer })
     }
     Console.WriteLine();
 }
+Console.WriteLine("Purchase-history insight (illustrative fixture; not a live offer):");
+var pastPurchase = new PurchaseRecord(
+    "demo-milk", "Milk", new DateOnly(2026, 7, 26), 14.5m, "oz", 2.49m, "Example Store");
+var largerOffer = new CurrentOffer(
+    "demo-milk", "Milk", 32m, "oz", 4.49m, "Example Store");
+var insight = PurchaseInsights.Compare(pastPurchase, largerOffer);
+Console.WriteLine($"  Previous purchase: {pastPurchase.PurchasedOn:MMM d, yyyy} — {pastPurchase.PackageQuantity} {pastPurchase.Unit} for {pastPurchase.Paid:C}.");
+Console.WriteLine($"  Larger package today: {largerOffer.PackageQuantity} {largerOffer.Unit} for {largerOffer.Price:C} ({largerOffer.Retailer}).");
+Console.WriteLine($"  Unit price: {insight.HistoricalUnitPrice:C3}/{pastPurchase.Unit} then vs {insight.CurrentUnitPrice:C3}/{largerOffer.Unit} now.");
+if (insight.UnitPriceDifference > 0)
+    Console.WriteLine($"  Unit-price improvement: {insight.UnitPriceDifference:C3}/{pastPurchase.Unit} ({insight.UnitPriceSavingsPercent:F1}%).");
+else if (insight.UnitPriceDifference < 0)
+    Console.WriteLine($"  Unit-price increase: {Math.Abs(insight.UnitPriceDifference):C3}/{pastPurchase.Unit} ({Math.Abs(insight.UnitPriceSavingsPercent):F1}%).");
+else
+    Console.WriteLine("  Unit price is unchanged.");
+Console.WriteLine($"  Upfront package difference: {insight.CurrentPackagePremium:C}.");
+Console.WriteLine("  Not buying again yet: not estimated here; that requires a consumption-rate estimate from the shopper's own history.");
+Console.WriteLine();
 Console.WriteLine("No checkout, payment, cart write, or real order submission is performed.");
 
 public sealed record StoreProduct(string Provider, string ProviderProductId, string Name, decimal? Price)
