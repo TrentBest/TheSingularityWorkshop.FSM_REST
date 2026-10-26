@@ -20,7 +20,11 @@ This sample proves the **same normalized shopping workflow over two provider ada
 
 The deterministic run also prints a clearly labelled, fictional purchase-history comparison: a previous 14.5 oz purchase for $2.49 versus an illustrative 32 oz offer for $4.49. These are fixture values, not real purchases, scraped prices, or live offers. The calculation reports historical/current price per unit, the difference and percentage change, and the upfront package-price difference.
 
-A lower unit price is calculable when product identity and units are comparable. “You would not have needed to buy again yet” is a separate, uncertain estimate that requires a consumption model grounded in the shopper’s own history. The sample deliberately does not claim that from unit pricing alone. The arithmetic and input checks live in `PurchaseInsights.cs`; persistent history, product matching, and polished UI are future work tracked in [issue #9](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/issues/9).
+A lower unit price is calculable when product identity and units are comparable. “You would not have needed to buy again yet” is a separate estimate, not a conclusion available from price and package size alone.
+
+The sample also demonstrates the math needed for a quantity projection. One measured remaining-inventory observation is only a snapshot; two dated observations estimate average consumption velocity (quantity/day); three or more observations allow a rough acceleration estimate (quantity/day²) from changing interval velocities. The projection integrates the recent velocity and acceleration over a requested horizon and estimates depletion time from the resulting model. The deterministic fixture uses three explicitly fictional measurements, and the tests cover velocity-only and velocity-plus-acceleration paths.
+
+**Data caveat:** purchase timestamps alone are not inventory measurements. Replenishment dates can be affected by stockpiling, package overlap, waste, household size, and changing habits. A real projection should use observed remaining quantity when available, disclose uncertainty, and treat continued acceleration as a local assumption—not a promise. Arithmetic and input validation live in `PurchaseInsights.cs`; persistent history, product matching, confidence bounds, and polished UI remain future work tracked in [issue #9](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/issues/9).
 
 ## Important API reality
 
