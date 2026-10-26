@@ -99,6 +99,8 @@ public static class PurchaseInsights
             throw new ArgumentOutOfRangeException(nameof(observations), "Remaining quantity cannot be negative.");
         if (points.Select(x => x.ObservedOn).Distinct().Count() != points.Length)
             throw new ArgumentException("Observation dates must be unique.", nameof(observations));
+        if (points.Zip(points.Skip(1), (before, after) => after.QuantityRemaining > before.QuantityRemaining).Any(increased => increased))
+            throw new ArgumentException("Inventory increased between observations. Record replenishment quantities or start a new depletion interval before estimating consumption.", nameof(observations));
 
         var previous = points[^2];
         var latest = points[^1];
