@@ -57,6 +57,12 @@ jobs:
       - name: Run deterministic end-to-end demo
         run: dotnet run --project samples/RestCapabilityDemo/RestCapabilityDemo.csproj --configuration Release --no-build
 
+      - name: Build storefront composition sample
+        run: dotnet build samples/StorefrontComparison/StorefrontComparison.csproj --configuration Release
+
+      - name: Run deterministic storefront composition proof
+        run: dotnet run --project samples/StorefrontComparison/StorefrontComparison.csproj --configuration Release --no-build
+
       - name: Build credential-gated CoderLegion sample
         run: dotnet build samples/CoderLegionArticleLibrary/CoderLegionArticleLibrary.csproj --configuration Release
 
