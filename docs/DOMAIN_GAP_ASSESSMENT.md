@@ -17,7 +17,7 @@ The earlier **20/20** figure referred to production C# files having companion Ma
 |---|---|---|
 | API and operation descriptors | Implemented | Records accept malformed/null/inconsistent data; collection immutability and validation guarantees need explicit decisions/tests. |
 | Runtime operation binding | Implemented | String-only values; no typed values or explicit duplicate/case policy beyond current dictionary behavior. |
-| Path/query/header/cookie binding | Implemented for scalar strings | No array/object serialization, style/explode rules, nullable/empty-value policy, reserved-character policy, or comprehensive URI edge coverage. |
+| Path/query/header/cookie binding | Implemented for scalar strings | Existing tests cover required-parameter handling, base/path escape rejection, cookie merging, and query encoding for spaces, slashes, reserved delimiters, percent signs, and Unicode. Remaining gaps include plus-sign and empty-value semantics, path-segment edge cases, repeated query keys, array/object serialization, style/explode rules, and a documented null-versus-missing policy. |
 | Request body | Optional text body and content type | No typed body serialization, body schema validation, multipart/form-data, or binary/streaming body contract. These may belong in optional providers, but the extension boundary needs to be explicit. |
 | Transport abstraction | Async send with cancellation | No streaming response contract, configurable completion/body buffering policy, timeout/retry policy, or standard middleware/interceptor seam. Some are optional policy adapters rather than core requirements. |
 | HttpClient adapter | Sends request and captures headers/body | Direct tests now cover content headers, a 204 response with an empty body, cancellation, non-success status, and propagated transport exceptions. Remaining gaps include unusual methods, repeated-header behavior, redirect/URI behavior, and explicit disposal/ownership contract. |
@@ -48,7 +48,7 @@ The earlier **20/20** figure referred to production C# files having companion Ma
 1. Decide the supported parameter value model (scalar-only versus typed/collection values).
 2. If general REST/OpenAPI endpoint coverage is required, add explicit style/explode and serialization support or reject unsupported forms with actionable diagnostics. Do not silently flatten arrays/objects.
 3. Define empty versus missing values, repeated query keys, case sensitivity, header validation, and cookie merge behavior.
-4. Add table-driven tests for reserved characters, Unicode, spaces, slashes, plus signs, percent signs, and empty values.
+4. Extend the existing table-driven URI tests for plus signs, empty-versus-missing values, path-segment edge cases, and repeated query keys; current tests already cover spaces, slashes, reserved query delimiters, percent signs, and Unicode.
 
 ### P1 — response and body contracts
 1. Specify whether core responses are always buffered text or can support binary/streaming payloads.
