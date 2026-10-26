@@ -20,7 +20,7 @@ The earlier **20/20** figure referred to production C# files having companion Ma
 | Path/query/header/cookie binding | Implemented for scalar strings | No array/object serialization, style/explode rules, nullable/empty-value policy, reserved-character policy, or comprehensive URI edge coverage. |
 | Request body | Optional text body and content type | No typed body serialization, body schema validation, multipart/form-data, or binary/streaming body contract. These may belong in optional providers, but the extension boundary needs to be explicit. |
 | Transport abstraction | Async send with cancellation | No streaming response contract, configurable completion/body buffering policy, timeout/retry policy, or standard middleware/interceptor seam. Some are optional policy adapters rather than core requirements. |
-| HttpClient adapter | Sends request and captures headers/body | Needs broader tests for unusual methods, content headers, repeated headers, empty/no-content responses, redirects/URI behavior, cancellation, transport exceptions, and disposal/ownership contract. |
+| HttpClient adapter | Sends request and captures headers/body | Direct tests now cover content headers, a 204 response with an empty body, cancellation, non-success status, and propagated transport exceptions. Remaining gaps include unusual methods, repeated-header behavior, redirect/URI behavior, and explicit disposal/ownership contract. |
 | Response | Status, headers, body text, JSON deserialization | No typed result/error mapping, schema validation, media-type-aware deserialization, streaming, or standardized problem-details handling. Keep these composable; decide which belongs in core versus adapters. |
 | OpenAPI JSON import | Operation-level subset; local references and warnings | Not full OpenAPI conformance. The importer was moved into the optional OpenAPI project to enforce the format-specific provider boundary. Reconcile this boundary rather than silently expanding core. |
 | OpenAPI fidelity | Method/path/parameters/request-body/response metadata subset | Needs explicit tests and warnings for parameter serialization, security, server selection, callbacks/webhooks, composed schemas, external references, and other unsupported constructs. |
@@ -42,7 +42,7 @@ The earlier **20/20** figure referred to production C# files having companion Ma
 1. Add a domain-focused test matrix for descriptor invariants, binding rules, URI composition/escaping, headers/cookies, body/content type, HTTP status/headers/body, cancellation, and exception propagation.
 2. Fix discovered correctness defects with regression tests, not just test-count growth.
 3. Define and enforce path/method/parameter validation; test malformed paths and URI boundary cases.
-4. Test cancellation and transport errors without live network access; test 204/empty-body and non-2xx behavior.
+4. Test cancellation and transport errors without live network access; direct transport tests now cover 204/empty-body and non-2xx behavior. Continue expanding the matrix for URI/header semantics and response edge cases.
 
 ### P1 — REST parameter semantics
 1. Decide the supported parameter value model (scalar-only versus typed/collection values).
