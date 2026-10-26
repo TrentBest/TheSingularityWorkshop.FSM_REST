@@ -90,6 +90,10 @@ The answer is a small neutral vocabulary for capability description, request con
 
 ---
 
+## Explore a real-world composition
+
+The [Walmart + Fred Meyer storefront sample](samples/StorefrontComparison/README.md) demonstrates one normalized shopping workflow over two provider adapters, using FSM_REST's transport boundary. It defaults to deterministic test responses, includes an opt-in read-only Fred Meyer/Kroger catalog call, and documents the partner-access boundary for Walmart's shopper APIs. It does not submit real orders.
+
 ## The capability recipe
 
 The useful trick is that a REST API can be enormous at runtime while being small as a capability description.
