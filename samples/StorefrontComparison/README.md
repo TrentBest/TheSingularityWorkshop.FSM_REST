@@ -16,6 +16,12 @@ This sample proves the **same normalized shopping workflow over two provider ada
 - The same IRestTransport / RestRequest boundary can send requests and can be replaced by a deterministic test transport.
 - Provider limitations are represented honestly rather than pretending all stores expose the same API.
 
+## Purchase-history insight proof
+
+The deterministic run also prints a clearly labelled, fictional purchase-history comparison: a previous 14.5 oz purchase for $2.49 versus an illustrative 32 oz offer for $4.49. These are fixture values, not real purchases, scraped prices, or live offers. The calculation reports historical/current price per unit, the difference and percentage change, and the upfront package-price difference.
+
+A lower unit price is calculable when product identity and units are comparable. “You would not have needed to buy again yet” is a separate, uncertain estimate that requires a consumption model grounded in the shopper’s own history. The sample deliberately does not claim that from unit pricing alone. The arithmetic and input checks live in `PurchaseInsights.cs`; persistent history, product matching, and polished UI are future work tracked in [issue #9](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/issues/9).
+
 ## Important API reality
 
 These are not equivalent public APIs:
