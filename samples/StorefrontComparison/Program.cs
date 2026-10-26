@@ -60,6 +60,26 @@ else
 Console.WriteLine($"  Upfront package difference: {insight.CurrentPackagePremium:C}.");
 Console.WriteLine("  Not buying again yet: not estimated here; that requires a consumption-rate estimate from the shopper's own history.");
 Console.WriteLine();
+Console.WriteLine();
+Console.WriteLine("Consumption projection (illustrative measured-inventory fixture):");
+var inventory = new[]
+{
+    new InventoryObservation(new DateOnly(2026, 7, 1), 32m, "oz"),
+    new InventoryObservation(new DateOnly(2026, 7, 8), 24m, "oz"),
+    new InventoryObservation(new DateOnly(2026, 7, 15), 14m, "oz")
+};
+var projection = PurchaseInsights.ProjectConsumption(inventory, 7m);
+Console.WriteLine($"  Latest observed inventory: {projection.CurrentQuantity:F1} oz on {inventory[^1].ObservedOn:MMM d}.");
+Console.WriteLine($"  Recent consumption velocity: {projection.AverageVelocityPerDay:F3} oz/day.");
+Console.WriteLine(projection.AccelerationPerDaySquared is decimal acceleration
+    ? $"  Estimated acceleration: {acceleration:F4} oz/day² (three observations; rough local trend)."
+    : "  Acceleration unavailable: need at least three observations.");
+Console.WriteLine($"  Seven-day projection: consume {projection.ProjectedConsumption:F2} oz; {projection.ProjectedQuantityRemaining:F2} oz remain.");
+Console.WriteLine(projection.EstimatedDaysUntilDepleted is decimal days
+    ? $"  Modelled depletion: about {days:F1} days after the latest observation."
+    : "  Model does not predict a non-negative depletion time from these observations.");
+Console.WriteLine("  Projection assumes the latest acceleration persists; real usage can change.");
+
 Console.WriteLine("No checkout, payment, cart write, or real order submission is performed.");
 
 public sealed record StoreProduct(string Provider, string ProviderProductId, string Name, decimal? Price)
