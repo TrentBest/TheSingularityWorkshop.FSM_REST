@@ -177,6 +177,22 @@ public sealed class RestTransportTests
             transport));
     }
 
+    [Fact]
+    public async Task TransportPreservesNoContentStatusAndEmptyBody()
+    {
+        var handler = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.NoContent));
+
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/empty")));
+
+        Assert.Equal((int)HttpStatusCode.NoContent, response.StatusCode);
+        Assert.True(response.IsSuccessStatusCode);
+        Assert.Equal(string.Empty, response.Body);
+    }
+
     private sealed class DelegateTransport(
         Func<RestRequest, CancellationToken, Task<RestResponse>> send) : IRestTransport
     {
