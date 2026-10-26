@@ -128,15 +128,24 @@ public static class PurchaseInsights
         else if (acceleration.HasValue)
         {
             // Solve q - v*t - 0.5*a*t² = 0 and keep the smallest non-negative real root.
-            var discriminant = velocity * velocity + 2m * acceleration.Value * latest.QuantityRemaining;
-            if (discriminant >= 0)
+            var a = acceleration.Value;
+            if (a == 0)
             {
-                var root = (decimal)Math.Sqrt((double)discriminant);
-                var candidates = new[] { (-velocity + root), (-velocity - root) }
-                    .Where(x => x >= 0)
-                    .ToArray();
-                if (candidates.Length > 0)
-                    depletionDays = candidates.Min();
+                if (velocity > 0)
+                    depletionDays = latest.QuantityRemaining / velocity;
+            }
+            else
+            {
+                var discriminant = velocity * velocity + 2m * a * latest.QuantityRemaining;
+                if (discriminant >= 0)
+                {
+                    var root = (decimal)Math.Sqrt((double)discriminant);
+                    var candidates = new[] { (-velocity + root) / a, (-velocity - root) / a }
+                        .Where(x => x >= 0)
+                        .ToArray();
+                    if (candidates.Length > 0)
+                        depletionDays = candidates.Min();
+                }
             }
         }
 
