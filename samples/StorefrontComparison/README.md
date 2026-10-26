@@ -1,3 +1,10 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center">
+  <a href="https://github.com/TrentBest">
+    <img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop — animated workshop moniker" width="720" />
+  </a>
+</p>
+
 # Storefront Composition: Walmart + Fred Meyer
 
 This sample proves the **same normalized shopping workflow over two provider adapters**. The default executable uses deterministic responses; the opt-in Fred Meyer mode makes real read-only API calls. It lives beside FSM_REST because FSM_REST owns the neutral request/transport boundary; the storefront experience owns shopping semantics.
@@ -40,3 +47,14 @@ Therefore, this sample does not claim to place a real consumer order. It demonst
 - [Walmart Marketplace API overview](https://developer.walmart.com/us-marketplace/docs/integrate-with-marketplace-apis)
 - [Kroger Public APIs onboarding](https://www.postman.com/kroger/the-kroger-co-s-public-workspace/collection/ki6utqb/kroger-public-apis)
 - [FSM_REST README and capability recipe](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/README.md)
+
+---
+
+<p align="center">
+  <a href="https://github.com/TrentBest">
+    <img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" />
+  </a><br />
+  <strong>The Singularity Workshop</strong><br />
+  <em>Forging Software for the Singularity.</em><br />
+  <a href="https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST">FSM_REST repository</a>
+</p>
