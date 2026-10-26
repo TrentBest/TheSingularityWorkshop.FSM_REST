@@ -72,6 +72,19 @@ public sealed class PurchaseInsightsTests
     }
 
     [Fact]
+    public void ProjectConsumption_RejectsUnmodelledReplenishment()
+    {
+        var observations = new[]
+        {
+            new InventoryObservation(new DateOnly(2026, 1, 1), 4m, "oz"),
+            new InventoryObservation(new DateOnly(2026, 1, 2), 12m, "oz")
+        };
+
+        var error = Assert.Throws<ArgumentException>(() => PurchaseInsights.ProjectConsumption(observations, 1m));
+        Assert.Contains("replenishment", error.Message, StringComparison.OrdinalIgnoreCase);
+    }
+
+    [Fact]
     public void Compare_ReportsUnitPriceAndUpfrontPackageDifference()
     {
         var history = new PurchaseRecord("milk", "Milk", new DateOnly(2026, 1, 1), 14.5m, "oz", 2.49m, "Store A");
