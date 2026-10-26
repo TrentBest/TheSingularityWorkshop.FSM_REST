@@ -1,8 +1,8 @@
 # Storefront Composition: Walmart + Fred Meyer
 
-This sample is intended to prove the **same shopping workflow over two provider adapters**. It lives beside FSM_REST because FSM_REST owns the neutral request/transport boundary; the storefront experience owns shopping semantics.
+This sample proves the **same normalized shopping workflow over two provider adapters**. The default executable uses deterministic responses; the opt-in Fred Meyer mode makes real read-only API calls. It lives beside FSM_REST because FSM_REST owns the neutral request/transport boundary; the storefront experience owns shopping semantics.
 
-## What this should prove
+## What this proves
 
 - One provider-neutral product shape and shopping workflow.
 - Provider-specific endpoint and authentication details stay inside adapters.
@@ -17,12 +17,12 @@ These are not equivalent public APIs:
 - **Walmart Marketplace APIs:** These are seller/solution-provider APIs for managing a seller's own listings, inventory and orders. They are not a consumer grocery-shopping API. See [Walmart Marketplace API overview](https://developer.walmart.com/us-marketplace/docs/integrate-with-marketplace-apis).
 - **Fred Meyer:** Fred Meyer is served through Kroger's public API platform. Public API onboarding requires a registered application and OAuth credentials; the public flow supports product/location discovery and cart actions, but the public APIs do not provide a general consumer checkout/order-placement endpoint. See [Kroger Public APIs](https://www.postman.com/kroger/the-kroger-co-s-public-workspace/collection/ki6utqb/kroger-public-apis).
 
-Therefore, this sample must not claim to place a real consumer order. It should support a safe local order preview and a provider cart/checkout handoff. Real order submission must only be added if the relevant provider grants an explicit supported API for that account and use case. Walmart Marketplace sandbox order simulation is a separate seller workflow, not Walmart grocery checkout.
+Therefore, this sample does not claim to place a real consumer order. It demonstrates a safe local order preview; checkout handoff is intentionally not automated yet. Real order submission must only be added if the relevant provider grants an explicit supported API for that account and use case. Walmart Marketplace sandbox order simulation is a separate seller workflow, not Walmart grocery checkout.
 
 ## Proof stages
 
-1. **Deterministic composition proof:** Run both adapters through a fake IRestTransport and compare normalized products, cart previews, error handling and provider-specific request definitions. This must make no network calls.
-2. **Fred Meyer live catalog:** Register an app at the [Kroger Developer Portal](https://developer.kroger.com/), use OAuth client credentials, and query the product API through FSM_REST. Keep this read-only; product search is not a guarantee of shelf quantity or checkout availability.
+1. **Deterministic composition proof:** From this directory, run `dotnet run`. Both adapters use a fake IRestTransport, return normalized products and prepare local cart previews. This makes no network calls.
+2. **Fred Meyer live catalog:** Register an app at the [Kroger Developer Portal](https://developer.kroger.com/), set `KROGER_CLIENT_ID` and `KROGER_CLIENT_SECRET`, then run `dotnet run -- --live-fred-meyer "milk"`. The sample uses OAuth client credentials and queries the product API through FSM_REST. It is read-only; product search is not a guarantee of shelf quantity or checkout availability.
 3. **Walmart live catalog / availability:** Walmart's shopper OPD APIs require approved partner access and issued credentials/configuration. Once access is approved, implement the exact contracted endpoint set in a dedicated adapter. Do not substitute Marketplace seller endpoints.
 4. **Checkout handoff:** Open the provider's own cart/checkout experience after the user reviews the cart. Do not automate payment or submit a live order from a sample.
 
