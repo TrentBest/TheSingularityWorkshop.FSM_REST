@@ -123,6 +123,8 @@ public static class RestRequestFactory
                 $"Path parameter declaration(s) do not appear in the operation path: {string.Join(", ", unusedPathDeclarations)}.",
                 nameof(operation));
 
+        ValidateParameterDescriptors(operation.Parameters);
+
         var values = binding.Parameters;
         var declaredParameterNames = operation.Parameters
             .Select(parameter => parameter.Name)
@@ -158,9 +160,8 @@ public static class RestRequestFactory
 
         foreach (var parameter in operation.Parameters)
         {
-            values.TryGetValue(parameter.Name, out var value);
-
-            if (string.IsNullOrEmpty(value))
+            var supplied = values.TryGetValue(parameter.Name, out var value) && value is not null;
+            if (!supplied)
             {
                 if (parameter.Required)
                     throw new ArgumentException(
@@ -170,9 +171,15 @@ public static class RestRequestFactory
                 continue;
             }
 
+            // An explicit empty string is a value, not the same thing as an absent/null value.
+            // Empty path segments are rejected because they cannot safely identify a path value.
             switch (parameter.Location.ToLowerInvariant())
             {
                 case "path":
+                    if (value!.Length == 0)
+                        throw new ArgumentException(
+                            $"Path parameter '{parameter.Name}' must not be empty.",
+                            nameof(binding));
                     path = path.Replace(
                         "{" + parameter.Name + "}",
                         Uri.EscapeDataString(value),
@@ -180,15 +187,11 @@ public static class RestRequestFactory
                     break;
 
                 case "query":
-                    query.Add($"{Uri.EscapeDataString(parameter.Name)}={Uri.EscapeDataString(value)}");
+                    query.Add($"{Uri.EscapeDataString(parameter.Name)}={Uri.EscapeDataString(value!)}");
                     break;
 
                 case "header":
-                    if (!IsHttpToken(parameter.Name))
-                        throw new ArgumentException(
-                            $"Invalid HTTP header parameter name '{parameter.Name}'.",
-                            nameof(operation));
-                    if (value.Any(character =>
+                    if (value!.Any(character =>
                             character is '\r' or '\n' ||
                             (char.IsControl(character) && character != '\t')))
                         throw new ArgumentException(
@@ -198,17 +201,8 @@ public static class RestRequestFactory
                     break;
 
                 case "cookie":
-                    if (!IsHttpToken(parameter.Name))
-                        throw new ArgumentException(
-                            $"Invalid cookie parameter name '{parameter.Name}'.",
-                            nameof(operation));
-                    cookies.Add($"{parameter.Name}={Uri.EscapeDataString(value)}");
+                    cookies.Add($"{parameter.Name}={Uri.EscapeDataString(value!)}");
                     break;
-
-                default:
-                    throw new ArgumentException(
-                        $"Unsupported REST parameter location '{parameter.Location}'.",
-                        nameof(operation));
             }
         }
 
@@ -253,6 +247,57 @@ public static class RestRequestFactory
             requestHeaders,
             body,
             contentType);
+    }
+
+    private static void ValidateParameterDescriptors(IReadOnlyList<RestParameterDescriptor> parameters)
+    {
+        var seen = new HashSet<(string Location, string Name)>(new ParameterIdentityComparer());
+
+        foreach (var parameter in parameters)
+        {
+            if (parameter is null)
+                throw new ArgumentException("REST parameter descriptors must not contain null entries.", nameof(parameters));
+
+            if (string.IsNullOrWhiteSpace(parameter.Name))
+                throw new ArgumentException("REST parameter names must not be empty.", nameof(parameters));
+
+            var location = parameter.Location?.ToLowerInvariant();
+            if (location is not ("path" or "query" or "header" or "cookie"))
+                throw new ArgumentException(
+                    $"Unsupported REST parameter location '{parameter.Location}'.",
+                    nameof(parameters));
+
+            if (location is "header" or "cookie" && !IsHttpToken(parameter.Name))
+                throw new ArgumentException(
+                    $"Invalid {location} parameter name '{parameter.Name}'.",
+                    nameof(parameters));
+
+            if (!seen.Add((location, parameter.Name)))
+                throw new ArgumentException(
+                    $"Duplicate REST parameter descriptor '{parameter.Name}' in location '{location}'. " +
+                    "Repeated values for one parameter are not supported by the core binding model.",
+                    nameof(parameters));
+        }
+    }
+
+    private sealed class ParameterIdentityComparer : IEqualityComparer<(string Location, string Name)>
+    {
+        public bool Equals((string Location, string Name) x, (string Location, string Name) y)
+        {
+            var nameComparer = string.Equals(x.Location, "header", StringComparison.Ordinal)
+                ? StringComparer.OrdinalIgnoreCase
+                : StringComparer.Ordinal;
+            return StringComparer.Ordinal.Equals(x.Location, y.Location) &&
+                   nameComparer.Equals(x.Name, y.Name);
+        }
+
+        public int GetHashCode((string Location, string Name) value)
+        {
+            var nameComparer = string.Equals(value.Location, "header", StringComparison.Ordinal)
+                ? StringComparer.OrdinalIgnoreCase
+                : StringComparer.Ordinal;
+            return HashCode.Combine(StringComparer.Ordinal.GetHashCode(value.Location), nameComparer.GetHashCode(value.Name));
+        }
     }
 
     private static bool IsHttpToken(string value)
