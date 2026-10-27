@@ -86,12 +86,7 @@ public sealed class HttpClientRestTransportBuilder
             return new HttpClientRestTransport(_providedClient);
 
         if (_clientFactory is not null)
-        {
-            var factoryClient = _clientName is null
-                ? _clientFactory.CreateClient()
-                : _clientFactory.CreateClient(_clientName);
-            return new HttpClientRestTransport(factoryClient, ownsClient: true);
-        }
+            return new HttpClientRestTransportFactory(_clientFactory).Create(_clientName);
 
         var client = _handler is null
             ? new HttpClient()
