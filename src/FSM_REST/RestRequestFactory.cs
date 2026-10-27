@@ -97,6 +97,9 @@ public static class RestRequestFactory
                     nameof(operation));
         }
 
+        ArgumentNullException.ThrowIfNull(operation.Parameters);
+        ValidateParameterDescriptors(operation.Parameters);
+
         var pathPlaceholders = System.Text.RegularExpressions.Regex.Matches(
                 operation.Path, @"\{([^{}]+)\}")
             .Select(match => match.Groups[1].Value)
@@ -122,8 +125,6 @@ public static class RestRequestFactory
             throw new ArgumentException(
                 $"Path parameter declaration(s) do not appear in the operation path: {string.Join(", ", unusedPathDeclarations)}.",
                 nameof(operation));
-
-        ValidateParameterDescriptors(operation.Parameters);
 
         var values = binding.Parameters;
         var declaredParameterNames = operation.Parameters
