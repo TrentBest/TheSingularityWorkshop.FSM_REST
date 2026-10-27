@@ -74,6 +74,26 @@ The example's `applicationState` is your host's own state service; FSM_REST does
 
 The mapping constructor rejects undeclared or duplicate operation parameters. It deliberately does not evaluate arbitrary data paths, execute operations, deserialize payloads, or bypass authorization: those are responsibilities of the GUI/data-context adapter and host policy.
 
+## Construct transports through dependency injection
+
+Register a named HTTP client for each API whose configuration differs, then register the transport factory:
+
+```csharp
+services.AddHttpClient("CatalogApi", client =>
+{
+    client.BaseAddress = new Uri("https://catalog.example.test/");
+    client.Timeout = TimeSpan.FromSeconds(15);
+});
+services.AddHttpClientRestTransportFactory();
+
+var factory = serviceProvider.GetRequiredService<HttpClientRestTransportFactory>();
+using IRestTransport transport = factory.Create("CatalogApi");
+```
+
+The factory is a singleton-safe creator; each created transport has its own disposable lifetime. The transport disposes the `HttpClient` instance it receives from `IHttpClientFactory`, while the factory manages the pooled handler lifetime. Configure credentials and other host policy through the named client's registration. If the host already has an `IHttpClientFactory`, use `HttpClientRestTransportFactory` directly or construct a transport with `HttpClientRestTransportBuilder.UseFactory`. The DI extension is optional and does not replace `IRestTransport`.
+
+See [HTTP transport factory](../src/FSM_REST/HttpClientRestTransportFactory.md) for complete construction and lifetime guidance.
+
 ## The invocation lifecycle
 
 1. Keep a `RestOperationDescriptor` as reusable capability metadata.
