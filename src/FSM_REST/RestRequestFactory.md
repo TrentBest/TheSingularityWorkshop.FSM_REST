@@ -8,7 +8,10 @@
 - Validate the base API URI, HTTP method token, relative operation path, and required inputs.
 - Reject absolute/network paths, query/fragment-bearing paths, and literal or percent-encoded dot segments that could escape the API base path.
 - Apply supported path, query, header, and cookie parameter behavior as implemented.
-- Reject runtime values whose keys are not declared by the operation, so misspelled inputs cannot be silently ignored.
+- Treat a missing key and a `null` value as absent; required parameters fail when absent.
+- Preserve explicit empty query/header/cookie values, while rejecting empty path values.
+- Reject unsupported locations, invalid names, duplicate descriptors, and runtime values whose keys are not declared by the operation.
+- Percent-encode query plus signs as `%2B`; the current model does not support array or repeated parameter values.
 - Produce a request without performing network I/O.
 
 ## Boundaries
