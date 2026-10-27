@@ -95,7 +95,7 @@ The answer is a small neutral vocabulary for capability description, request con
 
 ## Explore a real-world composition
 
-The [Walmart + Fred Meyer storefront sample](samples/StorefrontComparison/README.md) demonstrates one normalized shopping workflow over two provider adapters, using FSM_REST's transport boundary. It defaults to deterministic test responses, includes an opt-in read-only Fred Meyer/Kroger catalog call, and documents the partner-access boundary for Walmart's shopper APIs. It does not submit real orders.
+The [Walmart + Fred Meyer storefront sample](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/samples/StorefrontComparison/README.md) demonstrates one normalized shopping workflow over two provider adapters, using FSM_REST's transport boundary. It defaults to deterministic test responses, includes an opt-in read-only Fred Meyer/Kroger catalog call, and documents the partner-access boundary for Walmart's shopper APIs. It does not submit real orders.
 
 ## The capability recipe
 
