@@ -1,5 +1,6 @@
 using System.Net;
 using System.Net.Http;
+using Microsoft.Extensions.Http;
 using TheSingularityWorkshop.FSM_REST;
 using Xunit;
 
@@ -240,11 +241,43 @@ public sealed class RestTransportTests
         Assert.Equal((int)HttpStatusCode.Accepted, response.StatusCode);
     }
 
+
+    [Fact]
+    public async Task BuilderUsesNamedHttpClientFactoryClient()
+    {
+        var factory = new StubHttpClientFactory(name =>
+        {
+            Assert.Equal("CatalogApi", name);
+            return new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
+        });
+
+        using var transport = HttpClientRestTransportBuilder.Create()
+            .UseFactory(factory, "CatalogApi")
+            .Build();
+
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/")));
+
+        Assert.Equal(200, response.StatusCode);
+        Assert.Equal("CatalogApi", factory.RequestedName);
+    }
+
     private sealed class DelegateTransport(
         Func<RestRequest, CancellationToken, Task<RestResponse>> send) : IRestTransport
     {
         public Task<RestResponse> SendAsync(RestRequest request, CancellationToken cancellationToken = default) =>
             send(request, cancellationToken);
+    }
+
+    private sealed class StubHttpClientFactory(Func<string, HttpClient> createClient) : IHttpClientFactory
+    {
+        public string? RequestedName { get; private set; }
+
+        public HttpClient CreateClient(string name)
+        {
+            RequestedName = name;
+            return createClient(name);
+        }
     }
 
     private sealed class BlockingHandler : HttpMessageHandler
