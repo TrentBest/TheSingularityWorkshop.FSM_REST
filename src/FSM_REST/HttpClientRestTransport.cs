@@ -2,18 +2,28 @@ namespace TheSingularityWorkshop.FSM_REST;
 
 /// <summary>Adapts <see cref="HttpClient"/> to the framework-neutral <see cref="IRestTransport"/> contract.</summary>
 /// <remarks>This is an adapter, not the definition of FSM_REST. Hosts can supply their own transport implementation.</remarks>
-public sealed class HttpClientRestTransport : IRestTransport
+public sealed class HttpClientRestTransport : IRestTransport, IDisposable
 {
     private readonly HttpClient _client;
+    private readonly bool _ownsClient;
+    private bool _disposed;
 
-    /// <summary>Creates a transport using the supplied <see cref="HttpClient"/>.</summary>
+    /// <summary>Creates a transport using the supplied <see cref="HttpClient"/> without taking ownership of it.</summary>
     /// <param name="client">HTTP client owned and configured by the host.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="client"/> is null.</exception>
-    public HttpClientRestTransport(HttpClient client) => _client = client ?? throw new ArgumentNullException(nameof(client));
+    public HttpClientRestTransport(HttpClient client) : this(client, ownsClient: false) { }
 
-    /// <inheritdoc />
+    internal HttpClientRestTransport(HttpClient client, bool ownsClient)
+    {
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+        _ownsClient = ownsClient;
+    }
+
+    /// <summary>Sends a request and captures the response as text.</summary>
+    /// <remarks>Although headers are read before the response body, this API materializes the full body as a string and is not a streaming API.</remarks>
     public async Task<RestResponse> SendAsync(RestRequest request, CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(_disposed, this);
         ArgumentNullException.ThrowIfNull(request);
         using var message = new HttpRequestMessage(new HttpMethod(request.Method), request.Uri);
 
@@ -50,5 +60,16 @@ public sealed class HttpClientRestTransport : IRestTransport
 
         var body = await response.Content.ReadAsStringAsync(cancellationToken);
         return new RestResponse((int)response.StatusCode, response.ReasonPhrase, headers, body);
+    }
+
+    /// <summary>Disposes the client only when this transport was created with ownership of that client.</summary>
+    public void Dispose()
+    {
+        if (_disposed)
+            return;
+
+        _disposed = true;
+        if (_ownsClient)
+            _client.Dispose();
     }
 }
