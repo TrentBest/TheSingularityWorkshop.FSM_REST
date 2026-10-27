@@ -368,6 +368,34 @@ public sealed class RestTransportTests
         Assert.Throws<InvalidOperationException>(() => builder.ConfigureClient(_ => { }));
     }
 
+    [Fact]
+    public async Task TransportFactoryCreatesDefaultClientAndDisposesItWithTransport()
+    {
+        var handler = new TrackingHandler();
+        var factory = new StubHttpClientFactory(name =>
+        {
+            Assert.Equal(string.Empty, name);
+            return new HttpClient(handler);
+        });
+
+        var transport = new HttpClientRestTransportFactory(factory).Create();
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/default")));
+
+        Assert.Equal(200, response.StatusCode);
+        Assert.Equal(string.Empty, factory.RequestedName);
+
+        transport.Dispose();
+        transport.Dispose();
+        Assert.True(handler.WasDisposed);
+    }
+
+    [Fact]
+    public void TransportFactoryRejectsNullClientFactory()
+    {
+        Assert.Throws<ArgumentNullException>(() => new HttpClientRestTransportFactory(null!));
+    }
+
     private sealed class DelegateTransport(
         Func<RestRequest, CancellationToken, Task<RestResponse>> send) : IRestTransport
     {
