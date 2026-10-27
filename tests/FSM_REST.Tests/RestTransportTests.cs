@@ -1,6 +1,7 @@
 using System.Net;
 using System.Net.Http;
 using Microsoft.Extensions.Http;
+using Microsoft.Extensions.DependencyInjection;
 using TheSingularityWorkshop.FSM_REST;
 using Xunit;
 
@@ -260,6 +261,34 @@ public sealed class RestTransportTests
 
         Assert.Equal(200, response.StatusCode);
         Assert.Equal("CatalogApi", factory.RequestedName);
+    }
+
+    [Fact]
+    public async Task TransportFactoryCreatesNamedTransport()
+    {
+        var factory = new StubHttpClientFactory(name =>
+        {
+            Assert.Equal("CatalogApi", name);
+            return new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
+        });
+
+        using var transport = new HttpClientRestTransportFactory(factory).Create("CatalogApi");
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/")));
+
+        Assert.Equal(200, response.StatusCode);
+        Assert.Equal("CatalogApi", factory.RequestedName);
+    }
+
+    [Fact]
+    public void DependencyInjectionRegistersTransportFactory()
+    {
+        var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+        services.AddHttpClient("CatalogApi");
+        services.AddHttpClientRestTransportFactory();
+
+        using var provider = services.BuildServiceProvider();
+        Assert.NotNull(provider.GetRequiredService<HttpClientRestTransportFactory>());
     }
 
     [Fact]
