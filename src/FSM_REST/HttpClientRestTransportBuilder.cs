@@ -4,10 +4,10 @@ namespace TheSingularityWorkshop.FSM_REST;
 
 /// <summary>Builds an <see cref="HttpClientRestTransport"/> with explicit client ownership.</summary>
 /// <remarks>
-This builder configures a client it creates, accepts a caller-owned client without mutating it,
-or obtains a named client from <see cref="IHttpClientFactory"/>. A built transport should be disposed
-when its lifetime ends; caller-owned clients are never disposed by the transport.
-</remarks>
+/// This builder configures a client it creates, accepts a caller-owned client without mutating it,
+/// or obtains a named client from <see cref="IHttpClientFactory"/>. A built transport should be disposed
+/// when its lifetime ends; caller-owned clients are never disposed by the transport.
+/// </remarks>
 public sealed class HttpClientRestTransportBuilder
 {
     private HttpClient? _providedClient;
