@@ -77,7 +77,7 @@ The [Architecture Contract](ARCHITECTURE.md) now defines package boundaries and 
 
 ## Remaining documentation and release gaps
 
-- **Documentation readiness estimate: 68%.** This is a human review estimate, not test coverage or release readiness.
+- **Historical documentation readiness estimate (2026-10-25): 68%.** This was a human review estimate, not test coverage or release readiness, and is not a current score.
 - **Reader experience:** the README now links to the shared FSM_COS documentation and visual standards and uses the shared five-part entry journey. Continue simplifying duplicated explanations and ensure every image teaches one identifiable idea.
 - **Visual fidelity and provenance:** audit each SVG against current source, give every visual a clear caption/text equivalent, and distinguish conceptual, source-checked, generated, and runtime-observed material. UML pages remain manually authored/source-checked unless a generation pipeline is explicitly demonstrated.
 - **Public contract review:** inspect XML docs, consumer examples, and package-level guidance against the exact candidate API.
@@ -123,7 +123,7 @@ This is a source-level feasibility assessment, **not** a test result and **not**
 - Workflow: [40154265174](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40154265174). `build-and-test` and `source-integration` both succeeded. Documentation contract, architecture boundaries, UML relative links/image paths, restore/build/test, deterministic end-to-end demo, package packing, and packed-artifact audit all passed. `publish_nuget` was skipped.
 - Manual coverage review cross-checked the production source inventory and UML index across core and optional integration folders; this confirms navigation coverage at the reviewed tree, not generated semantic completeness or runtime behavior.
 - Gallery review confirmed its recipe examples and optional integration sections state the relevant source paths and boundaries; diagrams remain explanatory/manual, not runtime-observed or source-generated. A detailed SVG geometry/claim audit remains open.
-- **Readiness remains 68%.** The successful run validates the current commit only; any later commit requires its own exact-SHA verification.
+- **The historical 68% estimate is not a current score.** The successful run validates the current commit only; any later commit requires its own exact-SHA verification.
 
 
 ## CoderLegion real-service sample (2026-10-25)
@@ -133,7 +133,7 @@ This is a source-level feasibility assessment, **not** a test result and **not**
 - Credentials are read from `CODERLEGION_API_KEY`; the sample recommends a Personal API Key and does not embed credentials. Optional `CODERLEGION_HANDLE` filters results client-side because the supplied contract describes `GET /posts` as a browse endpoint, not a dedicated own-posts listing.
 - The Gallery links the recipe. This is a live, credential-gated integration example; it has **not** yet been run against CoderLegion, so endpoint behavior and account-specific access remain unverified.
 - Write operations are intentionally excluded. Next increment after read verification: local draft save/preview, create-options metadata, then user-confirmed create/edit calls with no automatic publishing.
-- Readiness remains **68%** until the new sample builds and exact-SHA CI passes. This feature addition does not by itself increase documentation or release readiness.
+- This feature addition does not by itself establish release readiness. Recalculate the historical 68% estimate only after the current-head audit and exact-SHA CI.
 
 - The main `build-and-test` workflow now compiles the CoderLegion sample without making network requests or requiring credentials. This validates compilation only; the live API calls remain a manual, Personal-Key-gated check.
 

@@ -300,7 +300,7 @@ var request = RestRequestFactory.Create(
     });
 ~~~
 
-It handles path, query, header, and cookie parameter locations while leaving authentication, retries, caching, and transport policy outside the core.
+It handles path, query, header, and cookie parameter locations while leaving authentication, retries, caching, and transport policy outside the core. Missing keys and `null` mean absent; explicit empty query/header/cookie values are preserved where representable, while empty path values are rejected. Query plus signs are encoded as `%2B`, and duplicate/ambiguous parameter names fail fast. The optional OpenAPI importer warns when scalar binding cannot preserve array/object or style/explode semantics.
 
 The package provides a minimal executable boundary:
 
