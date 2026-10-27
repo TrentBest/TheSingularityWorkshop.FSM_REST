@@ -16,8 +16,8 @@ The earlier **20/20** figure referred to production C# files having companion Ma
 | Capability | Current state | Domain gap / consequence |
 |---|---|---|
 | API and operation descriptors | Implemented | Records accept malformed/null/inconsistent data; collection immutability and validation guarantees need explicit decisions/tests. |
-| Runtime operation binding | Implemented | String-only values; no typed values or explicit duplicate/case policy beyond current dictionary behavior. |
-| Path/query/header/cookie binding | Implemented for scalar strings | Existing tests cover required-parameter handling, base/path escape rejection, cookie merging, and query encoding for spaces, slashes, reserved delimiters, percent signs, and Unicode. Remaining gaps include plus-sign and empty-value semantics, path-segment edge cases, repeated query keys, array/object serialization, style/explode rules, and a documented null-versus-missing policy. |
+| Runtime operation binding | Implemented | Scalar string values only. Missing and `null` are absent; explicit empty strings remain values where representable. Binding names must be unique because the runtime dictionary cannot distinguish repeated/ambiguous descriptors. Typed values and collections remain future work. |
+| Path/query/header/cookie binding | Implemented for scalar strings | Tests now cover missing versus `null`, explicit empty query values, rejected empty path values, plus-sign encoding, reserved delimiters, percent signs, Unicode, duplicate/ambiguous names, and unsupported locations. Repeated/array/object values and OpenAPI style/explode remain unsupported and are now explicitly rejected or reported by the importer rather than implied to work. Additional URI normalization, header edge-case, and cross-adapter tests remain.
 | Request body | Optional text body and content type | No typed body serialization, body schema validation, multipart/form-data, or binary/streaming body contract. These may belong in optional providers, but the extension boundary needs to be explicit. |
 | Transport abstraction | Async send with cancellation | No streaming response contract, configurable completion/body buffering policy, timeout/retry policy, or standard middleware/interceptor seam. Some are optional policy adapters rather than core requirements. |
 | HttpClient adapter | Sends request and captures headers/body | Direct tests now cover content headers, a 204 response with an empty body, cancellation, non-success status, and propagated transport exceptions. Remaining gaps include unusual methods, repeated-header behavior, redirect/URI behavior, and explicit disposal/ownership contract. |
@@ -47,8 +47,8 @@ The earlier **20/20** figure referred to production C# files having companion Ma
 ### P1 — REST parameter semantics
 1. Decide the supported parameter value model (scalar-only versus typed/collection values).
 2. If general REST/OpenAPI endpoint coverage is required, add explicit style/explode and serialization support or reject unsupported forms with actionable diagnostics. Do not silently flatten arrays/objects.
-3. Define empty versus missing values, repeated query keys, case sensitivity, header validation, and cookie merge behavior.
-4. Extend the existing table-driven URI tests for plus signs, empty-versus-missing values, path-segment edge cases, and repeated query keys; current tests already cover spaces, slashes, reserved query delimiters, percent signs, and Unicode.
+3. **Implemented:** define missing/null versus explicit empty values, reject duplicate/ambiguous parameter names, reject unsupported locations, and encode plus signs as `%2B`. Repeated values and array/object serialization remain unsupported by the core binding dictionary.
+4. Continue the URI matrix with malformed percent escapes, encoded path separators, header case/combination behavior, and OpenAPI path/operation parameter override cases.
 
 ### P1 — response and body contracts
 1. Specify whether core responses are always buffered text or can support binary/streaming payloads.
