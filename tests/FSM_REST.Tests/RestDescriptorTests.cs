@@ -477,4 +477,29 @@ public sealed class RestDescriptorTests
             request.Uri.AbsoluteUri);
     }
 
+
+    [Fact]
+    public void RequestFactoryPreservesExplicitEmptyHeaderAndCookieValues()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/search", "search", null, null,
+            [
+                new RestParameterDescriptor("X-Trace", "header", true, "string", null, null),
+                new RestParameterDescriptor("session", "cookie", true, "string", null, null)
+            ],
+            null);
+
+        var request = RestRequestFactory.Create(
+            operation,
+            new Uri("https://example.test/api"),
+            new Dictionary<string, string?>
+            {
+                ["X-Trace"] = string.Empty,
+                ["session"] = string.Empty
+            });
+
+        Assert.Equal(string.Empty, request.Headers!["X-Trace"]);
+        Assert.Equal("session=", request.Headers["Cookie"]);
+    }
+
 }
