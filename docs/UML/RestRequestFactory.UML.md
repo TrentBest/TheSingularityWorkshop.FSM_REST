@@ -27,8 +27,10 @@ classDiagram
 The diagram is deliberately focused on the target and its direct architectural relationships. It omits incidental members and does not claim to enumerate every repository consumer.
 
 ## Use cases
-1. **Caller provides an operation and parameters or a RestOperationBinding**
-2. **Respect the boundary.** Use this type for its declared role; do not infer network behavior, authorization, schema validation, or runtime rendering unless explicitly implemented by the related component.
+1. **Caller provides an operation and parameters or a RestOperationBinding.** The factory validates the operation and creates a request without performing network I/O.
+2. **Caller distinguishes absence from an empty value.** Missing and `null` values are absent; required values fail when absent. An explicit empty query value becomes `name=`, while an empty path value is rejected.
+3. **Caller supplies query data safely.** Reserved characters and plus signs are percent-encoded. Duplicate parameter descriptors and unsupported locations are rejected; arrays and repeated values are not represented by the current binding dictionary.
+4. **Respect the boundary.** Use this type for its declared role; do not infer network behavior, authorization, schema validation, or runtime rendering unless explicitly implemented by the related component.
 
 ## Verification and limits
 - Source: [RestRequestFactory.cs](../../src/FSM_REST/RestRequestFactory.cs)
