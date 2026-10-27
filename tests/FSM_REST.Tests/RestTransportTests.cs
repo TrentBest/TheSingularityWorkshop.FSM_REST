@@ -104,6 +104,46 @@ public sealed class RestTransportTests
     }
 
     [Fact]
+    public async Task TransportCombinesRepeatedResponseHeaderValues()
+    {
+        var handler = new StubHandler(_ =>
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("ok")
+            };
+            response.Headers.TryAddWithoutValidation("X-Trace", new[] { "first", "second" });
+            return response;
+        });
+
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/headers")));
+
+        Assert.Equal("first, second", response.Headers["X-Trace"]);
+    }
+
+    [Fact]
+    public async Task TransportSupportsCustomValidHttpMethod()
+    {
+        var handler = new StubHandler(request =>
+        {
+            Assert.Equal("PURGE", request.Method.Method);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        var response = await transport.SendAsync(
+            new RestRequest("PURGE", new Uri("https://example.test/cache")));
+
+        Assert.Equal((int)HttpStatusCode.NoContent, response.StatusCode);
+    }
+
+    [Fact]
     public async Task TransportPreservesNonSuccessStatus()
     {
         var handler = new StubHandler(_ =>
