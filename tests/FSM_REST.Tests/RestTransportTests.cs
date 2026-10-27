@@ -193,6 +193,52 @@ public sealed class RestTransportTests
         Assert.Equal(string.Empty, response.Body);
     }
 
+
+    [Fact]
+    public void BuilderDoesNotDisposeCallerOwnedClient()
+    {
+        using var client = new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
+        var transport = HttpClientRestTransportBuilder.Create().UseClient(client).Build();
+
+        transport.Dispose();
+
+        Assert.Equal(200, client.GetAsync("https://example.test/").GetAwaiter().GetResult().StatusCode);
+    }
+
+    [Fact]
+    public void BuilderDisposesClientItCreates()
+    {
+        var transport = HttpClientRestTransportBuilder.Create()
+            .ConfigureClient(client => client.Timeout = TimeSpan.FromSeconds(3))
+            .Build();
+
+        transport.Dispose();
+
+        Assert.Throws<ObjectDisposedException>(() => transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/"))));
+    }
+
+    [Fact]
+    public async Task BuilderUsesInjectedHandler()
+    {
+        var called = false;
+        var handler = new StubHandler(_ =>
+        {
+            called = true;
+            return new HttpResponseMessage(HttpStatusCode.Accepted);
+        });
+
+        using var transport = HttpClientRestTransportBuilder.Create()
+            .UseHandler(handler)
+            .Build();
+
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/")));
+
+        Assert.True(called);
+        Assert.Equal((int)HttpStatusCode.Accepted, response.StatusCode);
+    }
+
     private sealed class DelegateTransport(
         Func<RestRequest, CancellationToken, Task<RestResponse>> send) : IRestTransport
     {
