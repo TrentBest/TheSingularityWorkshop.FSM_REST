@@ -198,7 +198,7 @@ public static class RestRequestFactory
                         throw new ArgumentException(
                             $"HTTP header parameter '{parameter.Name}' contains an invalid control character.",
                             nameof(binding));
-                    requestHeaders[parameter.Name] = value;
+                    requestHeaders[parameter.Name] = value!;
                     break;
 
                 case "cookie":
