@@ -1,12 +1,12 @@
 # FSM_REST Release Verification Checklist
 
-Use this checklist for a candidate package release. It is a verification gate, not a declaration that a particular version is ready. Confirm the current package version, target frameworks, dependencies, and upstream compatibility from the checked-out source and CI; do not inherit version or prerequisite claims from historical branch documents.
+Use this checklist for a candidate package release. It is a verification gate, not a declaration that a particular version is ready. Confirm the current package version, target frameworks, dependencies, and upstream compatibility from the checked-out source and CI; do not inherit version or prerequisite claims from historical branch documents. The artifact evidence below is retained for traceability only: later source and test changes mean it is not evidence for the current `development` head. A fresh exact-SHA CI run and package artifact inspection are required before release.
 
 ## Release notes
 
 - [x] Added [release notes](RELEASE_NOTES.md) describing the current candidate package set, architecture boundaries, compatibility, known limitations, and upgrade guidance. Review these notes against the final exact candidate before publication.
 
-## Latest candidate artifact inspection
+## Historical candidate artifact inspection — superseded by subsequent development changes
 
 - **Last inspected implementation candidate:** [`cb03e7e049da391d11cc7accdc9a8acf0e609610`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/cb03e7e049da391d11cc7accdc9a8acf0e609610) on `development`.
 - **Exact-SHA CI run:** [Package FSM REST #40164358155](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40164358155) — build-and-test and source-integration passed; NuGet publication was skipped.

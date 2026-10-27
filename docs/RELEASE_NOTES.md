@@ -18,6 +18,7 @@ These are prerelease versions. Treat APIs and package contracts as subject to ch
 - Adds a direct dependency on `TheSingularityWorkshop.FSM_API` `1.0.13` and an opt-in FSM-governed REST transport lifecycle.
 - Keeps the core package independent of FSM_COS, GUI frameworks, and protocol-description importers.
 - Provides descriptors for APIs and operations, string-valued operation binding, request construction, an `IRestTransport` boundary, an `HttpClient` adapter, and response capture/deserialization.
+- Defines parameter presence explicitly: missing and `null` values are absent; explicit empty query/header/cookie values are preserved where representable; empty path values fail. Query plus signs are percent-encoded as `%2B`, and duplicate/ambiguous parameter names are rejected.
 
 ## Optional companion packages
 
@@ -36,7 +37,7 @@ These are prerelease versions. Treat APIs and package contracts as subject to ch
 
 This candidate is a REST capability and transport prototype, not a complete general-purpose REST integration layer. In particular:
 
-- Operation parameters are currently represented as scalar strings; comprehensive array/object serialization and OpenAPI style/explode semantics are not implemented.
+- Operation parameters are currently represented as scalar strings; repeated query values, arrays/objects, and OpenAPI style/explode semantics are not implemented. The core rejects duplicate/ambiguous parameter names, and the OpenAPI importer emits fidelity warnings for explicit style/explode and array/object parameters.
 - The OpenAPI importer supports an initial JSON subset and supported local component references. It is not full OpenAPI conformance; external references, server-variable substitution, full schema composition/validation, and several protocol features remain unsupported.
 - Authentication, credential discovery, retries, caching, rate limiting, service discovery, and authorization policy belong to the host or separate optional adapters.
 - Responses are captured as body text with convenience JSON deserialization. Schema validation, standardized domain-error mapping, and a general streaming/binary response contract are not provided.
