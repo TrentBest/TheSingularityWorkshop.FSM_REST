@@ -157,6 +157,66 @@ This helper returns the same raw `RestResponse` as the transport. It does not ad
 
 Use `response.Deserialize<T>()` when the response is JSON and the consuming application owns a suitable target type. This is JSON deserialization, not validation against the imported API schema. Your host or domain capability decides how to handle authentication, authorization, cancellation, timeouts, retries, backoff, rate limits, caching, telemetry, schema validation, and domain-specific errors. The host also owns the lifetime and configuration of the supplied `HttpClient`.
 
+## Construct the HTTP transport fluently
+
+Use `HttpClientRestTransportBuilder` when you want a concise construction path without replacing the `IRestTransport` boundary.
+
+Create and configure a client owned by the transport:
+
+```csharp
+using TheSingularityWorkshop.FSM_REST;
+
+using var transport = HttpClientRestTransportBuilder.Create()
+    .ConfigureClient(client =>
+    {
+        client.BaseAddress = new Uri("https://api.example.com/");
+        client.Timeout = TimeSpan.FromSeconds(20);
+    })
+    .Build();
+
+RestResponse response = await transport.SendAsync(
+    new RestRequest("GET", new Uri("https://api.example.com/users")),
+    cancellationToken);
+```
+
+Or pass a client that your host already configures and owns:
+
+```csharp
+using var client = new HttpClient(handler: myHandler, disposeHandler: false);
+// Configure shared headers, credentials, proxy, and other host policy here.
+using var transport = HttpClientRestTransportBuilder.Create()
+    .UseClient(client)
+    .Build();
+```
+
+Disposing a transport built with `UseClient` does **not** dispose the supplied client. The client remains the host's responsibility. `ConfigureClient` is intentionally rejected with `UseClient` so the builder cannot silently mutate shared defaults.
+
+For a custom handler, use `UseHandler(handler, disposeHandler: true)`; the builder creates and owns the resulting client. Set `disposeHandler: false` only when the handler is owned elsewhere.
+
+### Integrate with IHttpClientFactory and dependency injection
+
+Register and configure named clients in the host, then pass the factory into the builder. The factory owns handler pooling and configuration; dispose the built transport when the transport lifetime ends.
+
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+using TheSingularityWorkshop.FSM_REST;
+
+services.AddHttpClient("CatalogApi", client =>
+{
+    client.BaseAddress = new Uri("https://api.example.com/");
+    client.Timeout = TimeSpan.FromSeconds(20);
+});
+
+// In a service that receives IHttpClientFactory through constructor injection:
+using var transport = HttpClientRestTransportBuilder.Create()
+    .UseFactory(httpClientFactory, "CatalogApi")
+    .Build();
+```
+
+Factory-created clients are disposed with the transport, as recommended for `IHttpClientFactory`; the factory's pooled handlers remain managed by the factory. Configure factory-created clients through `AddHttpClient`, not `ConfigureClient`. Authentication, authorization, retries, endpoint policy, and response interpretation remain host/domain responsibilities.
+
+The builder is a construction convenience for the existing adapter, not a new transport contract. Direct construction with `new HttpClientRestTransport(client)` remains supported and does not transfer client ownership. The current `RestResponse.Body` is still a string; this builder does not add streaming or bounded-memory body handling.
+
 ## Scope and limitations
 
 FSM_REST core provides a neutral descriptor/binding/request/transport/response path. The optional `TheSingularityWorkshop.FSM_Rest.OpenApi` package provides `OpenApiJsonImporter` for OpenAPI 3.x JSON and `OpenApiRestApiConnection` for loading a definition URL and invoking imported operations. The importer reads operation paths, parameters, request-body media/schema hints, and response metadata. It does not itself:
