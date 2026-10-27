@@ -68,3 +68,13 @@ This checklist records release criteria only. Completing it does not itself auth
 - **Versions unchanged:** core `0.1.0-alpha.5`, OpenAPI `0.1.0-alpha.1`, COS `0.1.0-alpha.1`.
 - **Release boundary:** this is successful exact-SHA CI and automated artifact-gate evidence, not owner approval or proof that every unchecked manual review is complete. Manual archive/content review, release-note/public-contract review, and remaining behavior gaps are still open. Do not publish without explicit owner approval.
 
+## Latest exact-SHA verification — 2026-10-27 (follow-up run)
+
+- **Candidate source SHA:** [`bb80b8f51e3b53408532fbcb2cc15adc58b4fa8e`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/bb80b8f51e3b53408532fbcb2cc15adc58b4fa8e) on `development`; this commit corrects the recorded verification artifact digest.
+- **CI run:** [Package FSM REST #40445533201](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40445533201) — `build-and-test` and `source-integration` succeeded; `publish_nuget` was skipped.
+- **Automated package gate:** packing and packed-NuGet artifact audit passed, including package identity/version, required content, dependency boundaries, and README relative-link checks. The source-integration build and tests also passed.
+- **Current GitHub Actions package-artifact metadata:** artifact ID `12708385781`, name `fsm-rest-nuget-package`, archive size 170,294 bytes, reported SHA-256 `2bfc887e00729a09661d5f6a2797b5a49855a3f9a6c1e272faf60c93737acdb2`; associated with the exact source SHA above. This is the GitHub Actions artifact archive digest, not a separately verified SHA-256 for each extracted `.nupkg`.
+- **Test/coverage artifact metadata:** artifact ID `12708680336`, name `fsm-rest-test-results`, reported SHA-256 `f8af201b4fa5efddcb3876f844b6388123ca185d3d1b707c0e84395a095483b8`; associated with the same source SHA.
+- **Versions remain:** core `0.1.0-alpha.5`, OpenAPI `0.1.0-alpha.1`, COS `0.1.0-alpha.1`.
+- **Evidence boundary:** this records the newer exact-SHA CI run and its artifact metadata. It does not replace manual archive/content inspection of the current downloaded package, complete the unchecked public-contract/release-note review, or establish comprehensive REST semantics. Publication remains explicitly approval-gated.
+
