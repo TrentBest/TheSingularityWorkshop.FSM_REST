@@ -39,7 +39,7 @@ Run the [deterministic end-to-end demo](https://github.com/TrentBest/TheSingular
 
 ## 🟪 05 Choose your next step
 
-[Start here: consumer guide](docs/CONSUMING.md) · [Architecture contract](docs/ARCHITECTURE.md) · [Release notes](docs/RELEASE_NOTES.md) · [Release checklist](docs/RELEASE_CHECKLIST.md) · [Gallery: concepts, examples, visual provenance, and verification](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/Gallery.md) · [Capability recipe](#the-capability-recipe) · [Development](#development) · [License](#license)
+[Start here: consumer guide](docs/CONSUMING.md) · [Architecture contract](docs/ARCHITECTURE.md) · [Release notes](docs/RELEASE_NOTES.md) · [Gallery: concepts, examples, visual provenance, and verification](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/Gallery.md) · [Capability recipe](#the-capability-recipe) · [Development](#development) · [License](#license)
 
 ---
 
