@@ -163,6 +163,15 @@ jobs:
                   missing = [required for required in rule["required_files"] if required.lower() not in lower_names]
                   if missing:
                       raise SystemExit(f"{package_id}: missing required package files: {missing}")
+                  internal_docs = [
+                      "docs/BRANCH_RECONCILIATION.md",
+                      "docs/DOMAIN_GAP_ASSESSMENT.md",
+                      "docs/FSM_REST.DOCUMENTATION_READINESS.md",
+                      "docs/RELEASE_CHECKLIST.md",
+                  ]
+                  leaked_docs = [path for path in internal_docs if path.lower() in lower_names]
+                  if leaked_docs:
+                      raise SystemExit(f"{package_id}: internal repository-maintenance docs must not ship: {leaked_docs}")
 
                   readme_path = next((name for name in names if name.lower() == "readme.md"), None)
                   if readme_path:
