@@ -337,4 +337,105 @@ public sealed class RestDescriptorTests
         Assert.Equal("binding", exception.ParamName);
         Assert.Contains("paeg", exception.Message);
     }
+
+    [Theory]
+    [InlineData("a+b", "a%2Bb")]
+    [InlineData("", "")]
+    public void RequestFactoryEncodesPlusAndPreservesExplicitEmptyQueryValues(string value, string encoded)
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/search", "search", null, null,
+            [new RestParameterDescriptor("q", "query", false, "string", null, null)],
+            null);
+
+        var request = RestRequestFactory.Create(
+            operation,
+            new Uri("https://example.test/api"),
+            new Dictionary<string, string?> { ["q"] = value });
+
+        Assert.Equal($"https://example.test/api/search?q={encoded}", request.Uri.AbsoluteUri);
+    }
+
+    [Fact]
+    public void RequestFactoryTreatsMissingAndNullAsAbsentForOptionalParameters()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/search", "search", null, null,
+            [
+                new RestParameterDescriptor("missing", "query", false, "string", null, null),
+                new RestParameterDescriptor("nullValue", "query", false, "string", null, null)
+            ],
+            null);
+
+        var request = RestRequestFactory.Create(
+            operation,
+            new Uri("https://example.test/api"),
+            new Dictionary<string, string?> { ["nullValue"] = null });
+
+        Assert.Equal("https://example.test/api/search", request.Uri.AbsoluteUri);
+    }
+
+    [Fact]
+    public void RequestFactoryRejectsNullForRequiredParameter()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/search", "search", null, null,
+            [new RestParameterDescriptor("q", "query", true, "string", null, null)],
+            null);
+
+        Assert.Throws<ArgumentException>(() => RestRequestFactory.Create(
+            operation,
+            new Uri("https://example.test/api"),
+            new Dictionary<string, string?> { ["q"] = null }));
+    }
+
+    [Fact]
+    public void RequestFactoryRejectsEmptyPathParameter()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/users/{id}", "getUser", null, null,
+            [new RestParameterDescriptor("id", "path", true, "string", null, null)],
+            null);
+
+        Assert.Throws<ArgumentException>(() => RestRequestFactory.Create(
+            operation,
+            new Uri("https://example.test/api"),
+            new Dictionary<string, string?> { ["id"] = "" }));
+    }
+
+    [Theory]
+    [InlineData("query", "q", "query", "q")]
+    [InlineData("header", "X-Trace", "header", "x-trace")]
+    public void RequestFactoryRejectsDuplicateParameterDescriptors(
+        string firstLocation,
+        string firstName,
+        string secondLocation,
+        string secondName)
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/search", "search", null, null,
+            [
+                new RestParameterDescriptor(firstName, firstLocation, false, "string", null, null),
+                new RestParameterDescriptor(secondName, secondLocation, false, "string", null, null)
+            ],
+            null);
+
+        Assert.Throws<ArgumentException>(() => RestRequestFactory.Create(
+            operation,
+            new Uri("https://example.test/api")));
+    }
+
+    [Fact]
+    public void RequestFactoryRejectsUnsupportedParameterLocationEvenWhenNoValueWasSupplied()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/search", "search", null, null,
+            [new RestParameterDescriptor("q", "matrix", false, "string", null, null)],
+            null);
+
+        Assert.Throws<ArgumentException>(() => RestRequestFactory.Create(
+            operation,
+            new Uri("https://example.test/api")));
+    }
+
 }
