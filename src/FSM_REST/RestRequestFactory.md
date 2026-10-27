@@ -10,7 +10,7 @@
 - Apply supported path, query, header, and cookie parameter behavior as implemented.
 - Treat a missing key and a `null` value as absent; required parameters fail when absent.
 - Preserve explicit empty query/header/cookie values, while rejecting empty path values.
-- Reject unsupported locations, invalid names, duplicate descriptors, and runtime values whose keys are not declared by the operation.
+- Reject unsupported locations, invalid names, duplicate/ambiguous parameter names, and runtime values whose keys are not declared by the operation.
 - Percent-encode query plus signs as `%2B`; the current model does not support array or repeated parameter values.
 - Produce a request without performing network I/O.
 
