@@ -1,10 +1,13 @@
 <!-- The Singularity Workshop moniker -->
 <p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Renderer/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
 
-**Maintainer / Workshop moniker:** @TrentBest · [Shared documentation standard](https://github.com/TrentBest/TheSingularityWorkshop.FSM_COS/blob/development/DOCUMENTATION_STANDARD.md) · [Living UML and data-card visual standard](https://github.com/TrentBest/TheSingularityWorkshop.FSM_COS/blob/development/docs/UML_VISUAL_STYLE.md)
+**Maintainer:** @TrentBest · [Shared documentation standard](https://github.com/TrentBest/TheSingularityWorkshop.FSM_COS/blob/development/DOCUMENTATION_STANDARD.md) · [Living UML and data-card visual standard](https://github.com/TrentBest/TheSingularityWorkshop.FSM_COS/blob/development/docs/UML_VISUAL_STYLE.md)
 
 # TheSingularityWorkshop.FSM_REST
 
+## ✳️ 00 Identity
+
+FSM_REST is the framework-neutral REST capability and transport substrate for The Singularity Workshop. It describes operations and constructs requests; it does not claim ownership of a remote API's domain behavior.
 
 > **A reusable REST capability and transport substrate—not a REST API implementation.**
 
@@ -419,21 +422,16 @@ MIT. See LICENSE.txt.
 - **PayPal:** [Make a donation](https://www.paypal.com/donate/?hosted_button_id=3Z7263LCQMV9J)
 
 <p align="center">
-  <a href="https://github.com/TrentBest/FSM_API">
-    <img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop" height="200">
-  </a>
-</p>
-
-<p align="center">
   <em>The Singularity Workshop — Tools for the curious, the bold, and the systemically inclined.</em><br>
   <strong>Because state shouldn't be a mess.</strong>
 </p>
 
 ---
 
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
 <p align="center">
-  <a href="https://github.com/TrentBest/TheSingularityWorkshop" aria-label="The Singularity Workshop living avatar">
-    <img src="https://raw.githubusercontent.com/TrentBest/WebPage/development/TheSingularityWorkshop/wwwroot/Images/TheSingularityWorkshopLivingAvatar.svg" alt="The Singularity Workshop living avatar — a digital vortex converging on its central eye" width="112" />
+  <a href="https://github.com/TrentBest/TheSingularityWorkshop" aria-label="The Singularity Workshop avatar">
+    <img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" />
   </a><br />
   <strong>The Singularity Workshop</strong><br />
   <em>If a picture is worth a thousand words, what is a living picture worth?</em><br />
