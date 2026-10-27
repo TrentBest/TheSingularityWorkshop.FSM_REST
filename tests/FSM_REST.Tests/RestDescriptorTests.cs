@@ -406,6 +406,7 @@ public sealed class RestDescriptorTests
     [Theory]
     [InlineData("query", "q", "query", "q")]
     [InlineData("header", "X-Trace", "header", "x-trace")]
+    [InlineData("query", "q", "header", "q")]
     public void RequestFactoryRejectsDuplicateParameterDescriptors(
         string firstLocation,
         string firstName,
