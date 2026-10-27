@@ -151,6 +151,12 @@ public static class OpenApiJsonImporter
                 continue;
             }
 
+            if (location is not ("path" or "query" or "header" or "cookie"))
+            {
+                warnings.Add($"Parameter '{name}' in '{context}' uses unsupported location '{location}' and was skipped.");
+                continue;
+            }
+
             var schema = resolvedParameter.TryGetProperty("schema", out var schemaElement) ? schemaElement : default;
             if (schema.ValueKind == JsonValueKind.Undefined &&
                 resolvedParameter.TryGetProperty("content", out var parameterContent) &&
@@ -168,9 +174,12 @@ public static class OpenApiJsonImporter
                 GetString(schema, "format"),
                 GetString(resolvedParameter, "description")));
 
-            if (GetString(resolvedParameter, "style") is not null || resolvedParameter.TryGetProperty("explode", out _))
+            var schemaType = GetString(schema, "type");
+            if (GetString(resolvedParameter, "style") is not null ||
+                resolvedParameter.TryGetProperty("explode", out _) ||
+                schemaType is "array" or "object")
             {
-                warnings.Add($"Parameter serialization style for '{name}' in '{context}' is not represented; FSM_REST currently binds scalar values.");
+                warnings.Add($"Parameter serialization for '{name}' in '{context}' is not fully represented; FSM_REST currently binds scalar values and does not implement OpenAPI style/explode or array/object serialization.");
             }
         }
 
