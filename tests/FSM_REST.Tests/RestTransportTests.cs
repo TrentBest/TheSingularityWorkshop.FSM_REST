@@ -262,6 +262,18 @@ public sealed class RestTransportTests
         Assert.Equal("CatalogApi", factory.RequestedName);
     }
 
+    [Fact]
+    public void BuilderCannotBuildTwice()
+    {
+        var builder = HttpClientRestTransportBuilder.Create()
+            .UseHandler(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
+
+        using var transport = builder.Build();
+
+        Assert.Throws<InvalidOperationException>(() => builder.Build());
+        Assert.Throws<InvalidOperationException>(() => builder.ConfigureClient(_ => { }));
+    }
+
     private sealed class DelegateTransport(
         Func<RestRequest, CancellationToken, Task<RestResponse>> send) : IRestTransport
     {
