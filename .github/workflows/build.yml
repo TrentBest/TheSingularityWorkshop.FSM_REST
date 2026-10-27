@@ -224,7 +224,7 @@ jobs:
         run: dotnet test TheSingularityWorkshop.FSM_REST.slnx --configuration Release --no-build -p:WorkshopUseRepositorySources=true
 
   publish_nuget:
-    needs: build-and-test
+    needs: [build-and-test, source-integration]
     runs-on: ubuntu-24.04
     if: ${{ github.event_name == 'workflow_dispatch' && inputs.publish == true && github.ref == 'refs/heads/development' }}
     permissions:
