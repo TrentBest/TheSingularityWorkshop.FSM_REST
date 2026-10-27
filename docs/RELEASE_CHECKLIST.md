@@ -47,7 +47,8 @@ Use this checklist for a candidate package release. It is a verification gate, n
 
 - [ ] Record the exact commit SHA, package version, CI run, and inspected artifact for the final candidate.
 - [ ] Confirm the release owner has explicitly approved publication.
-- [ ] Keep publishing disabled/skipped until that explicit approval is given.
+- [x] CI workflow keeps publishing disabled/skipped by default and requires manual dispatch, `publish=true`, the `development` ref, and success from both `build-and-test` and `source-integration` before the publish job can run.
+- [ ] Keep publishing disabled/skipped until the release owner explicitly approves publication.
 - [ ] After an authorized publication, verify the published package metadata and download/install path.
 
 ## Architectural invariant
