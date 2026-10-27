@@ -292,6 +292,71 @@ public sealed class RestTransportTests
     }
 
     [Fact]
+    public void BuilderRejectsConfigurationOfCallerOwnedClient()
+    {
+        var client = new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
+        var builder = HttpClientRestTransportBuilder.Create()
+            .UseClient(client)
+            .ConfigureClient(_ => { });
+
+        Assert.Throws<InvalidOperationException>(() => builder.Build());
+        client.Dispose();
+    }
+
+    [Fact]
+    public void BuilderRejectsConfigurationOfFactoryClient()
+    {
+        var factory = new StubHttpClientFactory(_ => new HttpClient());
+        var builder = HttpClientRestTransportBuilder.Create()
+            .UseFactory(factory, "CatalogApi")
+            .ConfigureClient(_ => { });
+
+        Assert.Throws<InvalidOperationException>(() => builder.Build());
+    }
+
+    [Fact]
+    public void BuilderDisposesInjectedHandlerByDefault()
+    {
+        var handler = new TrackingHandler();
+
+        var transport = HttpClientRestTransportBuilder.Create()
+            .UseHandler(handler)
+            .Build();
+
+        transport.Dispose();
+
+        Assert.True(handler.WasDisposed);
+    }
+
+    [Fact]
+    public void BuilderCanLeaveInjectedHandlerOwnedExternally()
+    {
+        var handler = new TrackingHandler();
+
+        var transport = HttpClientRestTransportBuilder.Create()
+            .UseHandler(handler, disposeHandler: false)
+            .Build();
+
+        transport.Dispose();
+
+        Assert.False(handler.WasDisposed);
+        handler.Dispose();
+        Assert.True(handler.WasDisposed);
+    }
+
+    [Fact]
+    public void BuilderDisposesCreatedClientWhenConfigurationThrows()
+    {
+        var handler = new TrackingHandler();
+        var builder = HttpClientRestTransportBuilder.Create()
+            .UseHandler(handler)
+            .ConfigureClient(_ => throw new InvalidOperationException("configuration failed"));
+
+        Assert.Throws<InvalidOperationException>(() => builder.Build());
+        Assert.True(handler.WasDisposed);
+    }
+
+    [Fact]
     public void BuilderCannotBuildTwice()
     {
         var builder = HttpClientRestTransportBuilder.Create()
@@ -318,6 +383,23 @@ public sealed class RestTransportTests
         {
             RequestedName = name;
             return createClient(name);
+        }
+    }
+
+    private sealed class TrackingHandler : HttpMessageHandler
+    {
+        public bool WasDisposed { get; private set; }
+
+        protected override Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request,
+            CancellationToken cancellationToken) =>
+            Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                WasDisposed = true;
+            base.Dispose(disposing);
         }
     }
 
