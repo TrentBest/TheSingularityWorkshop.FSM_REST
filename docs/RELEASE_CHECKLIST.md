@@ -41,6 +41,7 @@ Use this checklist for a candidate package release. It is a verification gate, n
 - [x] Manually download and inspect the exact candidate artifact: package identities/versions, nuspec dependencies, framework assets, XML docs, README/license, repository metadata, and packaged README links (artifact `12570755744`, SHA-256 recorded above).
 - [x] Verify first-party package dependencies and intended core/optional-adapter boundaries against the current candidate artifact. Broader ecosystem target-framework compatibility remains a separate release consideration.
 - [x] Confirm repository documentation links remain useful from both the repository and the packed package. The exact current artifact was re-inspected after the documentation-link repair; packaged README links had zero unresolved local paths.
+- [x] CI audits relative Markdown links, Markdown images, and HTML `href`/`src` targets in each packed root README against the actual package contents; the first discovered missing storefront-sample link was changed to a GitHub URL.
 - [ ] Review the release notes for accurate scope, compatibility, known limitations, and upgrade guidance.
 
 ## Publication gate
