@@ -252,6 +252,7 @@ public static class RestRequestFactory
     private static void ValidateParameterDescriptors(IReadOnlyList<RestParameterDescriptor> parameters)
     {
         var seen = new HashSet<(string Location, string Name)>(new ParameterIdentityComparer());
+        var seenBindingNames = new HashSet<string>(StringComparer.Ordinal);
 
         foreach (var parameter in parameters)
         {
@@ -272,10 +273,10 @@ public static class RestRequestFactory
                     $"Invalid {location} parameter name '{parameter.Name}'.",
                     nameof(parameters));
 
-            if (!seen.Add((location, parameter.Name)))
+            if (!seenBindingNames.Add(parameter.Name) || !seen.Add((location, parameter.Name)))
                 throw new ArgumentException(
-                    $"Duplicate REST parameter descriptor '{parameter.Name}' in location '{location}'. " +
-                    "Repeated values for one parameter are not supported by the core binding model.",
+                    $"Duplicate REST parameter descriptor '{parameter.Name}'. " +
+                    "The core binding dictionary requires unique parameter names and does not support repeated values.",
                     nameof(parameters));
         }
     }
