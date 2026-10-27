@@ -167,7 +167,10 @@ jobs:
                   readme_path = next((name for name in names if name.lower() == "readme.md"), None)
                   if readme_path:
                       readme_text = archive.read(readme_path).decode("utf-8")
-                      for target in re.findall(r'(?<!!)\[[^\]]*\]\(([^)]+)\)', readme_text):
+                      targets = re.findall(r'(?<!!)\[[^\]]*\]\(([^)]+)\)', readme_text)
+                      targets += re.findall(r'!\[[^\]]*\]\(([^)]+)\)', readme_text)
+                      targets += re.findall(r'\b(?:href|src)=["\']([^"\']+)["\']', readme_text)
+                      for target in targets:
                           target = target.strip().split()[0].strip("<>")
                           parsed = urllib.parse.urlsplit(target)
                           if parsed.scheme or target.startswith("//") or target.startswith("#"):
