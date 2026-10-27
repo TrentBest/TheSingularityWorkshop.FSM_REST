@@ -4,7 +4,7 @@
 **Purpose:** Describe one parameter accepted by a REST operation.
 
 ## Responsibilities
-Store the parameter name, location, required flag, optional logical type and format hints, and human-readable description.
+Store the parameter name, location, required flag, optional logical type and format hints, and human-readable description. The descriptor is metadata only; `RestRequestFactory` requires supported locations and unambiguous binding names.
 
 ## Boundaries
 The descriptor stores metadata; it does not serialize arrays/objects or apply the full OpenAPI style/explode rules. Request construction validates supported locations and required values according to the current factory implementation.

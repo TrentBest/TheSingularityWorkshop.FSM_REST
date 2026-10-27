@@ -33,8 +33,9 @@ classDiagram
 The diagram is deliberately focused on the target and its direct architectural relationships. It omits incidental members and does not claim to enumerate every repository consumer.
 
 ## Use cases
-1. **A consumer imports JSON, reviews warnings, then uses the resulting RestApiDescriptor**
-2. **Respect the boundary.** Use this type for its declared role; do not infer network behavior, authorization, schema validation, or runtime rendering unless explicitly implemented by the related component.
+1. **A consumer imports JSON, reviews warnings, then uses the resulting RestApiDescriptor.** The result includes supported operation metadata and explicit fidelity warnings.
+2. **A parameter cannot be represented faithfully.** Array/object schemas and explicit style/explode settings produce warnings because the neutral core binds scalar strings; unsupported parameter locations are skipped with a warning rather than passed through as valid core descriptors.
+3. **Respect the boundary.** Import success does not imply full OpenAPI conformance, authorization, schema validation, or runtime rendering.
 
 ## Verification and limits
 - Source: [OpenApiJsonImporter.cs](../../src/FSM_REST.OpenApi/OpenApiJsonImporter.cs)
