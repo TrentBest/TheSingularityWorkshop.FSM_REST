@@ -216,4 +216,36 @@ public sealed class OpenApiJsonImporterTests
     {
         Assert.Throws<ArgumentException>(() => OpenApiJsonImporter.Import(json));
     }
+
+    [Fact]
+    public void WarnsForArrayObjectSerializationAndSkipsUnsupportedParameterLocations()
+    {
+        const string json = """
+        {
+          "openapi": "3.0.3",
+          "info": { "title": "Serialization", "version": "1" },
+          "paths": {
+            "/items": {
+              "get": {
+                "parameters": [
+                  { "name": "tags", "in": "query", "schema": { "type": "array", "items": { "type": "string" } } },
+                  { "name": "filter", "in": "query", "schema": { "type": "object" } },
+                  { "name": "legacy", "in": "body", "schema": { "type": "string" } }
+                ],
+                "responses": { "200": { "description": "OK" } }
+              }
+            }
+          }
+        }
+        """;
+
+        var result = OpenApiJsonImporter.Import(json);
+        var operation = Assert.Single(result.Api.Operations);
+
+        Assert.Equal(2, operation.Parameters.Count);
+        Assert.Contains(result.Warnings, warning => warning.Contains("Parameter serialization for 'tags'", StringComparison.Ordinal));
+        Assert.Contains(result.Warnings, warning => warning.Contains("Parameter serialization for 'filter'", StringComparison.Ordinal));
+        Assert.Contains(result.Warnings, warning => warning.Contains("unsupported location 'body'", StringComparison.Ordinal));
+    }
+
 }
