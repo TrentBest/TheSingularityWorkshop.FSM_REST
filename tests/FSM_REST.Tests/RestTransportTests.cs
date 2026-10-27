@@ -195,18 +195,19 @@ public sealed class RestTransportTests
 
 
     [Fact]
-    public void BuilderDoesNotDisposeCallerOwnedClient()
+    public async Task BuilderDoesNotDisposeCallerOwnedClient()
     {
         using var client = new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
         var transport = HttpClientRestTransportBuilder.Create().UseClient(client).Build();
 
         transport.Dispose();
 
-        Assert.Equal(200, client.GetAsync("https://example.test/").GetAwaiter().GetResult().StatusCode);
+        using var response = await client.GetAsync("https://example.test/");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
     }
 
     [Fact]
-    public void BuilderDisposesClientItCreates()
+    public async Task BuilderDisposesClientItCreates()
     {
         var transport = HttpClientRestTransportBuilder.Create()
             .ConfigureClient(client => client.Timeout = TimeSpan.FromSeconds(3))
@@ -214,7 +215,7 @@ public sealed class RestTransportTests
 
         transport.Dispose();
 
-        Assert.Throws<ObjectDisposedException>(() => transport.SendAsync(
+        await Assert.ThrowsAsync<ObjectDisposedException>(() => transport.SendAsync(
             new RestRequest("GET", new Uri("https://example.test/"))));
     }
 
