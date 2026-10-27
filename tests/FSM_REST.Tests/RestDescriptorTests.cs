@@ -439,4 +439,42 @@ public sealed class RestDescriptorTests
             new Uri("https://example.test/api")));
     }
 
+
+    [Theory]
+    [InlineData(false, false, false)]
+    [InlineData(true, false, false)]
+    [InlineData(true, true, false)]
+    [InlineData(false, false, true)]
+    [InlineData(true, false, true)]
+    [InlineData(true, true, true)]
+    public void RequestFactoryAppliesRequirednessToMissingNullAndEmptyQueryValues(
+        bool hasKey,
+        bool isEmptyString,
+        bool required)
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/search", "search", null, null,
+            [new RestParameterDescriptor("q", "query", required, "string", null, null)],
+            null);
+        var parameters = new Dictionary<string, string?>();
+        if (hasKey)
+            parameters["q"] = isEmptyString ? string.Empty : null;
+
+        if (required && (!hasKey || !isEmptyString))
+        {
+            Assert.Throws<ArgumentException>(() => RestRequestFactory.Create(
+                operation, new Uri("https://example.test/api"), parameters));
+            return;
+        }
+
+        var request = RestRequestFactory.Create(
+            operation, new Uri("https://example.test/api"), parameters);
+
+        Assert.Equal(
+            hasKey && isEmptyString
+                ? "https://example.test/api/search?q="
+                : "https://example.test/api/search",
+            request.Uri.AbsoluteUri);
+    }
+
 }
