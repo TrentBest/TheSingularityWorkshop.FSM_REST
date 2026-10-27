@@ -143,3 +143,15 @@ This is a source-level feasibility assessment, **not** a test result and **not**
 - Implemented and regression-tested missing/null versus explicit-empty query values, requiredness behavior, plus-sign percent encoding, empty path rejection, and duplicate/ambiguous parameter-name rejection.
 - The optional OpenAPI importer now reports explicit style/explode and array/object serialization gaps and skips unsupported parameter locations with a warning.
 - Exact-SHA CI is required for the current head after these additions. The prior artifact hashes and 2026-10-25 evidence above are historical and must not be used as final release evidence.
+
+
+## Exact-SHA verification update (2026-10-27, packaging cleanup)
+
+- **Verified branch:** `development`, commit [`f134170f93b4eaa2f315f915412e574e6799d697`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/commit/f134170f93b4eaa2f315f915412e574e6799d697).
+- **CI:** [Package FSM REST run #40445151564](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40445151564) completed successfully at that exact SHA. Both `build-and-test` and `source-integration` succeeded; `publish_nuget` was skipped.
+- **Checks:** documentation contract, architecture boundaries, recursive UML links/image paths, restore/build/tests with coverage, deterministic end-to-end demo, storefront composition proof, CoderLegion sample build, package packing, and packed-artifact audit all passed.
+- **Package artifact:** workflow artifact [`fsm-rest-nuget-package`](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40445151564) was created; GitHub reports SHA-256 `e7f427e3359fb7c680a64695ff778d12587cc93a78a7ae80e5b38ef9489508c5` for the uploaded ZIP artifact.
+- **Scope of evidence:** this proves CI's package-content and dependency-boundary assertions passed for this SHA. It does not replace a separate manual review of the downloadable archive, consumer examples, SVG rendering/fidelity, or remaining behavior gaps.
+- The packaging cleanup excludes the four internal readiness/reconciliation/checklist documents from the core and OpenAPI packages, removes the checklist from public README navigation, and makes CI fail if those internal documents leak into packed artifacts. Consumer documentation and UML remain eligible for package inclusion.
+- Package versions remain unchanged: core `0.1.0-alpha.5`, OpenAPI `0.1.0-alpha.1`, and COS `0.1.0-alpha.1`. No NuGet publication occurred.
+
