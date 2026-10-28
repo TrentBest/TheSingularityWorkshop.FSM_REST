@@ -470,6 +470,34 @@ public sealed class RestTransportTests
         Assert.Throws<ArgumentNullException>(() => new HttpClientRestTransportFactory(null!));
     }
 
+    [Fact]
+    public void BuilderRejectsNullCallerOwnedClient()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            HttpClientRestTransportBuilder.Create().UseClient(null!));
+    }
+
+    [Fact]
+    public void BuilderRejectsNullHandler()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            HttpClientRestTransportBuilder.Create().UseHandler(null!));
+    }
+
+    [Fact]
+    public void BuilderRejectsNullClientFactory()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            HttpClientRestTransportBuilder.Create().UseFactory(null!));
+    }
+
+    [Fact]
+    public void BuilderRejectsNullConfigurationCallback()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            HttpClientRestTransportBuilder.Create().ConfigureClient(null!));
+    }
+
     private sealed class DelegateTransport(
         Func<RestRequest, CancellationToken, Task<RestResponse>> send) : IRestTransport
     {
