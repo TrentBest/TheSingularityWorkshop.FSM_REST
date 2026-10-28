@@ -32,6 +32,7 @@ var response = await transport.SendAsync(
 - Register each configured API client with `AddHttpClient`; names identify separate host configuration.
 - The factory returns a new transport backed by a client from `IHttpClientFactory`.
 - Dispose each transport when its own lifetime ends. The transport disposes its returned `HttpClient`; the factory continues to manage and pool underlying handlers.
+- Concurrent sends are supported. Disposal is thread-safe and idempotent, but it is not a drain operation: coordinate disposal with active sends because disposing the transport may interrupt in-flight requests.
 - The singleton factory is safe to share. Do not register a single transport as a singleton when it may be disposed or when request-specific state/lifetime is expected.
 - If you already have an `IHttpClientFactory`, construct `HttpClientRestTransportFactory` directly or use `HttpClientRestTransportBuilder.UseFactory`; the DI extension is optional convenience.
 
