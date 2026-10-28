@@ -25,6 +25,7 @@ public sealed class HttpClientRestTransport : IRestTransport, IDisposable
     {
         ObjectDisposedException.ThrowIf(_disposed, this);
         ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
         using var message = new HttpRequestMessage(new HttpMethod(request.Method), request.Uri);
 
         if (request.Body is not null)
