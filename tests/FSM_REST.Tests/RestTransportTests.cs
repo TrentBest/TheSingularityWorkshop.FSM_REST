@@ -141,6 +141,29 @@ public sealed class RestTransportTests
     }
 
     [Fact]
+    public async Task TransportCombinesMatchingResponseAndContentHeaderValues()
+    {
+        var handler = new StubHandler(_ =>
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("ok")
+            };
+            response.Headers.TryAddWithoutValidation("X-Shared", "response-value");
+            response.Content.Headers.TryAddWithoutValidation("X-Shared", "content-value");
+            return response;
+        });
+
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/headers")));
+
+        Assert.Equal("response-value, content-value", response.Headers["X-Shared"]);
+    }
+
+    [Fact]
     public async Task TransportResponseHeadersAreCaseInsensitive()
     {
         var handler = new StubHandler(_ =>
