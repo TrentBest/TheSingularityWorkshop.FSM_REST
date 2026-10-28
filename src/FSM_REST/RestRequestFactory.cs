@@ -81,7 +81,8 @@ public static class RestRequestFactory
         if (operation.Path.Contains('?') || operation.Path.Contains('#') ||
             operation.Path.StartsWith("//", StringComparison.Ordinal) ||
             System.Text.RegularExpressions.Regex.IsMatch(
-                operation.Path, @"^[A-Za-z][A-Za-z0-9+.-]*:"))
+                operation.Path, @"^[A-Za-z][A-Za-z0-9+.-]*:") ||
+            ContainsMalformedPercentEscape(operation.Path))
             throw new ArgumentException(
                 "The REST operation path must be a relative path without a query or fragment.",
                 nameof(operation));
@@ -300,6 +301,24 @@ public static class RestRequestFactory
                 : StringComparer.Ordinal;
             return HashCode.Combine(StringComparer.Ordinal.GetHashCode(value.Location), nameComparer.GetHashCode(value.Name));
         }
+    }
+
+    private static bool ContainsMalformedPercentEscape(string value)
+    {
+        for (var index = 0; index < value.Length; index++)
+        {
+            if (value[index] != '%')
+                continue;
+
+            if (index + 2 >= value.Length ||
+                !Uri.IsHexDigit(value[index + 1]) ||
+                !Uri.IsHexDigit(value[index + 2]))
+                return true;
+
+            index += 2;
+        }
+
+        return false;
     }
 
     private static bool IsHttpToken(string value)
