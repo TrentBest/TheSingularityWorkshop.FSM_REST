@@ -11,4 +11,23 @@ public sealed record RestResponseDescriptor(
     string? Description,
     IReadOnlyList<string> MediaTypes,
     string? SchemaType,
-    string? SchemaFormat);
+    string? SchemaFormat)
+{
+    private IReadOnlyList<string> _mediaTypes = Snapshot(MediaTypes, nameof(MediaTypes));
+
+    /// <summary>Gets a read-only snapshot of represented media types.</summary>
+    public IReadOnlyList<string> MediaTypes
+    {
+        get => _mediaTypes;
+        init => _mediaTypes = Snapshot(value, nameof(MediaTypes));
+    }
+
+    private static IReadOnlyList<string> Snapshot(IReadOnlyList<string> values, string paramName)
+    {
+        ArgumentNullException.ThrowIfNull(values, paramName);
+        var copy = values.ToArray();
+        if (copy.Any(value => value is null))
+            throw new ArgumentException("Collections cannot contain null entries.", paramName);
+        return Array.AsReadOnly(copy);
+    }
+}
