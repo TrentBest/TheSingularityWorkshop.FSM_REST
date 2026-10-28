@@ -502,4 +502,48 @@ public sealed class RestDescriptorTests
         Assert.Equal("session=", request.Headers["Cookie"]);
     }
 
+
+    [Fact]
+    public void RequestFactoryRejectsRelativeBaseUri()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/users", "listUsers", null, null,
+            Array.Empty<RestParameterDescriptor>(), null);
+
+        var exception = Assert.Throws<ArgumentException>(() =>
+            RestRequestFactory.Create(operation, new Uri("/api", UriKind.Relative)));
+
+        Assert.Equal("baseUri", exception.ParamName);
+    }
+
+    [Fact]
+    public void RequestFactoryPreservesBasePathWhenOperationPathStartsWithSlash()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/users", "listUsers", null, null,
+            Array.Empty<RestParameterDescriptor>(), null);
+
+        var request = RestRequestFactory.Create(
+            operation,
+            new Uri("https://example.test/gateway/v2"));
+
+        Assert.Equal("https://example.test/gateway/v2/users", request.Uri.AbsoluteUri);
+    }
+
+    [Fact]
+    public void RequestFactoryPercentEncodesPathParameterSeparators()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", "/files/{name}", "getFile", null, null,
+            [new RestParameterDescriptor("name", "path", true, "string", null, null)],
+            null);
+
+        var request = RestRequestFactory.Create(
+            operation,
+            new Uri("https://example.test/api"),
+            new Dictionary<string, string?> { ["name"] = "folder/file" });
+
+        Assert.Equal("https://example.test/api/files/folder%2Ffile", request.Uri.AbsoluteUri);
+    }
+
 }
