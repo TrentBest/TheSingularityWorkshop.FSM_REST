@@ -350,12 +350,38 @@ public sealed class RestTransportTests
 
 
     [Fact]
+    public async Task TransportSupportsConcurrentSends()
+    {
+        var sendCount = 0;
+        using var client = new HttpClient(new StubHandler(_ =>
+        {
+            Interlocked.Increment(ref sendCount);
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        }));
+        using var transport = new HttpClientRestTransport(client);
+
+        var requests = Enumerable.Range(0, 16)
+            .Select(index => transport.SendAsync(new RestRequest(
+                "GET",
+                new Uri($"https://example.test/concurrent/{index}"))));
+
+        var responses = await Task.WhenAll(requests);
+
+        Assert.Equal(16, sendCount);
+        Assert.All(responses, response => Assert.Equal((int)HttpStatusCode.OK, response.StatusCode));
+    }
+
+    [Fact]
     public async Task BuilderDoesNotDisposeCallerOwnedClient()
     {
         using var client = new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
         var transport = HttpClientRestTransportBuilder.Create().UseClient(client).Build();
 
         transport.Dispose();
+        transport.Dispose();
+
+        await Assert.ThrowsAsync<ObjectDisposedException>(() => transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/transport-disposed"))));
 
         using var response = await client.GetAsync("https://example.test/");
         Assert.Equal(HttpStatusCode.OK, response.StatusCode);
