@@ -277,6 +277,27 @@ public sealed class RestTransportTests
     }
 
     [Fact]
+    public async Task TransportHonorsCancellationWhileReadingResponseBody()
+    {
+        var body = new CancellationAwareContent();
+        using var client = new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = body
+        }));
+        using var transport = new HttpClientRestTransport(client);
+        using var cancellation = new CancellationTokenSource();
+
+        var send = transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/slow-body")),
+            cancellation.Token);
+
+        await body.ReadStarted;
+        cancellation.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => send);
+    }
+
+    [Fact]
     public async Task TransportHonorsCancellationBeforeSending()
     {
         var handlerCalled = false;
@@ -635,6 +656,31 @@ public sealed class RestTransportTests
             if (disposing)
                 WasDisposed = true;
             base.Dispose(disposing);
+        }
+    }
+
+    private sealed class CancellationAwareContent : HttpContent
+    {
+        private readonly TaskCompletionSource _readStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public Task ReadStarted => _readStarted.Task;
+
+        protected override async Task SerializeToStreamAsync(
+            Stream stream,
+            System.Net.TransportContext? context,
+            CancellationToken cancellationToken)
+        {
+            _readStarted.TrySetResult();
+            await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
+        }
+
+        protected override Task SerializeToStreamAsync(Stream stream, System.Net.TransportContext? context) =>
+            SerializeToStreamAsync(stream, context, CancellationToken.None);
+
+        protected override bool TryComputeLength(out long length)
+        {
+            length = 0;
+            return false;
         }
     }
 
