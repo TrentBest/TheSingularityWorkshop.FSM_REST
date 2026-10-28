@@ -1,0 +1,91 @@
+using TheSingularityWorkshop.FSM_REST;
+using Xunit;
+
+namespace TheSingularityWorkshop.FSM_REST.Tests;
+
+public sealed class RestDescriptorImmutabilityTests
+{
+    [Fact]
+    public void ApiDescriptorSnapshotsOperationsAndExposesReadOnlyCollection()
+    {
+        var original = new List<RestOperationDescriptor> { Operation("first") };
+        var api = new RestApiDescriptor("API", "1.0", original);
+        original.Add(Operation("second"));
+
+        Assert.Single(api.Operations);
+        Assert.Throws<NotSupportedException>(() =>
+            ((IList<RestOperationDescriptor>)api.Operations).Add(Operation("third")));
+    }
+
+    [Fact]
+    public void ApiDescriptorWithExpressionAlsoSnapshotsReplacementCollection()
+    {
+        var api = new RestApiDescriptor("API", "1.0", [Operation("first")]);
+        var replacement = new List<RestOperationDescriptor> { Operation("second") };
+        var copy = api with { Operations = replacement };
+        replacement.Clear();
+
+        Assert.Single(copy.Operations);
+        Assert.Equal("second", copy.Operations[0].OperationId);
+    }
+
+    [Fact]
+    public void OperationDescriptorSnapshotsParametersAndResponses()
+    {
+        var parameters = new List<RestParameterDescriptor>
+        {
+            new("id", "path", true, "string", null, null)
+        };
+        var responses = new List<RestResponseDescriptor>
+        {
+            new("200", "Success", new List<string> { "application/json" }, "object", null)
+        };
+        var operation = new RestOperationDescriptor(
+            "GET", "/items/{id}", "getItem", null, null, parameters, null, responses);
+        parameters.Clear();
+        responses.Clear();
+
+        Assert.Single(operation.Parameters);
+        Assert.Single(operation.ResponseDescriptors);
+        Assert.Throws<NotSupportedException>(() =>
+            ((IList<RestParameterDescriptor>)operation.Parameters).Clear());
+        Assert.Throws<NotSupportedException>(() =>
+            ((IList<RestResponseDescriptor>)operation.ResponseDescriptors).Clear());
+    }
+
+    [Fact]
+    public void RequestAndResponseBodyDescriptorsSnapshotMediaTypes()
+    {
+        var requestMediaTypes = new List<string> { "application/json" };
+        var responseMediaTypes = new List<string> { "application/json" };
+        var request = new RestRequestBodyDescriptor(true, requestMediaTypes, "object", null);
+        var response = new RestResponseDescriptor("200", null, responseMediaTypes, "object", null);
+        requestMediaTypes.Add("text/plain");
+        responseMediaTypes.Clear();
+
+        Assert.Equal(new[] { "application/json" }, request.MediaTypes);
+        Assert.Equal(new[] { "application/json" }, response.MediaTypes);
+        Assert.Throws<NotSupportedException>(() =>
+            ((IList<string>)request.MediaTypes).Add("text/plain"));
+        Assert.Throws<NotSupportedException>(() =>
+            ((IList<string>)response.MediaTypes).Clear());
+    }
+
+    [Fact]
+    public void DescriptorCollectionsRejectNullAndNullEntries()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            new RestApiDescriptor("API", "1.0", null!));
+        Assert.Throws<ArgumentException>(() =>
+            new RestApiDescriptor("API", "1.0", new RestOperationDescriptor[] { null! }));
+        Assert.Throws<ArgumentNullException>(() =>
+            new RestOperationDescriptor("GET", "/", "root", null, null, null!, null));
+        Assert.Throws<ArgumentException>(() =>
+            new RestRequestBodyDescriptor(true, new string[] { null! }, null, null));
+        Assert.Throws<ArgumentNullException>(() =>
+            new RestResponseDescriptor("200", null, null!, null, null));
+    }
+
+    private static RestOperationDescriptor Operation(string id) =>
+        new("GET", "/items", id, null, null, Array.Empty<RestParameterDescriptor>(), null);
+}
