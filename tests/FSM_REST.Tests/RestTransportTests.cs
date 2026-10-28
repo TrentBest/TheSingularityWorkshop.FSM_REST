@@ -126,6 +126,25 @@ public sealed class RestTransportTests
     }
 
     [Fact]
+    public async Task TransportResponseHeadersAreCaseInsensitive()
+    {
+        var handler = new StubHandler(_ =>
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Headers.TryAddWithoutValidation("X-Trace", "trace-789");
+            return response;
+        });
+
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/header-casing")));
+
+        Assert.Equal("trace-789", response.Headers["x-trace"]);
+    }
+
+    [Fact]
     public async Task TransportSupportsCustomValidHttpMethod()
     {
         var handler = new StubHandler(request =>
