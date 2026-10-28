@@ -400,6 +400,33 @@ public sealed class RestTransportTests
     }
 
     [Fact]
+    public void RestResponseDeserializesJsonNull()
+    {
+        var response = new RestResponse(
+            200,
+            "OK",
+            new Dictionary<string, string>(),
+            "null");
+
+        Assert.Null(response.Deserialize<string>());
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("{")]
+    [InlineData("{\\"value\\":")]
+    public void RestResponseRejectsEmptyOrMalformedJson(string body)
+    {
+        var response = new RestResponse(
+            200,
+            "OK",
+            new Dictionary<string, string>(),
+            body);
+
+        Assert.Throws<System.Text.Json.JsonException>(() => response.Deserialize<Dictionary<string, object>>());
+    }
+
+    [Fact]
     public async Task TransportPreservesNoContentStatusAndEmptyBody()
     {
         var handler = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.NoContent));
