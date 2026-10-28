@@ -466,6 +466,19 @@ public sealed class RestTransportTests
     }
 
     [Fact]
+    public void TransportConcurrentDisposeIsIdempotent()
+    {
+        var handler = new TrackingHandler();
+        var transport = HttpClientRestTransportBuilder.Create()
+            .UseHandler(handler)
+            .Build();
+
+        Parallel.For(0, 32, _ => transport.Dispose());
+
+        Assert.Equal(1, handler.DisposeCount);
+    }
+
+    [Fact]
     public async Task BuilderDoesNotDisposeCallerOwnedClient()
     {
         using var client = new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
@@ -717,7 +730,10 @@ public sealed class RestTransportTests
 
     private sealed class TrackingHandler : HttpMessageHandler
     {
-        public bool WasDisposed { get; private set; }
+        private int _disposeCount;
+
+        public bool WasDisposed => Volatile.Read(ref _disposeCount) > 0;
+        public int DisposeCount => Volatile.Read(ref _disposeCount);
 
         protected override Task<HttpResponseMessage> SendAsync(
             HttpRequestMessage request,
@@ -727,7 +743,7 @@ public sealed class RestTransportTests
         protected override void Dispose(bool disposing)
         {
             if (disposing)
-                WasDisposed = true;
+                Interlocked.Increment(ref _disposeCount);
             base.Dispose(disposing);
         }
     }
