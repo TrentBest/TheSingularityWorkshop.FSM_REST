@@ -50,6 +50,52 @@ public sealed class RestTransportTests
     }
 
     [Fact]
+    public void RequestFactoryPreservesBasePathAndEscapesPathAndQueryValues()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET",
+            "/items/{id}",
+            "getItem",
+            null,
+            null,
+            [
+                new RestParameterDescriptor("id", "path", true, "string", null, null),
+                new RestParameterDescriptor("q", "query", false, "string", null, null)
+            ],
+            null);
+
+        var request = RestRequestFactory.Create(
+            operation,
+            new Uri("https://example.test/v1"),
+            new Dictionary<string, string?>
+            {
+                ["id"] = "a/b",
+                ["q"] = "snow ☃&x=1#frag"
+            });
+
+        Assert.Equal(
+            "https://example.test/v1/items/a%2Fb?q=snow%20%E2%98%83%26x%3D1%23frag",
+            request.Uri.AbsoluteUri);
+    }
+
+    [Theory]
+    [InlineData("/items/%")]
+    [InlineData("/items/%2")]
+    [InlineData("/items/%GG")]
+    [InlineData("https://evil.example/items")]
+    [InlineData("//evil.example/items")]
+    [InlineData("/items?raw=1")]
+    [InlineData("/items#fragment")]
+    public void RequestFactoryRejectsMalformedOrNonRelativeOperationPaths(string path)
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", path, "getItem", null, null, Array.Empty<RestParameterDescriptor>(), null);
+
+        Assert.Throws<ArgumentException>(() =>
+            RestRequestFactory.Create(operation, new Uri("https://example.test/v1")));
+    }
+
+    [Fact]
     public async Task HttpClientTransportExecutesRequestAndCapturesResponse()
     {
         var handler = new StubHandler(request =>
