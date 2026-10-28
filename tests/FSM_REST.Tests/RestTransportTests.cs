@@ -414,7 +414,7 @@ public sealed class RestTransportTests
     [Theory]
     [InlineData("")]
     [InlineData("{")]
-    [InlineData("{\\"value\\":")]
+    [InlineData("{\"value\":")]
     public void RestResponseRejectsEmptyOrMalformedJson(string body)
     {
         var response = new RestResponse(
