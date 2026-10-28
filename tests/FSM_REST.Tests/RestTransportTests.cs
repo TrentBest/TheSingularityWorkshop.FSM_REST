@@ -277,6 +277,62 @@ public sealed class RestTransportTests
     }
 
     [Fact]
+    public async Task TransportHonorsCancellationBeforeSending()
+    {
+        var handlerCalled = false;
+        using var client = new HttpClient(new StubHandler(_ =>
+        {
+            handlerCalled = true;
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        }));
+        var transport = new HttpClientRestTransport(client);
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/cancelled")),
+            cancellation.Token));
+
+        Assert.False(handlerCalled);
+    }
+
+    [Fact]
+    public async Task TransportPreservesNonJsonResponseBodyAsText()
+    {
+        const string body = "not-json: <service unavailable>";
+        var handler = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+        {
+            Content = new StringContent(body, System.Text.Encoding.UTF8, "text/plain")
+        });
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/plain-error")));
+
+        Assert.Equal((int)HttpStatusCode.ServiceUnavailable, response.StatusCode);
+        Assert.Equal(body, response.Body);
+        Assert.Equal("text/plain; charset=utf-8", response.Headers["Content-Type"]);
+    }
+
+    [Fact]
+    public async Task TransportPreservesLargeTextResponseBody()
+    {
+        var body = new string('x', 1_000_000);
+        using var client = new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(body)
+        }));
+        var transport = new HttpClientRestTransport(client);
+
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/large")));
+
+        Assert.Equal(body.Length, response.Body.Length);
+        Assert.Equal(body, response.Body);
+    }
+
+    [Fact]
     public async Task TransportPreservesNoContentStatusAndEmptyBody()
     {
         var handler = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.NoContent));
