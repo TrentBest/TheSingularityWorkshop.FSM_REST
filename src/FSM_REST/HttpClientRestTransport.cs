@@ -54,12 +54,25 @@ public sealed class HttpClientRestTransport : IRestTransport, IDisposable
         var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var header in response.Headers)
-            headers[header.Key] = string.Join(", ", header.Value);
+            AddResponseHeader(headers, header.Key, header.Value);
         foreach (var header in response.Content.Headers)
-            headers[header.Key] = string.Join(", ", header.Value);
+            AddResponseHeader(headers, header.Key, header.Value);
 
         var body = await response.Content.ReadAsStringAsync(cancellationToken);
         return new RestResponse((int)response.StatusCode, response.ReasonPhrase, headers, body);
+    }
+
+
+    private static void AddResponseHeader(
+        IDictionary<string, string> headers,
+        string name,
+        IEnumerable<string> values)
+    {
+        var value = string.Join(", ", values);
+        if (headers.TryGetValue(name, out var existing))
+            headers[name] = string.IsNullOrEmpty(existing) ? value : $"{existing}, {value}";
+        else
+            headers[name] = value;
     }
 
     /// <summary>Disposes the client only when this transport was created with ownership of that client.</summary>
