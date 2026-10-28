@@ -1,12 +1,12 @@
 namespace TheSingularityWorkshop.FSM_REST;
 
 /// <summary>Adapts <see cref="HttpClient"/> to the framework-neutral <see cref="IRestTransport"/> contract.</summary>
-/// <remarks>This is an adapter, not the definition of FSM_REST. Hosts can supply their own transport implementation.</remarks>
+/// <remarks>This is an adapter, not the definition of FSM_REST. Hosts can supply their own transport implementation. Concurrent sends are supported. Disposal is thread-safe and idempotent, but callers must coordinate disposal with active sends; disposing the transport may interrupt in-flight requests.</remarks>
 public sealed class HttpClientRestTransport : IRestTransport, IDisposable
 {
     private readonly HttpClient _client;
     private readonly bool _ownsClient;
-    private bool _disposed;
+    private int _disposed;
 
     /// <summary>Creates a transport using the supplied <see cref="HttpClient"/> without taking ownership of it.</summary>
     /// <param name="client">HTTP client owned and configured by the host.</param>
@@ -23,7 +23,7 @@ public sealed class HttpClientRestTransport : IRestTransport, IDisposable
     /// <remarks>Although headers are read before the response body, this API materializes the full body as a string and is not a streaming API.</remarks>
     public async Task<RestResponse> SendAsync(RestRequest request, CancellationToken cancellationToken = default)
     {
-        ObjectDisposedException.ThrowIf(_disposed, this);
+        ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
         ArgumentNullException.ThrowIfNull(request);
         cancellationToken.ThrowIfCancellationRequested();
         using var message = new HttpRequestMessage(new HttpMethod(request.Method), request.Uri);
@@ -76,13 +76,12 @@ public sealed class HttpClientRestTransport : IRestTransport, IDisposable
             headers[name] = value;
     }
 
-    /// <summary>Disposes the client only when this transport was created with ownership of that client.</summary>
+    /// <summary>Disposes this transport once, disposing the client only when this transport owns it.</summary>
+    /// <remarks>Thread-safe and idempotent. Callers must coordinate disposal with active sends; disposal may interrupt in-flight requests.</remarks>
     public void Dispose()
     {
-        if (_disposed)
+        if (Interlocked.Exchange(ref _disposed, 1) != 0)
             return;
-
-        _disposed = true;
         if (_ownsClient)
             _client.Dispose();
     }
