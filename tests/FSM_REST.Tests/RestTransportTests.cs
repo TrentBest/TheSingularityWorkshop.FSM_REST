@@ -83,6 +83,21 @@ public sealed class RestTransportTests
     }
 
     [Fact]
+    public async Task TransportRejectsContentHeaderWhenRequestHasNoBody()
+    {
+        using var client = new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
+        var transport = new HttpClientRestTransport(client);
+
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() => transport.SendAsync(
+            new RestRequest(
+                "GET",
+                new Uri("https://example.test/bodyless"),
+                new Dictionary<string, string> { ["Content-Language"] = "en" })));
+
+        Assert.Contains("Content-Language", exception.Message);
+    }
+
+    [Fact]
     public async Task HttpClientTransportAppliesContentHeadersToRequestContent()
     {
         var handler = new StubHandler(request =>
