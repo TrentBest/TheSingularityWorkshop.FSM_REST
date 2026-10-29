@@ -17,8 +17,24 @@ public sealed record RestApiDescriptor(
     IReadOnlyList<RestOperationDescriptor> Operations,
     string? Description = null)
 {
+    private string _title = RequireText(Title, nameof(Title));
+    private string _version = RequireText(Version, nameof(Version));
     private IReadOnlyList<RestOperationDescriptor> _operations =
         Snapshot(Operations, nameof(Operations));
+
+    /// <summary>Gets the non-empty, human-readable API title.</summary>
+    public string Title
+    {
+        get => _title;
+        init => _title = RequireText(value, nameof(Title));
+    }
+
+    /// <summary>Gets the non-empty API version supplied by the capability owner.</summary>
+    public string Version
+    {
+        get => _version;
+        init => _version = RequireText(value, nameof(Version));
+    }
 
     /// <summary>Gets a read-only snapshot of the operations exposed by the API.</summary>
     public IReadOnlyList<RestOperationDescriptor> Operations
@@ -29,6 +45,12 @@ public sealed record RestApiDescriptor(
 
     /// <summary>Gets the number of operations described by the API.</summary>
     public int OperationCount => Operations.Count;
+
+    private static string RequireText(string value, string paramName)
+    {
+        ArgumentException.ThrowIfNullOrWhiteSpace(value, paramName);
+        return value;
+    }
 
     private static IReadOnlyList<T> Snapshot<T>(IReadOnlyList<T> values, string paramName)
     {
