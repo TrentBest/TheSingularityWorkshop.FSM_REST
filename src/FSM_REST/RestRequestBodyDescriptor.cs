@@ -24,8 +24,8 @@ public sealed record RestRequestBodyDescriptor(
     {
         ArgumentNullException.ThrowIfNull(values, paramName);
         var copy = values.ToArray();
-        if (copy.Any(value => value is null))
-            throw new ArgumentException("Collections cannot contain null entries.", paramName);
+        if (copy.Any(string.IsNullOrWhiteSpace))
+            throw new ArgumentException("Media types cannot contain null or whitespace entries.", paramName);
         return Array.AsReadOnly(copy);
     }
 }
