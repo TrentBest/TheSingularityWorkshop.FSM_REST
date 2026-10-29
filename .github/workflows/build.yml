@@ -27,6 +27,9 @@ jobs:
       - name: Check documentation contract
         run: python3 scripts/check_documentation.py
 
+      - name: Verify source-derived REST contract diagram
+        run: python3 scripts/generate_rest_contract_diagram.py --check
+
       - name: Check architecture boundaries
         run: python3 scripts/check_architecture.py
 
