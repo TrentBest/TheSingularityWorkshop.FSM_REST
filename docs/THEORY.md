@@ -260,3 +260,22 @@ The same applies to response metadata: media types and basic schema type/format 
 ## The practical design rule
 
 Use FSM_REST when you want to model a reusable REST operation and execute one request through a replaceable communication boundary. Add a provider when you need a source format, an adapter when you need a particular transport policy, and a host/domain layer when you need authentication, authorization, validation, retries, persistence, or business meaning. Keep those decisions explicit so the small core remains dependable and independently consumable.
+
+
+## Evidence must not outrun the boundary
+
+The package's phases establish different facts. A descriptor records intended capability metadata; binding supplies invocation values; request construction produces a concrete request; transport observes a communication outcome; and the consumer decides what that outcome means for its domain.
+
+| Evidence | Supported claim | Unsupported leap |
+|---|---|---|
+| Descriptor exists | An operation is described | The endpoint exists or conforms |
+| Request constructed | The supported request inputs produced a request | The remote service received it |
+| Transport returned an HTTP response | A status and response metadata were observed | The business operation succeeded |
+| HTTP success status | The protocol-level status is in the success range | The body is valid or safe for the domain |
+| Consumer validation passed | The checked domain rules passed for the observed data | All external side effects are reversible or permanently settled |
+
+This mirrors the explicit boundary discipline in [FSM_COS runtime theory](https://github.com/TrentBest/TheSingularityWorkshop.FSM_COS/blob/development/docs/RUNTIME_BOUNDARY.md): describe the successful handoff precisely, document non-promises, and do not assign a downstream responsibility to an upstream package.
+
+A timeout or cancellation can leave the remote outcome uncertain. Retry, idempotency, authorization, reconciliation, and domain validation require explicit service and host policy; they are not inferred from a REST descriptor.
+
+See [Chapter 4 — Promises, observations, and evidence](theory/Chapter-04-Promises-Observations-Evidence.md) and its [evidence-boundary visual](assets/rest-textbook-evidence-boundary.svg).
