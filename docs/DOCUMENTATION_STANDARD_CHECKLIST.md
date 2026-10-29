@@ -8,8 +8,8 @@
 ## 1. Branding and Markdown hygiene
 
 - [ ] Every Markdown document has the animated Workshop moniker in its first eight lines.
-- [ ] Every Markdown document ends with exactly one `<!-- THE SINGULARITY WORKSHOP FOOTER -->` marker.
-- [ ] The marker is followed only by the centered canonical static image paragraph:
+- [ ] Every Markdown document ends with exactly one canonical Workshop footer marker.
+- [ ] The footer marker is followed only by the centered canonical static image paragraph:
   `<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>`
 - [ ] No profile avatar, alternate footer artwork, duplicate moniker, or extra content follows the canonical footer.
 - [ ] The branding verifier runs in CI and checks every repository Markdown file, not only the files changed in a pull request.
