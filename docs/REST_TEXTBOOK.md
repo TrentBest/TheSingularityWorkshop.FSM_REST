@@ -24,7 +24,7 @@ This textbook teaches REST as an architectural boundary—not merely a collectio
 - **Lab:** include runnable sample, expected output, prerequisites, and a verification command.
 - **Visual:** label each SVG conceptual, source-derived, or captured from a running example.
 
-The chapters are conceptual teaching material unless code is explicitly marked verified. The illustrations are authored teaching models, not captures of a live server or proof of runtime behavior. This follows the evidence discipline used in FSM_COS: conceptual animation, source-derived structure, and live runtime observations are distinct provenance levels.
+The chapters are conceptual teaching material unless code is explicitly marked verified. The illustrations are authored teaching models, not captures of a live server or proof of runtime behavior. This follows the evidence discipline used in FSM_COS: conceptual animation, authored diagrams with explicit source-anchor checks, and live runtime observations are distinct provenance levels.
 
 ## Living illustrations
 
@@ -32,7 +32,7 @@ The chapters are conceptual teaching material unless code is explicitly marked v
 - [Failure and uncertainty at the network boundary](assets/rest-textbook-network-boundary.svg)
 - [FSM_REST capability lifecycle](assets/rest-textbook-capability-lifecycle.svg)
 - [The REST evidence boundary](assets/rest-textbook-evidence-boundary.svg)
-- [FSM_REST core contract surface (source-derived)](assets/rest-contract-surface.svg)
+- [FSM_REST core contract surface (source-anchor-checked)](assets/rest-contract-surface.svg)
 
 These SVGs are editable, versionable, scalable assets that evolve with the lessons. Their animation explains a concept; it is not live runtime telemetry.
 
@@ -43,10 +43,10 @@ FSM_COS's living-SVG work makes an important distinction that this textbook adop
 | Level | Meaning | Evidence required |
 |---|---|---|
 | **Conceptual** | An authored visual teaches a model or relationship | The visual labels itself conceptual and does not imply measured execution |
-| **Source-derived** | A repeatable generator builds the diagram from code, contracts, or tests | The generator, pinned inputs, and regeneration check are part of the repository workflow |
+| **Source-anchor-checked** | An authored diagram names source symbols or members that a deterministic checker verifies exist; the diagram's relationships are not automatically inferred | The checker names its anchors and runs in CI; claims beyond those checks remain authored and must be reviewed |
 | **Runtime-observed** | A visual presents a real execution or measurement | The displayed state comes from a defined, validated runtime observation channel |
 
-The four animated textbook SVGs are **conceptual**. Their animation is explanatory motion, not live telemetry. The core contract surface diagram is a separate **source-derived** view: `scripts/generate_rest_contract_diagram.py` verifies named contract anchors in the current C# source and checks that the committed SVG matches its deterministic template. CI runs it in `--check` mode and fails on missing/changed anchors or diagram drift. This is a deliberately small source-contract inventory, not a general C# parser, reflection dump, or GUI.SVG output. A future runtime-observed view would require a separate, validated observation source.
+The four animated textbook SVGs are **conceptual**. Their animation is explanatory motion, not live telemetry. The core contract surface diagram is an **authored, source-anchor-checked** view: `scripts/generate_rest_contract_diagram.py` verifies that named contract anchors exist in the current C# source and checks that the committed SVG matches its deterministic template. CI runs it in `--check` mode and fails on missing/changed anchors or diagram drift. The checker does not parse C# or infer the diagram's edges; those relationships remain authored documentation and should be reviewed against source. This is not a general C# parser, reflection dump, or GUI.SVG output. A future runtime-observed view would require a separate, validated observation source.
 
 ## How this textbook relates to the package
 
