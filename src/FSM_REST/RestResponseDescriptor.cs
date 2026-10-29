@@ -13,13 +13,28 @@ public sealed record RestResponseDescriptor(
     string? SchemaType,
     string? SchemaFormat)
 {
+    private string _statusCode = RequireText(StatusCode, nameof(StatusCode));
     private IReadOnlyList<string> _mediaTypes = Snapshot(MediaTypes, nameof(MediaTypes));
+
+    /// <summary>Gets the non-empty HTTP status code or status-code key (for example, <c>default</c>).</summary>
+    public string StatusCode
+    {
+        get => _statusCode;
+        init => _statusCode = RequireText(value, nameof(StatusCode));
+    }
 
     /// <summary>Gets a read-only snapshot of represented media types.</summary>
     public IReadOnlyList<string> MediaTypes
     {
         get => _mediaTypes;
         init => _mediaTypes = Snapshot(value, nameof(MediaTypes));
+    }
+
+    private static string RequireText(string value, string paramName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            throw new ArgumentException("Value cannot be null or whitespace.", paramName);
+        return value;
     }
 
     private static IReadOnlyList<string> Snapshot(IReadOnlyList<string> values, string paramName)
