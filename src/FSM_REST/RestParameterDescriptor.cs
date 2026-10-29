@@ -13,4 +13,29 @@ public sealed record RestParameterDescriptor(
     bool Required,
     string? Type,
     string? Format,
-    string? Description);
+    string? Description)
+{
+    private string _name = RequireText(Name, nameof(Name));
+    private string _location = RequireText(Location, nameof(Location));
+
+    /// <summary>Gets the non-empty parameter name.</summary>
+    public string Name
+    {
+        get => _name;
+        init => _name = RequireText(value, nameof(Name));
+    }
+
+    /// <summary>Gets the non-empty parameter location.</summary>
+    public string Location
+    {
+        get => _location;
+        init => _location = RequireText(value, nameof(Location));
+    }
+
+    private static string RequireText(string value, string paramName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            throw new ArgumentException("Value cannot be null or whitespace.", paramName);
+        return value;
+    }
+}
