@@ -35,6 +35,18 @@ The chapters are conceptual teaching material unless code is explicitly marked v
 
 These SVGs are editable, versionable, scalable assets that evolve with the lessons. Their animation explains a concept; it is not live runtime telemetry.
 
+### Visual provenance: three levels
+
+FSM_COS's living-SVG work makes an important distinction that this textbook adopts:
+
+| Level | Meaning | Evidence required |
+|---|---|---|
+| **Conceptual** | An authored visual teaches a model or relationship | The visual labels itself conceptual and does not imply measured execution |
+| **Source-derived** | A repeatable generator builds the diagram from code, contracts, or tests | The generator, pinned inputs, and regeneration check are part of the repository workflow |
+| **Runtime-observed** | A visual presents a real execution or measurement | The displayed state comes from a defined, validated runtime observation channel |
+
+The four textbook SVGs are currently **conceptual**. Their animation is explanatory motion, not live telemetry. The next meaningful upgrade is not “more animation”; it is a reproducible GUI.SVG generation path tied to stable FSM_REST contracts and checked in CI. A future runtime-observed view would require a separate, validated observation source. Until those steps exist, the textbook will not claim that its pictures are generated from execution.
+
 ## How this textbook relates to the package
 
 - [Package theory](THEORY.md) — concise architectural principles.
