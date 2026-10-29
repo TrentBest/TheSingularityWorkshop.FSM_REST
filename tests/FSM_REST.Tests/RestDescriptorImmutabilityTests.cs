@@ -86,6 +86,17 @@ public sealed class RestDescriptorImmutabilityTests
             new RestResponseDescriptor("200", null, null!, null, null));
     }
 
+    [Theory]
+    [InlineData("")]
+    [InlineData("   ")]
+    public void RequestAndResponseDescriptorsRejectBlankMediaTypes(string mediaType)
+    {
+        Assert.Throws<ArgumentException>(() =>
+            new RestRequestBodyDescriptor(true, new[] { mediaType }, null, null));
+        Assert.Throws<ArgumentException>(() =>
+            new RestResponseDescriptor("200", null, new[] { mediaType }, null, null));
+    }
+
     private static RestOperationDescriptor Operation(string id) =>
         new("GET", "/items", id, null, null, Array.Empty<RestParameterDescriptor>(), null);
 }
