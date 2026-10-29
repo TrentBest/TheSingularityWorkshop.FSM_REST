@@ -2,7 +2,7 @@
 
 **Maintainer:** @TrentBest
 
-For a chapter-based, instructor-editable introduction to REST concepts and this package, start with the [REST Systems: A Living Textbook](REST_TEXTBOOK.md). It includes conceptual SVG illustrations, discussion prompts, and a progression from resource representations to network failure and capability composition.
+For a chapter-based, instructor-editable introduction to REST concepts and this package, start with the [REST Systems: A Living Textbook](REST_TEXTBOOK.md). It includes conceptual SVG illustrations, discussion prompts, and a progression from resource representations to network failure, capability composition, and the evidence needed to justify claims about remote outcomes.
 
 ## Form before implementation
 
