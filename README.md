@@ -43,6 +43,10 @@ Run the [deterministic end-to-end demo](https://github.com/TrentBest/TheSingular
 
 ---
 
+## Learn the theory
+
+Start with the [REST Systems: A Living Textbook](docs/REST_TEXTBOOK.md) for instructor-editable chapters on resources and representations, network uncertainty, and FSM_REST capability composition. The chapters include editable SVG illustrations, discussion prompts, and links to deterministic examples. The illustrations are conceptual teaching models, not live telemetry.
+
 ## Detailed guide
 
 **REST capability and transport substrate for the FSM ecosystem.**
