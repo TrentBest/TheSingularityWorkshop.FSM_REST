@@ -1,6 +1,6 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1000 560" role="img" aria-labelledby="title desc">
   <title id="title">FSM_REST core contract surface — source-anchor-checked</title>
-  <desc id="desc">Source-checked relationships between API and operation descriptors, request construction, transport, and observed response. This diagram is not runtime telemetry.</desc>
+  <desc id="desc">Authored relationships between API and operation descriptors, request construction, transport, and observed response; named source anchors are checked, but edges are not inferred from code. This diagram is not runtime telemetry.</desc>
   <defs>
     <style>
       text{font-family:system-ui,sans-serif;fill:#18212b}
