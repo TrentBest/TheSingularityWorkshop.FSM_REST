@@ -19,10 +19,34 @@ public sealed record RestOperationDescriptor(
     RestRequestBodyDescriptor? RequestBody,
     IReadOnlyList<RestResponseDescriptor>? Responses = null)
 {
+    private string _method = RequireText(Method, nameof(Method));
+    private string _path = RequireText(Path, nameof(Path));
+    private string _operationId = RequireText(OperationId, nameof(OperationId));
     private IReadOnlyList<RestParameterDescriptor> _parameters =
         Snapshot(Parameters, nameof(Parameters));
     private IReadOnlyList<RestResponseDescriptor>? _responses =
         Responses is null ? null : Snapshot(Responses, nameof(Responses));
+
+    /// <summary>Gets the non-empty HTTP method token.</summary>
+    public string Method
+    {
+        get => _method;
+        init => _method = RequireText(value, nameof(Method));
+    }
+
+    /// <summary>Gets the non-empty relative API path.</summary>
+    public string Path
+    {
+        get => _path;
+        init => _path = RequireText(value, nameof(Path));
+    }
+
+    /// <summary>Gets the non-empty stable operation identity.</summary>
+    public string OperationId
+    {
+        get => _operationId;
+        init => _operationId = RequireText(value, nameof(OperationId));
+    }
 
     /// <summary>Gets a read-only snapshot of the parameters accepted by the operation.</summary>
     public IReadOnlyList<RestParameterDescriptor> Parameters
@@ -46,6 +70,13 @@ public sealed record RestOperationDescriptor(
     /// <summary>Gets response descriptors, or an empty collection when none were supplied.</summary>
     public IReadOnlyList<RestResponseDescriptor> ResponseDescriptors =>
         Responses ?? Array.Empty<RestResponseDescriptor>();
+
+    private static string RequireText(string value, string paramName)
+    {
+        if (string.IsNullOrWhiteSpace(value))
+            throw new ArgumentException("Value cannot be null or whitespace.", paramName);
+        return value;
+    }
 
     private static IReadOnlyList<T> Snapshot<T>(IReadOnlyList<T> values, string paramName)
     {
