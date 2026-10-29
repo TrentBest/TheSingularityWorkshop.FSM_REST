@@ -1,5 +1,9 @@
 # FSM_REST Theory
 
+**Maintainer:** @TrentBest
+
+For a chapter-based, instructor-editable introduction to REST concepts and this package, start with the [REST Systems: A Living Textbook](REST_TEXTBOOK.md). It includes conceptual SVG illustrations, discussion prompts, and a progression from resource representations to network failure and capability composition.
+
 ## Form before implementation
 
 FSM_REST provides the reusable form through which REST capabilities enter the FSM ecosystem.
