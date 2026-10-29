@@ -68,3 +68,6 @@ Therefore, this sample does not claim to place a real consumer order. It demonst
   <em>Forging Software for the Singularity.</em><br />
   <a href="https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST">FSM_REST repository</a>
 </p>
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

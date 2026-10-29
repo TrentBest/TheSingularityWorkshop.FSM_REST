@@ -1,3 +1,6 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # RestGuiMapping
 
 **Author / Workshop moniker:** @TrentBest  
@@ -23,3 +26,6 @@ See [RestGuiMapping UML and use cases](../../docs/UML/RestGuiMapping.UML.md).
 - Tests: [RestGuiMappingTests.cs](../../tests/FSM_REST.Tests/RestGuiMappingTests.cs)
 
 This is a manually authored source companion; it does not claim generated structural analysis.
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

@@ -61,4 +61,5 @@ Study the deterministic cases in tests/FSM_REST.Tests/RestTransportTests.cs, inc
 
 ---
 
-<p align="center"><img src="https://avatars.githubusercontent.com/u/16405167?v=4" alt="The Singularity Workshop avatar" width="96" /></p>
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

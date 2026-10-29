@@ -1,3 +1,6 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # FSM_REST Release Verification Checklist
 
 Use this checklist for a candidate package release. It is a verification gate, not a declaration that a particular version is ready. Confirm the current package version, target frameworks, dependencies, and upstream compatibility from the checked-out source and CI; do not inherit version or prerequisite claims from historical branch documents. The artifact evidence below is retained for traceability only: later source and test changes mean it is not evidence for the current `development` head. A fresh exact-SHA CI run and package artifact inspection are required before release.
@@ -78,3 +81,5 @@ This checklist records release criteria only. Completing it does not itself auth
 - **Versions remain:** core `0.1.0-alpha.5`, OpenAPI `0.1.0-alpha.1`, COS `0.1.0-alpha.1`.
 - **Evidence boundary:** this records the newer exact-SHA CI run and its artifact metadata. It does not replace manual archive/content inspection of the current downloaded package, complete the unchecked public-contract/release-note review, or establish comprehensive REST semantics. Publication remains explicitly approval-gated.
 
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

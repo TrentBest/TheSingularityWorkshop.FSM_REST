@@ -1,3 +1,6 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # Consuming FSM_REST
 
 This guide shows the supported path from an API description to one outbound request and one observed response. The optional `TheSingularityWorkshop.FSM_Rest.OpenApi` package includes an initial OpenAPI 3.x JSON importer, but it is not a complete OpenAPI runtime, authentication system, or domain client.
@@ -177,3 +180,6 @@ Optional composition integrations belong in their own integration package; the c
 ## Verify locally
 
 From the repository root, run the test suite and build commands documented in the README and CI workflow. Add regression tests whenever an adapter changes encoding, header handling, status handling, cancellation, or other observable request semantics.
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

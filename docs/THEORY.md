@@ -1,3 +1,6 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # FSM_REST Theory
 
 **Maintainer:** @TrentBest
@@ -279,3 +282,6 @@ This mirrors the explicit boundary discipline in [FSM_COS runtime theory](https:
 A timeout or cancellation can leave the remote outcome uncertain. Retry, idempotency, authorization, reconciliation, and domain validation require explicit service and host policy; they are not inferred from a REST descriptor.
 
 See [Chapter 4 — Promises, observations, and evidence](theory/Chapter-04-Promises-Observations-Evidence.md) and its [evidence-boundary visual](assets/rest-textbook-evidence-boundary.svg).
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

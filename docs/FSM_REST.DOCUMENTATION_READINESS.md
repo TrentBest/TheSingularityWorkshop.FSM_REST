@@ -1,3 +1,6 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # FSM_REST Documentation Readiness
 
 **Owner / Workshop moniker:** @TrentBest  
@@ -155,3 +158,5 @@ This is a source-level feasibility assessment, **not** a test result and **not**
 - The packaging cleanup excludes the four internal readiness/reconciliation/checklist documents from the core and OpenAPI packages, removes the checklist from public README navigation, and makes CI fail if those internal documents leak into packed artifacts. Consumer documentation and UML remain eligible for package inclusion.
 - Package versions remain unchanged: core `0.1.0-alpha.5`, OpenAPI `0.1.0-alpha.1`, and COS `0.1.0-alpha.1`. No NuGet publication occurred.
 
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

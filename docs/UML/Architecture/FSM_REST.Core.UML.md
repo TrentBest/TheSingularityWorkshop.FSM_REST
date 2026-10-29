@@ -1,3 +1,6 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # FSM_REST Core — UML and Use Cases
 
 **Target:** Core REST capability model and execution boundary.  
@@ -64,3 +67,6 @@ The optional COS adapter translates a REST capability into a MicroBundle. The co
 ## Scope and verification
 
 This view summarizes the neutral REST contracts and omits incidental members. It is not evidence of complete REST or OpenAPI semantics. Verify behavior with the repository tests and CI for the commit under review.
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

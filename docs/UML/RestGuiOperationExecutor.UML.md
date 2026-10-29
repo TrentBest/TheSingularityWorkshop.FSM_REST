@@ -1,3 +1,6 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # RestGuiOperationExecutor — UML and Use Cases
 
 **Author / Workshop moniker:** @TrentBest  
@@ -57,3 +60,6 @@ The executor is host-framework-neutral. It does not render controls, implement l
 - [Tests](../../tests/FSM_REST.Tests/RestGuiOperationExecutorTests.cs)
 
 Re-check when invocation, input-resolution, cancellation, or publication behavior changes.
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

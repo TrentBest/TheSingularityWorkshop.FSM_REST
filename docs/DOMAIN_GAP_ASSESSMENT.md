@@ -1,3 +1,6 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # FSM_REST Domain Gap Assessment
 
 **Owner / Workshop moniker:** @TrentBest  
@@ -75,3 +78,6 @@ A test count alone is not a completion criterion. For each capability, record:
 - exact commit and CI run that validates the change.
 
 **Status: architecture boundary improved by isolating OpenAPI; domain completeness remains unproven and requires end-to-end tests and consumer evidence.**
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

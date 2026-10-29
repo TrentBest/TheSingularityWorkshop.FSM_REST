@@ -50,3 +50,6 @@ The direction is intentional: REST does not need to know that FSM_COS exists. FS
   <em>The Singularity Workshop — Tools for the curious, the bold, and the systemically inclined.</em><br />
   <strong>Because state shouldn't be a mess.</strong>
 </p>
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>
