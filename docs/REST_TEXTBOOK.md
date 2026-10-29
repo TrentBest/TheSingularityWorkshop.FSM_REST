@@ -22,7 +22,7 @@ This textbook teaches REST as an architectural boundary—not merely a collectio
 - **Case study:** add a provider-neutral example and state which assumptions are provider-specific.
 - **Assessment:** place questions and answer keys in separate files.
 - **Lab:** include runnable sample, expected output, prerequisites, and a verification command.
-- **Visual:** label each SVG conceptual, source-derived, or captured from a running example.
+- **Visual:** label each SVG conceptual, source-anchor-checked, or captured from a running example.
 
 The chapters are conceptual teaching material unless code is explicitly marked verified. The illustrations are authored teaching models, not captures of a live server or proof of runtime behavior. This follows the evidence discipline used in FSM_COS: conceptual animation, authored diagrams with explicit source-anchor checks, and live runtime observations are distinct provenance levels.
 
