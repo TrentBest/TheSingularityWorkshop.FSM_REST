@@ -1,20 +1,31 @@
 namespace TheSingularityWorkshop.FSM_REST;
 
 /// <summary>Adapts <see cref="HttpClient"/> to the framework-neutral <see cref="IRestTransport"/> contract.</summary>
-/// <remarks>This is an adapter, not the definition of FSM_REST. Hosts can supply their own transport implementation.</remarks>
-public sealed class HttpClientRestTransport : IRestTransport
+/// <remarks>This is an adapter, not the definition of FSM_REST. Hosts can supply their own transport implementation. Concurrent sends are supported. Disposal is thread-safe and idempotent, but callers must coordinate disposal with active sends; disposing the transport may interrupt in-flight requests.</remarks>
+public sealed class HttpClientRestTransport : IRestTransport, IDisposable
 {
     private readonly HttpClient _client;
+    private readonly bool _ownsClient;
+    private int _disposed;
 
-    /// <summary>Creates a transport using the supplied <see cref="HttpClient"/>.</summary>
+    /// <summary>Creates a transport using the supplied <see cref="HttpClient"/> without taking ownership of it.</summary>
     /// <param name="client">HTTP client owned and configured by the host.</param>
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="client"/> is null.</exception>
-    public HttpClientRestTransport(HttpClient client) => _client = client ?? throw new ArgumentNullException(nameof(client));
+    public HttpClientRestTransport(HttpClient client) : this(client, ownsClient: false) { }
 
-    /// <inheritdoc />
+    internal HttpClientRestTransport(HttpClient client, bool ownsClient)
+    {
+        _client = client ?? throw new ArgumentNullException(nameof(client));
+        _ownsClient = ownsClient;
+    }
+
+    /// <summary>Sends a request and captures the response as text.</summary>
+    /// <remarks>Although headers are read before the response body, this API materializes the full body as a string and is not a streaming API.</remarks>
     public async Task<RestResponse> SendAsync(RestRequest request, CancellationToken cancellationToken = default)
     {
+        ObjectDisposedException.ThrowIf(Volatile.Read(ref _disposed) != 0, this);
         ArgumentNullException.ThrowIfNull(request);
+        cancellationToken.ThrowIfCancellationRequested();
         using var message = new HttpRequestMessage(new HttpMethod(request.Method), request.Uri);
 
         if (request.Body is not null)
@@ -44,11 +55,34 @@ public sealed class HttpClientRestTransport : IRestTransport
         var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
 
         foreach (var header in response.Headers)
-            headers[header.Key] = string.Join(", ", header.Value);
+            AddResponseHeader(headers, header.Key, header.Value);
         foreach (var header in response.Content.Headers)
-            headers[header.Key] = string.Join(", ", header.Value);
+            AddResponseHeader(headers, header.Key, header.Value);
 
         var body = await response.Content.ReadAsStringAsync(cancellationToken);
         return new RestResponse((int)response.StatusCode, response.ReasonPhrase, headers, body);
+    }
+
+
+    private static void AddResponseHeader(
+        IDictionary<string, string> headers,
+        string name,
+        IEnumerable<string> values)
+    {
+        var value = string.Join(", ", values);
+        if (headers.TryGetValue(name, out var existing))
+            headers[name] = string.IsNullOrEmpty(existing) ? value : $"{existing}, {value}";
+        else
+            headers[name] = value;
+    }
+
+    /// <summary>Disposes this transport once, disposing the client only when this transport owns it.</summary>
+    /// <remarks>Thread-safe and idempotent. Callers must coordinate disposal with active sends; disposal may interrupt in-flight requests.</remarks>
+    public void Dispose()
+    {
+        if (Interlocked.Exchange(ref _disposed, 1) != 0)
+            return;
+        if (_ownsClient)
+            _client.Dispose();
     }
 }

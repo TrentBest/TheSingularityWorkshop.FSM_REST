@@ -74,6 +74,26 @@ The example's `applicationState` is your host's own state service; FSM_REST does
 
 The mapping constructor rejects undeclared or duplicate operation parameters. It deliberately does not evaluate arbitrary data paths, execute operations, deserialize payloads, or bypass authorization: those are responsibilities of the GUI/data-context adapter and host policy.
 
+## Construct transports through dependency injection
+
+Register a named HTTP client for each API whose configuration differs, then register the transport factory:
+
+```csharp
+services.AddHttpClient("CatalogApi", client =>
+{
+    client.BaseAddress = new Uri("https://catalog.example.test/");
+    client.Timeout = TimeSpan.FromSeconds(15);
+});
+services.AddHttpClientRestTransportFactory();
+
+var factory = serviceProvider.GetRequiredService<HttpClientRestTransportFactory>();
+using IRestTransport transport = factory.Create("CatalogApi");
+```
+
+The factory is a singleton-safe creator; each created transport has its own disposable lifetime. The transport disposes the `HttpClient` instance it receives from `IHttpClientFactory`, while the factory manages the pooled handler lifetime. Configure credentials and other host policy through the named client's registration. If the host already has an `IHttpClientFactory`, use `HttpClientRestTransportFactory` directly or construct a transport with `HttpClientRestTransportBuilder.UseFactory`. The DI extension is optional and does not replace `IRestTransport`.
+
+See [HTTP transport factory](../src/FSM_REST/HttpClientRestTransportFactory.md) for complete construction and lifetime guidance.
+
 ## The invocation lifecycle
 
 1. Keep a `RestOperationDescriptor` as reusable capability metadata.
@@ -156,6 +176,66 @@ This helper returns the same raw `RestResponse` as the transport. It does not ad
 `HttpClientRestTransport` returns the observed HTTP status, reason phrase, response headers, and body. `RestResponse.IsSuccessStatusCode` is true only for status codes from 200 through 299. A non-2xx response is still a response; the transport does not automatically turn it into a domain exception or retry it.
 
 Use `response.Deserialize<T>()` when the response is JSON and the consuming application owns a suitable target type. This is JSON deserialization, not validation against the imported API schema. Your host or domain capability decides how to handle authentication, authorization, cancellation, timeouts, retries, backoff, rate limits, caching, telemetry, schema validation, and domain-specific errors. The host also owns the lifetime and configuration of the supplied `HttpClient`.
+
+## Construct the HTTP transport fluently
+
+Use `HttpClientRestTransportBuilder` when you want a concise construction path without replacing the `IRestTransport` boundary.
+
+Create and configure a client owned by the transport:
+
+```csharp
+using TheSingularityWorkshop.FSM_REST;
+
+using var transport = HttpClientRestTransportBuilder.Create()
+    .ConfigureClient(client =>
+    {
+        client.BaseAddress = new Uri("https://api.example.com/");
+        client.Timeout = TimeSpan.FromSeconds(20);
+    })
+    .Build();
+
+RestResponse response = await transport.SendAsync(
+    new RestRequest("GET", new Uri("https://api.example.com/users")),
+    cancellationToken);
+```
+
+Or pass a client that your host already configures and owns:
+
+```csharp
+using var client = new HttpClient(handler: myHandler, disposeHandler: false);
+// Configure shared headers, credentials, proxy, and other host policy here.
+using var transport = HttpClientRestTransportBuilder.Create()
+    .UseClient(client)
+    .Build();
+```
+
+Disposing a transport built with `UseClient` does **not** dispose the supplied client. The client remains the host's responsibility. `ConfigureClient` is intentionally rejected with `UseClient` so the builder cannot silently mutate shared defaults.
+
+For a custom handler, use `UseHandler(handler, disposeHandler: true)`; the builder creates and owns the resulting client. Set `disposeHandler: false` only when the handler is owned elsewhere.
+
+### Integrate with IHttpClientFactory and dependency injection
+
+Register and configure named clients in the host, then pass the factory into the builder. The factory owns handler pooling and configuration; dispose the built transport when the transport lifetime ends.
+
+```csharp
+using Microsoft.Extensions.DependencyInjection;
+using TheSingularityWorkshop.FSM_REST;
+
+services.AddHttpClient("CatalogApi", client =>
+{
+    client.BaseAddress = new Uri("https://api.example.com/");
+    client.Timeout = TimeSpan.FromSeconds(20);
+});
+
+// In a service that receives IHttpClientFactory through constructor injection:
+using var transport = HttpClientRestTransportBuilder.Create()
+    .UseFactory(httpClientFactory, "CatalogApi")
+    .Build();
+```
+
+Factory-created clients are disposed with the transport, as recommended for `IHttpClientFactory`; the factory's pooled handlers remain managed by the factory. Configure factory-created clients through `AddHttpClient`, not `ConfigureClient`. Authentication, authorization, retries, endpoint policy, and response interpretation remain host/domain responsibilities.
+
+The builder is a construction convenience for the existing adapter, not a new transport contract. Direct construction with `new HttpClientRestTransport(client)` remains supported and does not transfer client ownership. The current `RestResponse.Body` is still a string; this builder does not add streaming or bounded-memory body handling.
 
 ## Scope and limitations
 

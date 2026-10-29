@@ -1,5 +1,7 @@
 using System.Net;
 using System.Net.Http;
+using Microsoft.Extensions.Http;
+using Microsoft.Extensions.DependencyInjection;
 using TheSingularityWorkshop.FSM_REST;
 using Xunit;
 
@@ -48,6 +50,52 @@ public sealed class RestTransportTests
     }
 
     [Fact]
+    public void RequestFactoryPreservesBasePathAndEscapesPathAndQueryValues()
+    {
+        var operation = new RestOperationDescriptor(
+            "GET",
+            "/items/{id}",
+            "getItem",
+            null,
+            null,
+            [
+                new RestParameterDescriptor("id", "path", true, "string", null, null),
+                new RestParameterDescriptor("q", "query", false, "string", null, null)
+            ],
+            null);
+
+        var request = RestRequestFactory.Create(
+            operation,
+            new Uri("https://example.test/v1"),
+            new Dictionary<string, string?>
+            {
+                ["id"] = "a/b",
+                ["q"] = "snow ☃&x=1#frag"
+            });
+
+        Assert.Equal(
+            "https://example.test/v1/items/a%2Fb?q=snow%20%E2%98%83%26x%3D1%23frag",
+            request.Uri.AbsoluteUri);
+    }
+
+    [Theory]
+    [InlineData("/items/%")]
+    [InlineData("/items/%2")]
+    [InlineData("/items/%GG")]
+    [InlineData("https://evil.example/items")]
+    [InlineData("//evil.example/items")]
+    [InlineData("/items?raw=1")]
+    [InlineData("/items#fragment")]
+    public void RequestFactoryRejectsMalformedOrNonRelativeOperationPaths(string path)
+    {
+        var operation = new RestOperationDescriptor(
+            "GET", path, "getItem", null, null, Array.Empty<RestParameterDescriptor>(), null);
+
+        Assert.Throws<ArgumentException>(() =>
+            RestRequestFactory.Create(operation, new Uri("https://example.test/v1")));
+    }
+
+    [Fact]
     public async Task HttpClientTransportExecutesRequestAndCapturesResponse()
     {
         var handler = new StubHandler(request =>
@@ -81,6 +129,21 @@ public sealed class RestTransportTests
     }
 
     [Fact]
+    public async Task TransportRejectsContentHeaderWhenRequestHasNoBody()
+    {
+        using var client = new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
+        var transport = new HttpClientRestTransport(client);
+
+        var exception = await Assert.ThrowsAsync<ArgumentException>(() => transport.SendAsync(
+            new RestRequest(
+                "GET",
+                new Uri("https://example.test/bodyless"),
+                new Dictionary<string, string> { ["Content-Language"] = "en" })));
+
+        Assert.Contains("Content-Language", exception.Message);
+    }
+
+    [Fact]
     public async Task HttpClientTransportAppliesContentHeadersToRequestContent()
     {
         var handler = new StubHandler(request =>
@@ -99,6 +162,88 @@ public sealed class RestTransportTests
             new Dictionary<string, string> { ["Content-Language"] = "en" },
             "payload",
             "text/plain"));
+    }
+
+    [Fact]
+    public async Task TransportCombinesRepeatedResponseHeaderValues()
+    {
+        var handler = new StubHandler(_ =>
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("ok")
+            };
+            response.Headers.TryAddWithoutValidation("X-Trace", new[] { "first", "second" });
+            return response;
+        });
+
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/headers")));
+
+        Assert.Equal("first, second", response.Headers["X-Trace"]);
+    }
+
+    [Fact]
+    public async Task TransportCombinesMatchingResponseAndContentHeaderValues()
+    {
+        var handler = new StubHandler(_ =>
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.OK)
+            {
+                Content = new StringContent("ok")
+            };
+            response.Headers.TryAddWithoutValidation("X-Shared", "response-value");
+            response.Content.Headers.TryAddWithoutValidation("X-Shared", "content-value");
+            return response;
+        });
+
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/headers")));
+
+        Assert.Equal("response-value, content-value", response.Headers["X-Shared"]);
+    }
+
+    [Fact]
+    public async Task TransportResponseHeadersAreCaseInsensitive()
+    {
+        var handler = new StubHandler(_ =>
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Headers.TryAddWithoutValidation("X-Trace", "trace-789");
+            return response;
+        });
+
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/header-casing")));
+
+        Assert.Equal("trace-789", response.Headers["x-trace"]);
+    }
+
+    [Fact]
+    public async Task TransportSupportsCustomValidHttpMethod()
+    {
+        var handler = new StubHandler(request =>
+        {
+            Assert.Equal("PURGE", request.Method.Method);
+            return new HttpResponseMessage(HttpStatusCode.NoContent);
+        });
+
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        var response = await transport.SendAsync(
+            new RestRequest("PURGE", new Uri("https://example.test/cache")));
+
+        Assert.Equal((int)HttpStatusCode.NoContent, response.StatusCode);
     }
 
     [Fact]
@@ -178,6 +323,110 @@ public sealed class RestTransportTests
     }
 
     [Fact]
+    public async Task TransportHonorsCancellationWhileReadingResponseBody()
+    {
+        var body = new CancellationAwareContent();
+        using var client = new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = body
+        }));
+        using var transport = new HttpClientRestTransport(client);
+        using var cancellation = new CancellationTokenSource();
+
+        var send = transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/slow-body")),
+            cancellation.Token);
+
+        await body.ReadStarted;
+        cancellation.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => send);
+    }
+
+    [Fact]
+    public async Task TransportHonorsCancellationBeforeSending()
+    {
+        var handlerCalled = false;
+        using var client = new HttpClient(new StubHandler(_ =>
+        {
+            handlerCalled = true;
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        }));
+        var transport = new HttpClientRestTransport(client);
+        using var cancellation = new CancellationTokenSource();
+        cancellation.Cancel();
+
+        await Assert.ThrowsAnyAsync<OperationCanceledException>(() => transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/cancelled")),
+            cancellation.Token));
+
+        Assert.False(handlerCalled);
+    }
+
+    [Fact]
+    public async Task TransportPreservesNonJsonResponseBodyAsText()
+    {
+        const string body = "not-json: <service unavailable>";
+        var handler = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.ServiceUnavailable)
+        {
+            Content = new StringContent(body, System.Text.Encoding.UTF8, "text/plain")
+        });
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/plain-error")));
+
+        Assert.Equal((int)HttpStatusCode.ServiceUnavailable, response.StatusCode);
+        Assert.Equal(body, response.Body);
+        Assert.Equal("text/plain; charset=utf-8", response.Headers["Content-Type"]);
+    }
+
+    [Fact]
+    public async Task TransportPreservesLargeTextResponseBody()
+    {
+        var body = new string('x', 1_000_000);
+        using var client = new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)
+        {
+            Content = new StringContent(body)
+        }));
+        var transport = new HttpClientRestTransport(client);
+
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/large")));
+
+        Assert.Equal(body.Length, response.Body.Length);
+        Assert.Equal(body, response.Body);
+    }
+
+    [Fact]
+    public void RestResponseDeserializesJsonNull()
+    {
+        var response = new RestResponse(
+            200,
+            "OK",
+            new Dictionary<string, string>(),
+            "null");
+
+        Assert.Null(response.Deserialize<string>());
+    }
+
+    [Theory]
+    [InlineData("")]
+    [InlineData("{")]
+    [InlineData("{\"value\":")]
+    public void RestResponseRejectsEmptyOrMalformedJson(string body)
+    {
+        var response = new RestResponse(
+            200,
+            "OK",
+            new Dictionary<string, string>(),
+            body);
+
+        Assert.Throws<System.Text.Json.JsonException>(() => response.Deserialize<Dictionary<string, object>>());
+    }
+
+    [Fact]
     public async Task TransportPreservesNoContentStatusAndEmptyBody()
     {
         var handler = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.NoContent));
@@ -193,11 +442,335 @@ public sealed class RestTransportTests
         Assert.Equal(string.Empty, response.Body);
     }
 
+
+    [Fact]
+    public async Task TransportSupportsConcurrentSends()
+    {
+        var sendCount = 0;
+        using var client = new HttpClient(new StubHandler(_ =>
+        {
+            Interlocked.Increment(ref sendCount);
+            return new HttpResponseMessage(HttpStatusCode.OK);
+        }));
+        using var transport = new HttpClientRestTransport(client);
+
+        var requests = Enumerable.Range(0, 16)
+            .Select(index => transport.SendAsync(new RestRequest(
+                "GET",
+                new Uri($"https://example.test/concurrent/{index}"))));
+
+        var responses = await Task.WhenAll(requests);
+
+        Assert.Equal(16, sendCount);
+        Assert.All(responses, response => Assert.Equal((int)HttpStatusCode.OK, response.StatusCode));
+    }
+
+    [Fact]
+    public void TransportConcurrentDisposeIsIdempotent()
+    {
+        var handler = new TrackingHandler();
+        var transport = HttpClientRestTransportBuilder.Create()
+            .UseHandler(handler)
+            .Build();
+
+        Parallel.For(0, 32, _ => transport.Dispose());
+
+        Assert.Equal(1, handler.DisposeCount);
+    }
+
+    [Fact]
+    public async Task BuilderDoesNotDisposeCallerOwnedClient()
+    {
+        using var client = new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
+        var transport = HttpClientRestTransportBuilder.Create().UseClient(client).Build();
+
+        transport.Dispose();
+        transport.Dispose();
+
+        await Assert.ThrowsAsync<ObjectDisposedException>(() => transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/transport-disposed"))));
+
+        using var response = await client.GetAsync("https://example.test/");
+        Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task BuilderDisposesClientItCreates()
+    {
+        var transport = HttpClientRestTransportBuilder.Create()
+            .ConfigureClient(client => client.Timeout = TimeSpan.FromSeconds(3))
+            .Build();
+
+        transport.Dispose();
+
+        await Assert.ThrowsAsync<ObjectDisposedException>(() => transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/"))));
+    }
+
+    [Fact]
+    public async Task BuilderUsesInjectedHandler()
+    {
+        var called = false;
+        var handler = new StubHandler(_ =>
+        {
+            called = true;
+            return new HttpResponseMessage(HttpStatusCode.Accepted);
+        });
+
+        using var transport = HttpClientRestTransportBuilder.Create()
+            .UseHandler(handler)
+            .Build();
+
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/")));
+
+        Assert.True(called);
+        Assert.Equal((int)HttpStatusCode.Accepted, response.StatusCode);
+    }
+
+
+    [Fact]
+    public async Task BuilderUsesNamedHttpClientFactoryClient()
+    {
+        var factory = new StubHttpClientFactory(name =>
+        {
+            Assert.Equal("CatalogApi", name);
+            return new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
+        });
+
+        using var transport = HttpClientRestTransportBuilder.Create()
+            .UseFactory(factory, "CatalogApi")
+            .Build();
+
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/")));
+
+        Assert.Equal(200, response.StatusCode);
+        Assert.Equal("CatalogApi", factory.RequestedName);
+    }
+
+    [Fact]
+    public async Task TransportFactoryCreatesNamedTransport()
+    {
+        var factory = new StubHttpClientFactory(name =>
+        {
+            Assert.Equal("CatalogApi", name);
+            return new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
+        });
+
+        using var transport = new HttpClientRestTransportFactory(factory).Create("CatalogApi");
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/")));
+
+        Assert.Equal(200, response.StatusCode);
+        Assert.Equal("CatalogApi", factory.RequestedName);
+    }
+
+    [Fact]
+    public void DependencyInjectionRegistersTransportFactory()
+    {
+        var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
+        services.AddHttpClient("CatalogApi");
+        services.AddHttpClientRestTransportFactory();
+
+        using var provider = services.BuildServiceProvider();
+        Assert.NotNull(provider.GetRequiredService<HttpClientRestTransportFactory>());
+    }
+
+    [Fact]
+    public void BuilderRejectsConfigurationOfCallerOwnedClient()
+    {
+        var client = new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
+        var builder = HttpClientRestTransportBuilder.Create()
+            .UseClient(client)
+            .ConfigureClient(_ => { });
+
+        Assert.Throws<InvalidOperationException>(() => builder.Build());
+        client.Dispose();
+    }
+
+    [Fact]
+    public void BuilderRejectsConfigurationOfFactoryClient()
+    {
+        var factory = new StubHttpClientFactory(_ => new HttpClient());
+        var builder = HttpClientRestTransportBuilder.Create()
+            .UseFactory(factory, "CatalogApi")
+            .ConfigureClient(_ => { });
+
+        Assert.Throws<InvalidOperationException>(() => builder.Build());
+    }
+
+    [Fact]
+    public void BuilderDisposesInjectedHandlerByDefault()
+    {
+        var handler = new TrackingHandler();
+
+        var transport = HttpClientRestTransportBuilder.Create()
+            .UseHandler(handler)
+            .Build();
+
+        transport.Dispose();
+
+        Assert.True(handler.WasDisposed);
+    }
+
+    [Fact]
+    public void BuilderCanLeaveInjectedHandlerOwnedExternally()
+    {
+        var handler = new TrackingHandler();
+
+        var transport = HttpClientRestTransportBuilder.Create()
+            .UseHandler(handler, disposeHandler: false)
+            .Build();
+
+        transport.Dispose();
+
+        Assert.False(handler.WasDisposed);
+        handler.Dispose();
+        Assert.True(handler.WasDisposed);
+    }
+
+    [Fact]
+    public void BuilderDisposesCreatedClientWhenConfigurationThrows()
+    {
+        var handler = new TrackingHandler();
+        var builder = HttpClientRestTransportBuilder.Create()
+            .UseHandler(handler)
+            .ConfigureClient(_ => throw new InvalidOperationException("configuration failed"));
+
+        Assert.Throws<InvalidOperationException>(() => builder.Build());
+        Assert.True(handler.WasDisposed);
+    }
+
+    [Fact]
+    public void BuilderCannotBuildTwice()
+    {
+        var builder = HttpClientRestTransportBuilder.Create()
+            .UseHandler(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
+
+        using var transport = builder.Build();
+
+        Assert.Throws<InvalidOperationException>(() => builder.Build());
+        Assert.Throws<InvalidOperationException>(() => builder.ConfigureClient(_ => { }));
+    }
+
+    [Fact]
+    public async Task TransportFactoryCreatesDefaultClientAndDisposesItWithTransport()
+    {
+        var handler = new TrackingHandler();
+        var factory = new StubHttpClientFactory(name =>
+        {
+            Assert.Equal(string.Empty, name);
+            return new HttpClient(handler);
+        });
+
+        var transport = new HttpClientRestTransportFactory(factory).Create();
+        var response = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/default")));
+
+        Assert.Equal(200, response.StatusCode);
+        Assert.Equal(string.Empty, factory.RequestedName);
+
+        transport.Dispose();
+        transport.Dispose();
+        Assert.True(handler.WasDisposed);
+    }
+
+    [Fact]
+    public void TransportFactoryRejectsNullClientFactory()
+    {
+        Assert.Throws<ArgumentNullException>(() => new HttpClientRestTransportFactory(null!));
+    }
+
+    [Fact]
+    public void BuilderRejectsNullCallerOwnedClient()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            HttpClientRestTransportBuilder.Create().UseClient(null!));
+    }
+
+    [Fact]
+    public void BuilderRejectsNullHandler()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            HttpClientRestTransportBuilder.Create().UseHandler(null!));
+    }
+
+    [Fact]
+    public void BuilderRejectsNullClientFactory()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            HttpClientRestTransportBuilder.Create().UseFactory(null!));
+    }
+
+    [Fact]
+    public void BuilderRejectsNullConfigurationCallback()
+    {
+        Assert.Throws<ArgumentNullException>(() =>
+            HttpClientRestTransportBuilder.Create().ConfigureClient(null!));
+    }
+
     private sealed class DelegateTransport(
         Func<RestRequest, CancellationToken, Task<RestResponse>> send) : IRestTransport
     {
         public Task<RestResponse> SendAsync(RestRequest request, CancellationToken cancellationToken = default) =>
             send(request, cancellationToken);
+    }
+
+    private sealed class StubHttpClientFactory(Func<string, HttpClient> createClient) : IHttpClientFactory
+    {
+        public string? RequestedName { get; private set; }
+
+        public HttpClient CreateClient(string name)
+        {
+            RequestedName = name;
+            return createClient(name);
+        }
+    }
+
+    private sealed class TrackingHandler : HttpMessageHandler
+    {
+        private int _disposeCount;
+
+        public bool WasDisposed => Volatile.Read(ref _disposeCount) > 0;
+        public int DisposeCount => Volatile.Read(ref _disposeCount);
+
+        protected override Task<HttpResponseMessage> SendAsync(
+            HttpRequestMessage request,
+            CancellationToken cancellationToken) =>
+            Task.FromResult(new HttpResponseMessage(HttpStatusCode.OK));
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+                Interlocked.Increment(ref _disposeCount);
+            base.Dispose(disposing);
+        }
+    }
+
+    private sealed class CancellationAwareContent : HttpContent
+    {
+        private readonly TaskCompletionSource _readStarted = new(TaskCreationOptions.RunContinuationsAsynchronously);
+
+        public Task ReadStarted => _readStarted.Task;
+
+        protected override async Task SerializeToStreamAsync(
+            Stream stream,
+            System.Net.TransportContext? context,
+            CancellationToken cancellationToken)
+        {
+            _readStarted.TrySetResult();
+            await Task.Delay(Timeout.InfiniteTimeSpan, cancellationToken);
+        }
+
+        protected override Task SerializeToStreamAsync(Stream stream, System.Net.TransportContext? context) =>
+            SerializeToStreamAsync(stream, context, CancellationToken.None);
+
+        protected override bool TryComputeLength(out long length)
+        {
+            length = 0;
+            return false;
+        }
     }
 
     private sealed class BlockingHandler : HttpMessageHandler
