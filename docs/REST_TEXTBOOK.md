@@ -14,6 +14,7 @@ This textbook teaches REST as an architectural boundary—not merely a collectio
 1. [Chapter 1 — From resources to representations](theory/Chapter-01-Resources-Representations.md): resource identity, representations, identifiers, and why REST is not simply “JSON over HTTP.”
 2. [Chapter 2 — The network is a boundary](theory/Chapter-02-The-Network-Boundary.md): latency, partial failure, timeouts, cancellation, retries, idempotency, and uncertainty.
 3. [Chapter 3 — Capability, recipe, execution, result](theory/Chapter-03-Capability-Recipe-Execution.md): how FSM_REST separates reusable capability description from per-call inputs, transport, and changing remote data.
+4. [Chapter 4 — Promises, observations, and evidence](theory/Chapter-04-Promises-Observations-Evidence.md): how to distinguish intended requests, observed outcomes, domain validation, and safe reconciliation.
 
 ## Instructor-friendly structure
 
@@ -23,13 +24,14 @@ This textbook teaches REST as an architectural boundary—not merely a collectio
 - **Lab:** include runnable sample, expected output, prerequisites, and a verification command.
 - **Visual:** label each SVG conceptual, source-derived, or captured from a running example.
 
-The chapters are conceptual teaching material unless code is explicitly marked verified. The illustrations are authored teaching models, not captures of a live server or proof of runtime behavior.
+The chapters are conceptual teaching material unless code is explicitly marked verified. The illustrations are authored teaching models, not captures of a live server or proof of runtime behavior. This follows the evidence discipline used in FSM_COS: conceptual animation, source-derived structure, and live runtime observations are distinct provenance levels.
 
 ## Living illustrations
 
 - [Resource, representation, and request flow](assets/rest-textbook-resource-flow.svg)
 - [Failure and uncertainty at the network boundary](assets/rest-textbook-network-boundary.svg)
 - [FSM_REST capability lifecycle](assets/rest-textbook-capability-lifecycle.svg)
+- [The REST evidence boundary](assets/rest-textbook-evidence-boundary.svg)
 
 These SVGs are editable, versionable, scalable assets that evolve with the lessons. Their animation explains a concept; it is not live runtime telemetry.
 
