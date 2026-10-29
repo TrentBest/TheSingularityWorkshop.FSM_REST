@@ -32,6 +32,7 @@ The chapters are conceptual teaching material unless code is explicitly marked v
 - [Failure and uncertainty at the network boundary](assets/rest-textbook-network-boundary.svg)
 - [FSM_REST capability lifecycle](assets/rest-textbook-capability-lifecycle.svg)
 - [The REST evidence boundary](assets/rest-textbook-evidence-boundary.svg)
+- [FSM_REST core contract surface (source-derived)](assets/rest-contract-surface.svg)
 
 These SVGs are editable, versionable, scalable assets that evolve with the lessons. Their animation explains a concept; it is not live runtime telemetry.
 
@@ -45,7 +46,7 @@ FSM_COS's living-SVG work makes an important distinction that this textbook adop
 | **Source-derived** | A repeatable generator builds the diagram from code, contracts, or tests | The generator, pinned inputs, and regeneration check are part of the repository workflow |
 | **Runtime-observed** | A visual presents a real execution or measurement | The displayed state comes from a defined, validated runtime observation channel |
 
-The four textbook SVGs are currently **conceptual**. Their animation is explanatory motion, not live telemetry. The next meaningful upgrade is not “more animation”; it is a reproducible GUI.SVG generation path tied to stable FSM_REST contracts and checked in CI. A future runtime-observed view would require a separate, validated observation source. Until those steps exist, the textbook will not claim that its pictures are generated from execution.
+The four animated textbook SVGs are **conceptual**. Their animation is explanatory motion, not live telemetry. The core contract surface diagram is a separate **source-derived** view: `scripts/generate_rest_contract_diagram.py` verifies named contract anchors in the current C# source and checks that the committed SVG matches its deterministic template. CI runs it in `--check` mode and fails on missing/changed anchors or diagram drift. This is a deliberately small source-contract inventory, not a general C# parser, reflection dump, or GUI.SVG output. A future runtime-observed view would require a separate, validated observation source.
 
 ## How this textbook relates to the package
 
