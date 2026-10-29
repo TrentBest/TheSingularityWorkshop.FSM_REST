@@ -71,6 +71,43 @@ public sealed class RestDescriptorImmutabilityTests
             ((IList<string>)response.MediaTypes).Clear());
     }
 
+
+    [Fact]
+    public void OperationAndBodyDescriptorWithExpressionsSnapshotReplacementCollections()
+    {
+        var operation = Operation("getItems");
+        var parameters = new List<RestParameterDescriptor>
+        {
+            new("id", "path", true, "string", null, null)
+        };
+        var responses = new List<RestResponseDescriptor>
+        {
+            new("200", "Success", Array.Empty<string>(), null, null)
+        };
+        var operationCopy = operation with { Parameters = parameters, Responses = responses };
+        parameters.Clear();
+        responses.Clear();
+
+        Assert.Single(operationCopy.Parameters);
+        Assert.Single(operationCopy.ResponseDescriptors);
+        Assert.Throws<NotSupportedException>(() =>
+            ((IList<RestParameterDescriptor>)operationCopy.Parameters).Clear());
+
+        var mediaTypes = new List<string> { "application/json" };
+        var requestBody = new RestRequestBodyDescriptor(true, Array.Empty<string>(), null, null)
+            with { MediaTypes = mediaTypes };
+        var response = new RestResponseDescriptor("200", null, Array.Empty<string>(), null, null)
+            with { MediaTypes = mediaTypes };
+        mediaTypes.Add("text/plain");
+
+        Assert.Equal(new[] { "application/json" }, requestBody.MediaTypes);
+        Assert.Equal(new[] { "application/json" }, response.MediaTypes);
+        Assert.Throws<NotSupportedException>(() =>
+            ((IList<string>)requestBody.MediaTypes).Clear());
+        Assert.Throws<NotSupportedException>(() =>
+            ((IList<string>)response.MediaTypes).Clear());
+    }
+
     [Fact]
     public void DescriptorCollectionsRejectNullAndNullEntries()
     {
