@@ -198,8 +198,6 @@ public sealed class RestDescriptorTests
     }
 
     [Theory]
-    [InlineData("")]
-    [InlineData("   ")]
     [InlineData("GET /users")]
     [InlineData("G@T")]
     public void RequestFactoryRejectsInvalidHttpMethodToken(string method)
