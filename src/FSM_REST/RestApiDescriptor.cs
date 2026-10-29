@@ -48,7 +48,8 @@ public sealed record RestApiDescriptor(
 
     private static string RequireText(string value, string paramName)
     {
-        if (string.IsNullOrWhiteSpace(value))\n            throw new ArgumentException("Value cannot be null or whitespace.", paramName);
+        if (string.IsNullOrWhiteSpace(value))
+            throw new ArgumentException("Value cannot be null or whitespace.", paramName);
         return value;
     }
 
