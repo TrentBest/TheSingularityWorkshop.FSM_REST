@@ -97,6 +97,34 @@ public sealed class RestDescriptorImmutabilityTests
             new RestResponseDescriptor("200", null, new[] { mediaType }, null, null));
     }
 
+
+    [Fact]
+    public void RequiredDescriptorTextRejectsNullOrWhitespace()
+    {
+        Assert.Throws<ArgumentException>(() => new RestApiDescriptor("", "1.0", Array.Empty<RestOperationDescriptor>()));
+        Assert.Throws<ArgumentException>(() => new RestApiDescriptor("API", " ", Array.Empty<RestOperationDescriptor>()));
+        Assert.Throws<ArgumentException>(() => new RestOperationDescriptor("", "/", "root", null, null, Array.Empty<RestParameterDescriptor>(), null));
+        Assert.Throws<ArgumentException>(() => new RestOperationDescriptor("GET", " ", "root", null, null, Array.Empty<RestParameterDescriptor>(), null));
+        Assert.Throws<ArgumentException>(() => new RestOperationDescriptor("GET", "/", " ", null, null, Array.Empty<RestParameterDescriptor>(), null));
+        Assert.Throws<ArgumentException>(() => new RestParameterDescriptor(" ", "query", false, null, null, null));
+        Assert.Throws<ArgumentException>(() => new RestParameterDescriptor("id", "", false, null, null, null));
+        Assert.Throws<ArgumentException>(() => new RestResponseDescriptor(" ", null, Array.Empty<string>(), null, null));
+    }
+
+    [Fact]
+    public void RecordWithExpressionsAlsoValidateRequiredText()
+    {
+        var api = new RestApiDescriptor("API", "1.0", Array.Empty<RestOperationDescriptor>());
+        var operation = Operation("getItems");
+        var parameter = new RestParameterDescriptor("id", "path", true, "string", null, null);
+        var response = new RestResponseDescriptor("200", null, Array.Empty<string>(), null, null);
+
+        Assert.Throws<ArgumentException>(() => api with { Title = " " });
+        Assert.Throws<ArgumentException>(() => operation with { Method = "" });
+        Assert.Throws<ArgumentException>(() => parameter with { Name = "" });
+        Assert.Throws<ArgumentException>(() => response with { StatusCode = " " });
+    }
+
     private static RestOperationDescriptor Operation(string id) =>
         new("GET", "/items", id, null, null, Array.Empty<RestParameterDescriptor>(), null);
 }
