@@ -45,4 +45,4 @@ A descriptor cannot prove a remote service exists, is reachable, is secure, retu
 
 ---
 
-<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/Avatar.jpg" alt="The Singularity Workshop avatar" width="96" /></p>
+<p align="center"><img src="https://avatars.githubusercontent.com/u/16405167?v=4" alt="The Singularity Workshop avatar" width="96" /></p>
