@@ -1,3 +1,6 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # RestOperationDescriptor — UML Class Card
 
 **Owner / author:** Trent Best  
@@ -101,3 +104,6 @@ This record does not parse external documents, bind runtime parameter values, co
 - [RestOperationDescriptor.cs](../../src/FSM_REST/RestOperationDescriptor.cs)
 - [FSM_REST Gallery](../../Gallery.md)
 - [Architecture contract](../ARCHITECTURE.md)
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

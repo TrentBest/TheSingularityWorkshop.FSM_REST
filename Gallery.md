@@ -1,5 +1,5 @@
 <!-- The Singularity Workshop moniker -->
-<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Renderer/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
 
 **Maintainer / Workshop moniker:** @TrentBest · [Shared documentation standard](https://github.com/TrentBest/TheSingularityWorkshop.FSM_COS/blob/development/DOCUMENTATION_STANDARD.md) · [Living UML and data-card visual standard](https://github.com/TrentBest/TheSingularityWorkshop.FSM_COS/blob/development/docs/UML_VISUAL_STYLE.md)
 
@@ -163,3 +163,6 @@ Before removing any surplus branch, use the [branch reconciliation ledger](docs/
 ## Integration handoff: The Architect
 
 The cross-repository integration brief for the LLM working in [The Architect](https://github.com/TrentBest/The) is maintained in [TheLLM.md](TheLLM.md). It defines the intended article-library and verified-statistics experience, the FSM_REST integration boundary, semantic focus/TerminalAi handoff, security requirements, and automated plus authorized live-service acceptance tests. Statistics endpoints and fields must be confirmed from the current CoderLegion API contract and actual responses before they are presented as facts.
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

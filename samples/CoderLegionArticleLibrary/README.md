@@ -1,3 +1,6 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # CoderLegion Article Library — FSM_REST in a real workflow
 
 This read-only console sample demonstrates FSM_REST against the CoderLegion API contract supplied in the project notes. It uses the real endpoint shapes `GET /posts?page=N` and `GET /posts/{id}`, builds each request from a `RestOperationDescriptor`, and sends it through `RestOperationExecutor` and `IRestTransport`.
@@ -56,3 +59,6 @@ This sample does **not** create or edit posts, upload images, or publish anythin
 ## Next increment
 
 After the read-only client works, extend it with a local draft file and a preview step. Then add `GET /posts/create-options` and an explicit user-confirmed `POST /posts` / `PUT /posts/{id}` workflow. Keep draft composition separate from the publish action, and never silently publish as a side effect of saving a local draft.
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

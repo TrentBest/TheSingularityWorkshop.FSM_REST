@@ -1,3 +1,6 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # RestGuiOperationExecutor
 
 **Workshop moniker:** @TrentBest  
@@ -19,3 +22,6 @@ This is an optional GUI adapter, not a core REST capability. It does not depend 
 - Tests: [RestGuiOperationExecutorTests](../../tests/FSM_REST.Tests/RestGuiOperationExecutorTests.cs)
 - UML: [RestGuiOperationExecutor](../../docs/UML/RestGuiOperationExecutor.UML.md)
 - Provenance: manually authored companion.
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

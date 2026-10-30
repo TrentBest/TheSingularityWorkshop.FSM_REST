@@ -1,3 +1,6 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # OpenApiJsonImporter — UML and Use Cases
 
 **Author / Workshop moniker:** @TrentBest  
@@ -42,3 +45,6 @@ The diagram is deliberately focused on the target and its direct architectural r
 - Related UML: [core architecture](Architecture/FSM_REST.Core.UML.md) and [UML index](README.md)
 - Tests: [FSM_REST tests](../../tests/FSM_REST.Tests/)
 - Re-check the diagram when public members, dependency relationships, or behavior change.
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

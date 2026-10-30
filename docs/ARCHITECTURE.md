@@ -1,3 +1,6 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # FSM_REST Architecture Contract
 
 **Owner / Workshop moniker:** @TrentBest  
@@ -80,3 +83,6 @@ The repository's `scripts/check_architecture.py` is the CI guard for these packa
 6. Update the domain gap assessment from observed evidence; defer nonessential protocol features until an actual consumer requires them.
 
 This document defines the intended architecture. Source, tests, and the exact CI run determine what is implemented.
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

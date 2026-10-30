@@ -1,3 +1,6 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # FSM_REST Release Notes
 
 **Owner / Workshop moniker:** @TrentBest  
@@ -53,3 +56,6 @@ This candidate is a REST capability and transport prototype, not a complete gene
 ## Release evidence and publication
 
 This note is descriptive, not release approval. See the [Release Verification Checklist](RELEASE_CHECKLIST.md) for exact-SHA CI and artifact evidence. Publishing to NuGet requires explicit release-owner approval and a separate authorized publish action.
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

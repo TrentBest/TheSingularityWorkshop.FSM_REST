@@ -1,3 +1,6 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # RestFsmExecutor
 
 **Owner:** @TrentBest  
@@ -25,3 +28,6 @@ This is an opt-in execution path. Existing direct `IRestTransport.SendAsync` use
 ## Verification note
 
 The exception-preservation paths are source-reviewed. The five focused executor tests are present in `tests/FSM_REST.Tests/RestFsmExecutorTests.cs`, but deterministic tests for lifecycle-recording and destruction failures, cleanup assertions, and a successful exact-SHA CI run are still outstanding. The current test suite should not be described as passing until the corresponding workflow result is verified.
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>
