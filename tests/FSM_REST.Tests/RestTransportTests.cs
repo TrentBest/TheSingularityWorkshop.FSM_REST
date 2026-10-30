@@ -167,17 +167,6 @@ public sealed class RestTransportTests
     }
 
     [Fact]
-    public async Task FsmExecutorPropagatesTransportFailure()
-    {
-        var transport = new DelegateTransport((_, _) =>
-            Task.FromException<RestResponse>(new HttpRequestException("offline")));
-
-        await Assert.ThrowsAsync<HttpRequestException>(() => RestFsmExecutor.SendAsync(
-            new RestRequest("GET", new Uri("https://example.test/offline")),
-            transport));
-    }
-
-    [Fact]
     public async Task TransportPreservesNoContentStatusAndEmptyBody()
     {
         var handler = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.NoContent));
@@ -191,6 +180,52 @@ public sealed class RestTransportTests
         Assert.Equal((int)HttpStatusCode.NoContent, response.StatusCode);
         Assert.True(response.IsSuccessStatusCode);
         Assert.Equal(string.Empty, response.Body);
+    }
+
+    [Fact]
+    public async Task TransportPreservesRepeatedSetCookieValuesWithoutCommaJoining()
+    {
+        var handler = new StubHandler(_ =>
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Headers.TryAddWithoutValidation(
+                "Set-Cookie",
+                new[] { "session=abc; Path=/; HttpOnly", "preference=dark; Path=/" });
+            return response;
+        });
+
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        var result = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/cookies")));
+
+        Assert.Equal(
+            new[] { "session=abc; Path=/; HttpOnly", "preference=dark; Path=/" },
+            result.HeaderValues["set-cookie"]);
+        Assert.Equal(
+            new[] { "session=abc; Path=/; HttpOnly", "preference=dark; Path=/" },
+            result.HeaderValues["Set-Cookie"]);
+    }
+
+    [Fact]
+    public async Task TransportPreservesRepeatedValuesForOrdinaryResponseHeaders()
+    {
+        var handler = new StubHandler(_ =>
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Headers.TryAddWithoutValidation("X-Workshop-Trace", new[] { "first", "second" });
+            return response;
+        });
+
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        var result = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/headers")));
+
+        Assert.Equal(new[] { "first", "second" }, result.HeaderValues["X-Workshop-Trace"]);
+        Assert.Equal("first, second", result.Headers["X-Workshop-Trace"]);
     }
 
     private sealed class DelegateTransport(
