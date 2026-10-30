@@ -30,7 +30,7 @@ jobs:
       - name: Verify Workshop Markdown branding
         run: python3 scripts/verify_markdown_branding.py
 
-      - name: Verify source-derived REST contract diagram
+      - name: Verify source-anchor-checked REST contract diagram
         run: python3 scripts/generate_rest_contract_diagram.py --check
 
       - name: Check architecture boundaries
