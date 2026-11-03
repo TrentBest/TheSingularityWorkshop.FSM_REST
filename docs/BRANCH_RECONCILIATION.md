@@ -3,71 +3,89 @@
 
 # FSM_REST Branch Reconciliation Ledger
 
-**Snapshot date:** 2026-10-24  
-**Comparison base:** `development` at `0c2f78209f0e61152951ce46eb2d42dc0785f2dc`  
-**CI evidence:** [Package FSM REST run 40060933128](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40060933128) passed on that exact SHA; NuGet publication was not performed.  
+**Snapshot date:** 2026-11-03  
+**Comparison base:** `development` at `83cb875df5d60c956b39e5e1d03613f628f190c6`  
 **Purpose:** Preserve unique work before any surplus branch is manually removed. This ledger is a review aid, not authorization to delete branches.
 
-> **Sith policy:** keep `master` stable and `development` as the active work branch. The repository owner performs branch deletion manually only after reconciliation. No branch has been deleted as part of this audit.
+> **Sith policy:** keep only `master` and `development` when reconciliation is complete. `development` is the active work branch. The repository owner performs branch deletion manually only after reconciliation. No branch is deleted by this ledger or audit.
 
-## Current branch inventory
+## Live branch inventory
 
-The GitHub branch endpoint currently reports six branches: `master`, `development`, and the four review branches below. The prior snapshot is stale; use these fresh comparisons for the next manual review.
+GitHub reports **seven live branches** at this snapshot: `master`, `development`, and five review/work branches. Counts below use GitHub compare with `development` as the base at the SHA above.
 
-| Branch | Ahead of development | Behind development | Status | Required disposition |
+| Branch | Ahead | Behind | Status | Reconciliation note |
 |---|---:|---:|---|---|
-| `architecture/decouple-rest-microbundle-from-core` | 0 | 277 | Behind | No branch-only commits at this comparison. Owner may consider deletion after final history check. |
-| `forge/fsm-rest-documentation-and-capability-flow` | 16 | 308 | Diverged | Inspect branch-only commits and preserve any genuinely unique material before deletion. |
-| `forge/fsm-rest-functional-standard` | 14 | 309 | Diverged | Compare behavior/tests against current development; do not overwrite active source with historical snapshots. |
-| `release-prep/fsm-rest-1.0.0` | 13 | 293 | Diverged | Review unique release documentation and SVG; do not adopt stale 1.0.0 or stable-prerequisite claims. |
+| `master` | — | — | Stable | Preserve as stable branch. |
+| `development` | 0 | 0 | Active | Current comparison base. |
+| `docs/rest-textbook-theory` | 38 | 1 | Diverged | Open draft PR #17; latest reviewed head `5b022c58333404e52fe99e5e1d03613f628f190c6` (see PR for exact current head and CI). |
+| `work/httpclient-builder` | 59 | 1 | Diverged | Open draft PR #14; latest reviewed head `cf80fa1ca2d1b0223260f14d55f6cbd517e1670c` (see PR for exact current head and CI). |
+| `forge/fsm-rest-documentation-and-capability-flow` | 16 | 468 | Diverged | Inspect branch-only commits; current paths overlap newer development work. |
+| `forge/fsm-rest-functional-standard` | 14 | 469 | Diverged | Inspect branch-only commits and compare behavior/tests; do not restore historical snapshots wholesale. |
+| `release-prep/fsm-rest-1.0.0` | 13 | 453 | Diverged | Preserve only accurate unique release criteria/assets; reject stale version/prerequisite claims. |
 
-Counts come from GitHub's compare endpoint with `development` as the base. A changed-file list does not prove that a branch's version is missing from development. These are history comparisons, not merge recommendations.
+The previously listed `architecture/decouple-rest-microbundle-from-core` branch is **not present** in the live branch inventory. Do not treat it as a current branch or count it among the seven.
 
-## Candidate work to inspect and preserve
+Counts are commit-history comparisons, not merge recommendations. A changed-file list does not prove that a branch's version is missing from development. Large behind counts indicate substantial divergence and make branch-only commit inspection essential.
+
+## Open pull-request status
+
+### PR #17 — REST textbook and documentation
+
+- Branch: `docs/rest-textbook-theory`
+- Reviewed head: `5b022c58333404e52fe99e750dcb39b4ecf7b642`
+- Compare: 38 ahead / 1 behind.
+- Exact-head CI run: [40980025868](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40980025868) — build/test and source integration passed; `publish_nuget` skipped.
+- Draft and unmerged. No merge or publication is authorized.
+
+The animated moniker URL was verified against the shared documentation standard:
+`https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg`
+
+The canonical footer PNG URL was also verified:
+`https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png`
+
+The previous version of this ledger incorrectly said six branches, included the absent architecture branch, and used an obsolete comparison base. This snapshot corrects those facts. Do not change the two verified branding URLs.
+
+### PR #14 — HTTP client transport builder
+
+- Branch: `work/httpclient-builder`
+- Reviewed head: `cf80fa1ca2d1b0223260f14d55f6cbd517e1670c`
+- Compare: 59 ahead / 1 behind.
+- Exact-head CI run: [40798363845](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40798363845) — build/test and source integration passed; `publish_nuget` skipped.
+- Draft and unmerged. No merge or publication is authorized.
+
+**Architecture review required:** the PR adds `Microsoft.Extensions.Http` to the core project and places `IHttpClientFactory`, `HttpClientRestTransportFactory`, and `IServiceCollection` registration in the core assembly. This couples the framework-neutral core to host DI/factory integration. Keep direct `HttpClient` and `HttpMessageHandler` construction paths in core; move factory and DI integration into a concrete optional adapter project/package (for example, `FSM_REST.HttpClientFactory`) that depends on core. Do not create an empty generic extensions package solely to house this one integration.
+
+## Historical branch work to reconcile
 
 ### `forge/fsm-rest-documentation-and-capability-flow`
 
-Reported changed paths include `README.md`, `docs/MICROBUNDLE.md`, `docs/REFLECTION.md`, `docs/THEORY.md`, three capability/composition/execution SVGs, `src/FSM_REST/RestRequestFactory.cs`, `Program.cs`, and `tests/FSM_REST.Tests/RestDescriptorTests.cs`.
-
-The current development tree already contains the named documentation, SVG assets, and request-factory path. The active request factory and tests include path/query/header/cookie binding and rejection cases, including rejection of base URIs containing query or fragment components. Do not replace current richer documentation or implementation with an older branch snapshot. Review branch-only commits for precise explanations or tests still absent from development.
+The current comparison reports 16 commits ahead and 468 behind. Changed paths include README/theory/MicroBundle documentation, three capability/composition/execution SVGs, `RestRequestFactory.cs`, `Program.cs`, and descriptor tests. These paths substantially overlap current development. Inspect the 16 branch-only commits for precise explanations or tests not yet represented; do not replace current richer implementation/docs with older branch snapshots.
 
 ### `forge/fsm-rest-functional-standard`
 
-Reported changed paths include the build workflow, README, core project metadata, core descriptor/transport files, and descriptor/transport tests. These paths overlap the current implementation. The previous direct file comparison found `tests/FSM_REST.Tests/RestTransportTests.cs` identical to development at that time, including request/response capture, non-success status preservation, cancellation, and null-client/request cases. Recheck any claimed unique behavior against the current head before porting; do not overwrite active files wholesale.
+The current comparison reports 14 commits ahead and 469 behind. Changed paths include the build workflow, README, core project metadata, descriptor/transport files, and tests. Earlier inspection found transport tests matching development at that time, including request/response capture, non-success status preservation, cancellation, and null-client/request cases. Recheck branch-only commits against the current tree before porting anything.
 
 ### `release-prep/fsm-rest-1.0.0`
 
-Unique candidates reported by the previous review:
-- `docs/RELEASE_1_0.md` — release checklist skeleton.
-- `docs/assets/release-frontier.svg` — capability recipe → operation descriptor → runtime binding → request/transport → changing remote data.
+The current comparison reports 13 commits ahead and 453 behind. Historical candidates include `docs/RELEASE_1_0.md` and `docs/assets/release-frontier.svg`. Durable release criteria have been harvested into `docs/RELEASE_CHECKLIST.md`: restore/build/test/coverage, XML docs, package dependencies and contents, practical README examples, architecture boundaries, exact-SHA CI, and explicit owner approval before publication.
 
-The durable checklist criteria have already been harvested into `docs/RELEASE_CHECKLIST.md`: restore/build/test/coverage, XML docs, package dependencies and contents, practical README examples, architecture boundaries, exact-SHA CI, and explicit owner approval before publication. The old SVG asserts `FSM_REST 1.0.0` and a stable `FSM_COS 1.0.0` prerequisite; those are not verified current facts. If its visual is reused, revise those labels and identify whether it is conceptual or source-checked.
+The historical SVG asserts FSM_REST 1.0.0 and a stable FSM_COS 1.0.0 prerequisite; those are not verified current facts. If its visual is reused, revise those labels and identify whether it is conceptual or source-checked. Historical placement of `RestApiDescriptorExtensions.cs` and `RestMicroBundle.cs` under core is also obsolete; current architecture keeps these adapters in `src/FSM_REST.COS/`.
 
-The historical branch also places `RestApiDescriptorExtensions.cs` and `RestMicroBundle.cs` under the core-project path. Current architecture keeps these adapters in `src/FSM_REST.COS/`; do not restore them to core based on the historical branch.
+## Package and release boundary
 
-### `architecture/decouple-rest-microbundle-from-core`
+Current source projects and candidate versions must be verified from their project files before release. Source-configured versions are not proof of current NuGet.org publication status. Successful CI/package-artifact generation is not publication evidence. Verify NuGet version availability and inspect exact release artifacts before proposing a publication run.
 
-GitHub reports zero commits ahead of development and 277 behind. There are no branch-only commits according to the current compare endpoint, so this branch has no identified unique commit work to harvest. Owner should perform a final history check before manually deleting it.
-
-## Release boundary reminder
-
-The current development projects configure:
-- Core `TheSingularityWorkshop.FSM_Rest`: `0.1.0-alpha.5`
-- Optional `TheSingularityWorkshop.FSM_Rest.OpenApi`: `0.1.0-alpha.1`
-- Optional `TheSingularityWorkshop.FSM_Rest.COS`: `0.1.0-alpha.1`
-
-These are source-configured candidate versions, not proof of their current NuGet.org publication status. The latest successful workflow is build/test/package-artifact evidence only; its publish job was skipped. Verify NuGet version availability and inspect the exact release artifacts before proposing a publication run. No publication, tag, merge, force-push, or branch deletion is authorized by this ledger.
+**No publication, tag, merge, force-push, or branch deletion is authorized by this ledger.**
 
 ## Manual completion checklist
 
-- [ ] Inspect branch-only commits, not only changed-file summaries, for the three diverged branches.
-- [ ] Confirm the request-factory behavior and test coverage against current development before deciding whether any test intent is missing.
+- [ ] Inspect branch-only commits—not only changed-file summaries—for all three historical forge/release branches.
+- [ ] Confirm request-factory behavior and test coverage against current development before deciding whether any historical test intent is missing.
 - [ ] Confirm no useful release criteria or accurate visual explanation remain only in the historical release branch.
+- [ ] Resolve PR #14's core-versus-optional HTTP client factory boundary.
 - [ ] Re-run the full workflow after any source or documentation change and record exact-SHA evidence.
 - [ ] Verify candidate versions on NuGet.org and inspect packed artifacts before release approval.
 - [ ] Owner manually deletes only branches whose unique work has been reconciled.
 
-**No publication or release action is authorized by this ledger.**
-
 <!-- THE SINGULARITY WORKSHOP FOOTER -->
-<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop" width="200" /></p>
