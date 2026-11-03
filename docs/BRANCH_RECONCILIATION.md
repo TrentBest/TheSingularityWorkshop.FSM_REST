@@ -17,7 +17,7 @@ GitHub reports **seven live branches** at this snapshot: `master`, `development`
 |---|---:|---:|---|---|
 | `master` | — | — | Stable | Preserve as stable branch. |
 | `development` | 0 | 0 | Active | Current comparison base. |
-| `docs/rest-textbook-theory` | 38 | 1 | Diverged | Open draft PR #17; latest reviewed head `5b022c58333404e52fe99e750dcb39b4ecf7b642` (see PR for exact current head and CI). |
+| `docs/rest-textbook-theory` | 41 | 1 | Diverged | Open draft PR #17; current head before this ledger refresh `ac55beb6e4d93efe3ecbe1b3f9e37d0cd9304a9e`; this ledger update adds one subsequent commit. |
 | `work/httpclient-builder` | 59 | 1 | Diverged | Open draft PR #14; latest reviewed head `cf80fa1ca2d1b0223260f14d55f6cbd517e1670c` (see PR for exact current head and CI). |
 | `forge/fsm-rest-documentation-and-capability-flow` | 16 | 468 | Diverged | Inspect branch-only commits; current paths overlap newer development work. |
 | `forge/fsm-rest-functional-standard` | 14 | 469 | Diverged | Inspect branch-only commits and compare behavior/tests; do not restore historical snapshots wholesale. |
@@ -32,9 +32,10 @@ Counts are commit-history comparisons, not merge recommendations. A changed-file
 ### PR #17 — REST textbook and documentation
 
 - Branch: `docs/rest-textbook-theory`
-- Reviewed head: `5b022c58333404e52fe99e750dcb39b4ecf7b642`
-- Compare: 38 ahead / 1 behind.
-- Exact-head CI run: [40980025868](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40980025868) — build/test and source integration passed; `publish_nuget` skipped.
+- Validated head: `ac55beb6e4d93efe3ecbe1b3f9e37d0cd9304a9e`
+- Compare at pre-ledger-refresh head: 41 ahead / 1 behind.
+- Exact-head CI run: [41721559879](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/41721559879) — `build-and-test` passed, `source-integration` passed, and `publish_nuget` was skipped.
+- This ledger refresh is documentation-only and follows the validated head; the new ledger commit will be revalidated by its own PR-triggered workflow.
 - Draft and unmerged. No merge or publication is authorized.
 
 The animated moniker URL was verified against the shared documentation standard:
