@@ -17,7 +17,7 @@ GitHub reports **seven live branches** at this snapshot: `master`, `development`
 |---|---:|---:|---|---|
 | `master` | — | — | Stable | Preserve as stable branch. |
 | `development` | 0 | 0 | Active | Current comparison base. |
-| `docs/rest-textbook-theory` | 38 | 1 | Diverged | Open draft PR #17; latest reviewed head `5b022c58333404e52fe99e5e1d03613f628f190c6` (see PR for exact current head and CI). |
+| `docs/rest-textbook-theory` | 38 | 1 | Diverged | Open draft PR #17; latest reviewed head `5b022c58333404e52fe99e750dcb39b4ecf7b642` (see PR for exact current head and CI). |
 | `work/httpclient-builder` | 59 | 1 | Diverged | Open draft PR #14; latest reviewed head `cf80fa1ca2d1b0223260f14d55f6cbd517e1670c` (see PR for exact current head and CI). |
 | `forge/fsm-rest-documentation-and-capability-flow` | 16 | 468 | Diverged | Inspect branch-only commits; current paths overlap newer development work. |
 | `forge/fsm-rest-functional-standard` | 14 | 469 | Diverged | Inspect branch-only commits and compare behavior/tests; do not restore historical snapshots wholesale. |
