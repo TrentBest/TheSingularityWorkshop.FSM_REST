@@ -600,6 +600,17 @@ public sealed class RestTransportTests
 
 
     [Fact]
+    public void BuilderRejectsReplacingAnAlreadySelectedClientSource()
+    {
+        var firstHandler = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK));
+        var secondHandler = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK));
+        var builder = HttpClientRestTransportBuilder.Create().UseHandler(firstHandler);
+
+        Assert.Throws<InvalidOperationException>(() => builder.UseHandler(secondHandler));
+        Assert.Throws<InvalidOperationException>(() => builder.UseClient(new HttpClient()));
+    }
+
+    [Fact]
     public void BuilderRejectsNullCallerOwnedClient()
     {
         Assert.Throws<ArgumentNullException>(() =>
