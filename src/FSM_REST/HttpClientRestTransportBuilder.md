@@ -39,7 +39,7 @@ For named IHttpClientFactory clients, install the separate TheSingularityWorksho
 - Dispose each built transport when its lifetime ends.
 - A client supplied with `UseClient` remains caller-owned and is not disposed by the transport.
 - `ConfigureClient` is only valid for a client created by the builder; combining it with `UseClient` or `UseFactory` throws rather than silently mutating shared configuration.
-- Each builder is single-use. Create a new builder for each transport; this prevents accidental reuse of a supplied handler.
+- Each builder is single-use and accepts only one client source. Create a new builder for each transport or to change between a caller-owned client and a supplied handler; this prevents silently abandoning a previously selected source.
 - This is construction convenience, not a second transport abstraction. Authentication, retries, endpoint policy, and domain-specific behavior remain the host's responsibility.
 - The current `RestRequest` / `RestResponse` contract materializes bodies as strings. This builder does not provide binary or streaming support.
 
