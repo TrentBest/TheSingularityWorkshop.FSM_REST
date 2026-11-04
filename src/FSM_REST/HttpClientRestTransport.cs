@@ -13,7 +13,11 @@ public sealed class HttpClientRestTransport : IRestTransport, IDisposable
     /// <exception cref="ArgumentNullException">Thrown when <paramref name="client"/> is null.</exception>
     public HttpClientRestTransport(HttpClient client) : this(client, ownsClient: false) { }
 
-    internal HttpClientRestTransport(HttpClient client, bool ownsClient)
+    /// <summary>Creates a transport with an explicit client ownership policy.</summary>
+    /// <param name="client">The configured HTTP client.</param>
+    /// <param name="ownsClient">True when disposing this transport should dispose the client; otherwise false.</param>
+    /// <exception cref="ArgumentNullException">Thrown when <paramref name="client"/> is null.</exception>
+    public HttpClientRestTransport(HttpClient client, bool ownsClient)
     {
         _client = client ?? throw new ArgumentNullException(nameof(client));
         _ownsClient = ownsClient;
