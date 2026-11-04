@@ -1,5 +1,6 @@
 using System.Net;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Http;
 using TheSingularityWorkshop.FSM_REST;
 using TheSingularityWorkshop.FSM_REST.HttpClientFactory;
 using Xunit;
