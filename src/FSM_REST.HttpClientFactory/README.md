@@ -41,12 +41,9 @@ If the application does not use IHttpClientFactory, reference only TheSingularit
 
 The package does not change the IRestTransport contract and does not add streaming or binary body support.
 
-## Source and verification
+## Source
 
-- [Factory source](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/work/httpclient-builder/src/FSM_REST.HttpClientFactory/HttpClientRestTransportFactory.cs)
-- [DI registration source](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/work/httpclient-builder/src/FSM_REST.HttpClientFactory/HttpClientRestTransportServiceCollectionExtensions.cs)
-- [Consumer guide](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/work/httpclient-builder/docs/CONSUMING.md)
-- [Integration tests](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/work/httpclient-builder/tests/FSM_REST.Tests/HttpClientFactoryIntegrationTests.cs)
+Source code: https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST
 
 ---
 
