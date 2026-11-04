@@ -8,7 +8,6 @@
 - `Create().Build()` creates a new `HttpClient` owned by the resulting transport.
 - `UseClient(client)` wraps a host-owned client without changing its configuration or disposing it.
 - `UseHandler(handler, disposeHandler: true)` creates a client around a supplied handler. The handler is disposed with the transport by default; pass `false` when the handler is managed elsewhere.
-- `UseFactory(factory, name)` obtains a configured client from `IHttpClientFactory`. The transport disposes the returned client; the factory continues to manage its handler lifetime.
 
 ## Configure a builder-owned client
 
@@ -33,7 +32,7 @@ var transport = HttpClientRestTransportBuilder.Create()
 // Dispose the transport when its scope ends. The caller remains responsible for client lifetime.
 ```
 
-Prefer `UseFactory(factory, "CatalogApi")` when the transport should obtain its own configured factory client. Configure factory-managed defaults through dependency injection, not `ConfigureClient`.
+For named IHttpClientFactory clients, install the separate TheSingularityWorkshop.FSM_Rest.HttpClientFactory package. The core builder intentionally has no factory-specific overload or dependency.
 
 ## Lifetime and boundaries
 
