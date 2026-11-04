@@ -21,9 +21,10 @@ public sealed class HttpClientRestTransportBuilder
     public HttpClientRestTransportBuilder UseClient(HttpClient client)
     {
         EnsureNotBuilt();
+        ArgumentNullException.ThrowIfNull(client);
         EnsureClientSourceNotSelected();
         _clientSourceSelected = true;
-        _providedClient = client ?? throw new ArgumentNullException(nameof(client));
+        _providedClient = client;
         _handler = null;
         return this;
     }
@@ -34,9 +35,10 @@ public sealed class HttpClientRestTransportBuilder
     public HttpClientRestTransportBuilder UseHandler(HttpMessageHandler handler, bool disposeHandler = true)
     {
         EnsureNotBuilt();
+        ArgumentNullException.ThrowIfNull(handler);
         EnsureClientSourceNotSelected();
         _clientSourceSelected = true;
-        _handler = handler ?? throw new ArgumentNullException(nameof(handler));
+        _handler = handler;
         _disposeHandler = disposeHandler;
         _providedClient = null;
         return this;
