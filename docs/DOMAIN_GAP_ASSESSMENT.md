@@ -6,7 +6,7 @@
 
 ## Executive finding
 
-FSM_REST has a useful protocol-neutral REST capability foundation: descriptors, scalar string binding, request construction, a replaceable transport seam, an HttpClient adapter, response capture, and optional FSM_COS, GUI, and OpenAPI projects. PR #14 adds fluent HTTP transport construction, explicit ownership/disposal, named `IHttpClientFactory` integration, a reusable factory, and optional DI registration. The PR's full CI run passed on head commit `2dcec9ad3d0872a1e9f81a27b44107d163c2c407` ([run 40576237860](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40576237860)); the PR remains unmerged.
+FSM_REST has a useful protocol-neutral REST capability foundation: descriptors, scalar string binding, request construction, a replaceable transport seam, an HttpClient adapter, response capture, and optional FSM_COS, GUI, and OpenAPI projects. PR #14 adds fluent direct-client/handler construction and explicit ownership/disposal. The named `IHttpClientFactory` adapter and DI registration are being isolated into the optional `TheSingularityWorkshop.FSM_Rest.HttpClientFactory` integration package. The PR's full CI run passed on head commit `2dcec9ad3d0872a1e9f81a27b44107d163c2c407` ([run 40576237860](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40576237860)); the PR remains unmerged.
 
 Passing CI proves the current tested behavior, not comprehensive protocol support. The previous **20/20** figure referred to production C# files with companion Markdown pages, not a unit-test count. Documentation coverage and test count are not proxies for domain completeness.
 
@@ -22,7 +22,7 @@ Track implementation work in [issue #15 — Domain completeness backlog](https:/
 | Request body | Optional text body and content type | No streaming/binary request body, multipart contract, or core typed-body serialization/schema validation. Decide whether reusable extensions belong in optional providers. |
 | Transport contract | `IRestTransport.SendAsync` with cancellation | No stream-oriented request/response contract or explicit middleware/interceptor seam. Add only where justified by concrete consumer needs. |
 | HttpClient adapter | Sends request and captures status, headers, and body text; caller-owned clients are not disposed by direct construction | PR #14 adds explicit ownership for builder/factory-created clients, injected-handler lifetime behavior, and disposal tests. Remaining edge coverage includes repeated response headers, unusual valid methods, redirects/URI behavior, cancellation timing, and concurrent disposal/send semantics. |
-| Builder/factory/DI | Implemented in PR #14; CI passed | PR remains unmerged. Builder is single-use; `ConfigureClient` is restricted to builder-created clients; caller-supplied clients remain caller-owned; named factory clients are supported. Consider further APIs only if a real use case is demonstrated. |
+| Core HTTP builder | Implemented in PR #14; validation pending after package split | Builder is single-use and supports builder-owned clients, caller-owned clients, and caller-supplied handlers. It has no Microsoft.Extensions dependency. |\n| Optional HTTP factory integration | Isolated package under PR #14 | `TheSingularityWorkshop.FSM_Rest.HttpClientFactory` owns named IHttpClientFactory and DI registration, depends on core plus Microsoft.Extensions.Http, and keeps pooled handler ownership with the framework factory. |
 | Response | Status, reason phrase, headers, text body, and JSON deserialization helper | No streaming, schema validation, media-type-aware typed results, standardized problem-details interpretation, or reusable typed transport-error model. Decide which belong in core versus adapters. |
 | OpenAPI JSON import | Supported subset in optional `TheSingularityWorkshop.FSM_Rest.OpenApi` package | Not full OpenAPI conformance. Need fixture-driven fidelity tests and actionable diagnostics for unsupported constructs. |
 | FSM_COS MicroBundle | Optional adapter exposes REST capability | Expand contract tests for identity, operation/provider mapping, metadata preservation, invalid descriptors, and MicroBundle compatibility. |
@@ -33,7 +33,7 @@ Track implementation work in [issue #15 — Domain completeness backlog](https:/
 ## Domain boundaries to preserve
 
 - Core remains framework-neutral: no FSM_COS, GUI, Unity, or concrete business-service dependency.
-- `IRestTransport` remains the one shared runtime transport boundary. Builder and factory are construction helpers, not competing transport abstractions.
+- `IRestTransport` remains the one shared runtime transport boundary. The core builder and optional factory are construction helpers, not competing transport abstractions. Microsoft.Extensions.Http remains an optional integration dependency, never a core dependency.
 - A descriptor is reusable capability metadata; a binding is one invocation; request construction does not send network traffic.
 - A transport reports an observed response. An HTTP non-2xx status is still a response, not automatically a transport exception or workflow failure.
 - Authentication, credentials, retries, caching, rate limits, telemetry, service discovery, and server hosting are host/policy or optional-adapter concerns unless a concrete shared contract is justified.
