@@ -1,20 +1,15 @@
-using Microsoft.Extensions.Http;
-
 namespace TheSingularityWorkshop.FSM_REST;
 
 /// <summary>Builds an <see cref="HttpClientRestTransport"/> with explicit client ownership.</summary>
 /// <remarks>
-/// This builder configures a client it creates, accepts a caller-owned client without mutating it,
-/// or obtains a named client from <see cref="IHttpClientFactory"/>. A built transport should be disposed
-/// when its lifetime ends; caller-owned clients are never disposed by the transport. Each builder is single-use.
+/// This builder configures a client it creates or accepts a caller-owned client without mutating it.
+/// A built transport should be disposed when its lifetime ends; caller-owned clients are never disposed by the transport. Each builder is single-use.
 /// </remarks>
 public sealed class HttpClientRestTransportBuilder
 {
     private HttpClient? _providedClient;
     private HttpMessageHandler? _handler;
     private bool _disposeHandler = true;
-    private IHttpClientFactory? _clientFactory;
-    private string? _clientName;
     private Action<HttpClient>? _configureClient;
     private bool _built;
 
@@ -27,8 +22,6 @@ public sealed class HttpClientRestTransportBuilder
         EnsureNotBuilt();
         _providedClient = client ?? throw new ArgumentNullException(nameof(client));
         _handler = null;
-        _clientFactory = null;
-        _clientName = null;
         return this;
     }
 
@@ -41,26 +34,11 @@ public sealed class HttpClientRestTransportBuilder
         _handler = handler ?? throw new ArgumentNullException(nameof(handler));
         _disposeHandler = disposeHandler;
         _providedClient = null;
-        _clientFactory = null;
-        _clientName = null;
-        return this;
-    }
-
-    /// <summary>Uses a client created by <see cref="IHttpClientFactory"/>.</summary>
-    /// <param name="factory">The host's configured client factory.</param>
-    /// <param name="name">Optional named-client configuration.</param>
-    public HttpClientRestTransportBuilder UseFactory(IHttpClientFactory factory, string? name = null)
-    {
-        EnsureNotBuilt();
-        _clientFactory = factory ?? throw new ArgumentNullException(nameof(factory));
-        _clientName = name;
-        _providedClient = null;
-        _handler = null;
         return this;
     }
 
     /// <summary>Configures a client created by this builder, before it is wrapped by the transport.</summary>
-    /// <remarks>This callback is not applied to a caller-supplied or factory-created client.</remarks>
+    /// <remarks>This callback is not applied to a caller-supplied client.</remarks>
     public HttpClientRestTransportBuilder ConfigureClient(Action<HttpClient> configure)
     {
         EnsureNotBuilt();
@@ -76,17 +54,11 @@ public sealed class HttpClientRestTransportBuilder
         if (_providedClient is not null && _configureClient is not null)
             throw new InvalidOperationException("ConfigureClient cannot be combined with UseClient; configure the caller-owned client before supplying it.");
 
-        if (_clientFactory is not null && _configureClient is not null)
-            throw new InvalidOperationException("ConfigureClient cannot be combined with UseFactory; configure factory clients through host dependency injection.");
-
         // A handler can only be attached to one HttpClient. Mark the builder consumed before creating resources.
         _built = true;
 
         if (_providedClient is not null)
             return new HttpClientRestTransport(_providedClient);
-
-        if (_clientFactory is not null)
-            return new HttpClientRestTransportFactory(_clientFactory).Create(_clientName);
 
         var client = _handler is null
             ? new HttpClient()
