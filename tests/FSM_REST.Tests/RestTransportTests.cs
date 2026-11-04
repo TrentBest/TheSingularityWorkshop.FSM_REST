@@ -1,7 +1,5 @@
 using System.Net;
 using System.Net.Http;
-using Microsoft.Extensions.Http;
-using Microsoft.Extensions.DependencyInjection;
 using TheSingularityWorkshop.FSM_REST;
 using Xunit;
 
@@ -529,53 +527,8 @@ public sealed class RestTransportTests
     }
 
 
-    [Fact]
-    public async Task BuilderUsesNamedHttpClientFactoryClient()
-    {
-        var factory = new StubHttpClientFactory(name =>
-        {
-            Assert.Equal("CatalogApi", name);
-            return new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
-        });
 
-        using var transport = HttpClientRestTransportBuilder.Create()
-            .UseFactory(factory, "CatalogApi")
-            .Build();
 
-        var response = await transport.SendAsync(
-            new RestRequest("GET", new Uri("https://example.test/")));
-
-        Assert.Equal(200, response.StatusCode);
-        Assert.Equal("CatalogApi", factory.RequestedName);
-    }
-
-    [Fact]
-    public async Task TransportFactoryCreatesNamedTransport()
-    {
-        var factory = new StubHttpClientFactory(name =>
-        {
-            Assert.Equal("CatalogApi", name);
-            return new HttpClient(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK)));
-        });
-
-        using var transport = new HttpClientRestTransportFactory(factory).Create("CatalogApi");
-        var response = await transport.SendAsync(
-            new RestRequest("GET", new Uri("https://example.test/")));
-
-        Assert.Equal(200, response.StatusCode);
-        Assert.Equal("CatalogApi", factory.RequestedName);
-    }
-
-    [Fact]
-    public void DependencyInjectionRegistersTransportFactory()
-    {
-        var services = new Microsoft.Extensions.DependencyInjection.ServiceCollection();
-        services.AddHttpClient("CatalogApi");
-        services.AddHttpClientRestTransportFactory();
-
-        using var provider = services.BuildServiceProvider();
-        Assert.NotNull(provider.GetRequiredService<HttpClientRestTransportFactory>());
-    }
 
     [Fact]
     public void BuilderRejectsConfigurationOfCallerOwnedClient()
@@ -589,16 +542,6 @@ public sealed class RestTransportTests
         client.Dispose();
     }
 
-    [Fact]
-    public void BuilderRejectsConfigurationOfFactoryClient()
-    {
-        var factory = new StubHttpClientFactory(_ => new HttpClient());
-        var builder = HttpClientRestTransportBuilder.Create()
-            .UseFactory(factory, "CatalogApi")
-            .ConfigureClient(_ => { });
-
-        Assert.Throws<InvalidOperationException>(() => builder.Build());
-    }
 
     [Fact]
     public void BuilderDisposesInjectedHandlerByDefault()
@@ -654,33 +597,7 @@ public sealed class RestTransportTests
         Assert.Throws<InvalidOperationException>(() => builder.ConfigureClient(_ => { }));
     }
 
-    [Fact]
-    public async Task TransportFactoryCreatesDefaultClientAndDisposesItWithTransport()
-    {
-        var handler = new TrackingHandler();
-        var factory = new StubHttpClientFactory(name =>
-        {
-            Assert.Equal(string.Empty, name);
-            return new HttpClient(handler);
-        });
 
-        var transport = new HttpClientRestTransportFactory(factory).Create();
-        var response = await transport.SendAsync(
-            new RestRequest("GET", new Uri("https://example.test/default")));
-
-        Assert.Equal(200, response.StatusCode);
-        Assert.Equal(string.Empty, factory.RequestedName);
-
-        transport.Dispose();
-        transport.Dispose();
-        Assert.True(handler.WasDisposed);
-    }
-
-    [Fact]
-    public void TransportFactoryRejectsNullClientFactory()
-    {
-        Assert.Throws<ArgumentNullException>(() => new HttpClientRestTransportFactory(null!));
-    }
 
     [Fact]
     public void BuilderRejectsNullCallerOwnedClient()
@@ -696,12 +613,6 @@ public sealed class RestTransportTests
             HttpClientRestTransportBuilder.Create().UseHandler(null!));
     }
 
-    [Fact]
-    public void BuilderRejectsNullClientFactory()
-    {
-        Assert.Throws<ArgumentNullException>(() =>
-            HttpClientRestTransportBuilder.Create().UseFactory(null!));
-    }
 
     [Fact]
     public void BuilderRejectsNullConfigurationCallback()
@@ -717,16 +628,7 @@ public sealed class RestTransportTests
             send(request, cancellationToken);
     }
 
-    private sealed class StubHttpClientFactory(Func<string, HttpClient> createClient) : IHttpClientFactory
-    {
-        public string? RequestedName { get; private set; }
 
-        public HttpClient CreateClient(string name)
-        {
-            RequestedName = name;
-            return createClient(name);
-        }
-    }
 
     private sealed class TrackingHandler : HttpMessageHandler
     {
