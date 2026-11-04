@@ -43,10 +43,10 @@ The package does not change the IRestTransport contract and does not add streami
 
 ## Source and verification
 
-- [Factory](HttpClientRestTransportFactory.cs)
-- [DI registration](HttpClientRestTransportServiceCollectionExtensions.cs)
-- [Consumer guide](../../docs/CONSUMING.md)
-- [Integration tests](../../tests/FSM_REST.Tests/HttpClientFactoryIntegrationTests.cs)
+- [Factory source](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/work/httpclient-builder/src/FSM_REST.HttpClientFactory/HttpClientRestTransportFactory.cs)
+- [DI registration source](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/work/httpclient-builder/src/FSM_REST.HttpClientFactory/HttpClientRestTransportServiceCollectionExtensions.cs)
+- [Consumer guide](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/work/httpclient-builder/docs/CONSUMING.md)
+- [Integration tests](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/work/httpclient-builder/tests/FSM_REST.Tests/HttpClientFactoryIntegrationTests.cs)
 
 ---
 
