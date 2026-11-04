@@ -606,15 +606,18 @@ public sealed class RestTransportTests
         var secondHandler = new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK));
         var builder = HttpClientRestTransportBuilder.Create().UseHandler(firstHandler);
 
+        using var callerClient = new HttpClient();
         Assert.Throws<InvalidOperationException>(() => builder.UseHandler(secondHandler));
-        Assert.Throws<InvalidOperationException>(() => builder.UseClient(new HttpClient()));
+        Assert.Throws<InvalidOperationException>(() => builder.UseClient(callerClient));
     }
 
     [Fact]
-    public void BuilderRejectsNullCallerOwnedClient()
+    public void BuilderRejectsNullCallerOwnedClientWithoutConsumingBuilder()
     {
-        Assert.Throws<ArgumentNullException>(() =>
-            HttpClientRestTransportBuilder.Create().UseClient(null!));
+        var builder = HttpClientRestTransportBuilder.Create();
+        Assert.Throws<ArgumentNullException>(() => builder.UseClient(null!));
+
+        using var transport = builder.UseHandler(new StubHandler(_ => new HttpResponseMessage(HttpStatusCode.OK))).Build();
     }
 
     [Fact]
