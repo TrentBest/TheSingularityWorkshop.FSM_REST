@@ -609,6 +609,8 @@ public sealed class RestTransportTests
         using var callerClient = new HttpClient();
         Assert.Throws<InvalidOperationException>(() => builder.UseHandler(secondHandler));
         Assert.Throws<InvalidOperationException>(() => builder.UseClient(callerClient));
+        secondHandler.Dispose();
+        using var transport = builder.Build();
     }
 
     [Fact]
