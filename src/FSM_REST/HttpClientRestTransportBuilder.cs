@@ -12,6 +12,7 @@ public sealed class HttpClientRestTransportBuilder
     private bool _disposeHandler = true;
     private Action<HttpClient>? _configureClient;
     private bool _built;
+    private bool _clientSourceSelected;
 
     /// <summary>Creates a builder that will create and own a new <see cref="HttpClient"/>.</summary>
     public static HttpClientRestTransportBuilder Create() => new();
@@ -20,6 +21,8 @@ public sealed class HttpClientRestTransportBuilder
     public HttpClientRestTransportBuilder UseClient(HttpClient client)
     {
         EnsureNotBuilt();
+        EnsureClientSourceNotSelected();
+        _clientSourceSelected = true;
         _providedClient = client ?? throw new ArgumentNullException(nameof(client));
         _handler = null;
         return this;
@@ -31,6 +34,8 @@ public sealed class HttpClientRestTransportBuilder
     public HttpClientRestTransportBuilder UseHandler(HttpMessageHandler handler, bool disposeHandler = true)
     {
         EnsureNotBuilt();
+        EnsureClientSourceNotSelected();
+        _clientSourceSelected = true;
         _handler = handler ?? throw new ArgumentNullException(nameof(handler));
         _disposeHandler = disposeHandler;
         _providedClient = null;
@@ -74,6 +79,12 @@ public sealed class HttpClientRestTransportBuilder
             client.Dispose();
             throw;
         }
+    }
+
+    private void EnsureClientSourceNotSelected()
+    {
+        if (_clientSourceSelected)
+            throw new InvalidOperationException("A client source has already been selected. Create a new builder to choose another source.");
     }
 
     private void EnsureNotBuilt()
