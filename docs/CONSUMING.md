@@ -74,11 +74,15 @@ The example's `applicationState` is your host's own state service; FSM_REST does
 
 The mapping constructor rejects undeclared or duplicate operation parameters. It deliberately does not evaluate arbitrary data paths, execute operations, deserialize payloads, or bypass authorization: those are responsibilities of the GUI/data-context adapter and host policy.
 
-## Construct transports through dependency injection
+## Optional IHttpClientFactory integration
 
-Register a named HTTP client for each API whose configuration differs, then register the transport factory:
+The core package has no dependency on Microsoft.Extensions.Http or Microsoft.Extensions.DependencyInjection. Hosts that use the standard .NET HTTP client factory can add the separate TheSingularityWorkshop.FSM_Rest.HttpClientFactory package.
 
-```csharp
+~~~csharp
+using Microsoft.Extensions.DependencyInjection;
+using TheSingularityWorkshop.FSM_REST;
+using TheSingularityWorkshop.FSM_REST.HttpClientFactory;
+
 services.AddHttpClient("CatalogApi", client =>
 {
     client.BaseAddress = new Uri("https://catalog.example.test/");
@@ -88,11 +92,11 @@ services.AddHttpClientRestTransportFactory();
 
 var factory = serviceProvider.GetRequiredService<HttpClientRestTransportFactory>();
 using IRestTransport transport = factory.Create("CatalogApi");
-```
+~~~
 
-The factory is a singleton-safe creator; each created transport has its own disposable lifetime. The transport disposes the `HttpClient` instance it receives from `IHttpClientFactory`, while the factory manages the pooled handler lifetime. Configure credentials and other host policy through the named client's registration. If the host already has an `IHttpClientFactory`, use `HttpClientRestTransportFactory` directly or construct a transport with `HttpClientRestTransportBuilder.UseFactory`. The DI extension is optional and does not replace `IRestTransport`.
+The optional package depends on core plus Microsoft.Extensions.Http. Its singleton-safe factory creates a transport for each requested client; each transport disposes the returned HttpClient, while IHttpClientFactory retains ownership of pooled handlers. Hosts that do not use this integration can continue to supply a caller-owned HttpClient directly or use the core builder's UseClient / UseHandler paths.
 
-See [HTTP transport factory](../src/FSM_REST/HttpClientRestTransportFactory.md) for complete construction and lifetime guidance.
+See [optional factory integration](../src/FSM_REST.HttpClientFactory/README.md) for package and lifetime guidance.
 
 ## The invocation lifecycle
 
@@ -213,29 +217,11 @@ Disposing a transport built with `UseClient` does **not** dispose the supplied c
 
 For a custom handler, use `UseHandler(handler, disposeHandler: true)`; the builder creates and owns the resulting client. Set `disposeHandler: false` only when the handler is owned elsewhere.
 
-### Integrate with IHttpClientFactory and dependency injection
+### Use the optional factory package
 
-Register and configure named clients in the host, then pass the factory into the builder. The factory owns handler pooling and configuration; dispose the built transport when the transport lifetime ends.
+For named IHttpClientFactory clients and DI registration, install TheSingularityWorkshop.FSM_Rest.HttpClientFactory and follow the [optional integration guide](../src/FSM_REST.HttpClientFactory/README.md). The core builder intentionally does not expose factory-specific methods or dependencies.
 
-```csharp
-using Microsoft.Extensions.DependencyInjection;
-using TheSingularityWorkshop.FSM_REST;
-
-services.AddHttpClient("CatalogApi", client =>
-{
-    client.BaseAddress = new Uri("https://api.example.com/");
-    client.Timeout = TimeSpan.FromSeconds(20);
-});
-
-// In a service that receives IHttpClientFactory through constructor injection:
-using var transport = HttpClientRestTransportBuilder.Create()
-    .UseFactory(httpClientFactory, "CatalogApi")
-    .Build();
-```
-
-Factory-created clients are disposed with the transport, as recommended for `IHttpClientFactory`; the factory's pooled handlers remain managed by the factory. Configure factory-created clients through `AddHttpClient`, not `ConfigureClient`. Authentication, authorization, retries, endpoint policy, and response interpretation remain host/domain responsibilities.
-
-The builder is a construction convenience for the existing adapter, not a new transport contract. Direct construction with `new HttpClientRestTransport(client)` remains supported and does not transfer client ownership. The current `RestResponse.Body` is still a string; this builder does not add streaming or bounded-memory body handling.
+The builder is a construction convenience for the existing adapter, not a new transport contract. Direct construction with new HttpClientRestTransport(client) remains supported and does not transfer client ownership. The current RestResponse.Body is still a string; this builder does not add streaming or bounded-memory body handling.
 
 ## Scope and limitations
 
