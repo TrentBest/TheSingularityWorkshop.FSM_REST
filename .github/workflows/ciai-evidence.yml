@@ -181,9 +181,9 @@ jobs:
           {
             echo "## CiAi FSM_REST exact commit evidence"
             echo
-            echo "- Repository: `$REPOSITORY`"
-            echo "- Branch: `$BRANCH`"
-            echo "- Source SHA: `$SHA`"
+            printf -- '- Repository: `%s`\n' "$REPOSITORY"
+            printf -- '- Branch: `%s`\n' "$BRANCH"
+            printf -- '- Source SHA: `%s`\n' "$SHA"
             echo "- Authoritative build run: ${RUN_URL:-not uniquely resolved}"
             echo "- Run ID / attempt: ${RUN_ID:-unknown} / ${RUN_ATTEMPT:-unknown}"
             echo "- Provider conclusion: $RUN_CONCLUSION"
