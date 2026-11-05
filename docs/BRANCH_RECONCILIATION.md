@@ -1,67 +1,79 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
+
 # FSM_REST Branch Reconciliation Ledger
 
-**Snapshot date:** 2026-10-24  
-**Comparison base:** `development` at `0c2f78209f0e61152951ce46eb2d42dc0785f2dc`  
-**CI evidence:** [Package FSM REST run 40060933128](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/40060933128) passed on that exact SHA; NuGet publication was not performed.  
+**Live snapshot:** 2026-11-05 (GitHub branch enumeration)  
+**Comparison base:** `development` at `49bcc764f416deca5cff589143a3da4988fa961d`  
+**Documentation integration head:** `1f0df722be8c028cfc4a8742215b8eeff60d11b8` (PR #17; two-parent reconciliation commit)  
+**Exact-head CI:** [Package FSM REST run 41998753547](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/41998753547) — `build-and-test` passed, `source-integration` passed; policy and NuGet publication skipped on the PR event.  
 **Purpose:** Preserve unique work before any surplus branch is manually removed. This ledger is a review aid, not authorization to delete branches.
 
-> **Sith policy:** keep `master` stable and `development` as the active work branch. The repository owner performs branch deletion manually only after reconciliation. No branch has been deleted as part of this audit.
+> **Sith policy:** the permanent branch set is exactly `master` and `development`. The repository owner performs surplus branch deletion manually only after reconciliation. No branch is deleted by this ledger or by the assistant.
 
-## Current branch inventory
+## Current live branch inventory
 
-The GitHub branch endpoint currently reports six branches: `master`, `development`, and the four review branches below. The prior snapshot is stale; use these fresh comparisons for the next manual review.
+GitHub returned exactly these six branches:
 
-| Branch | Ahead of development | Behind development | Status | Required disposition |
-|---|---:|---:|---|---|
-| `architecture/decouple-rest-microbundle-from-core` | 0 | 277 | Behind | No branch-only commits at this comparison. Owner may consider deletion after final history check. |
-| `forge/fsm-rest-documentation-and-capability-flow` | 16 | 308 | Diverged | Inspect branch-only commits and preserve any genuinely unique material before deletion. |
-| `forge/fsm-rest-functional-standard` | 14 | 309 | Diverged | Compare behavior/tests against current development; do not overwrite active source with historical snapshots. |
-| `release-prep/fsm-rest-1.0.0` | 13 | 293 | Diverged | Review unique release documentation and SVG; do not adopt stale 1.0.0 or stable-prerequisite claims. |
+| Branch | Role / current disposition |
+|---|---|
+| `master` | Permanent released baseline. |
+| `development` | Permanent active development branch; comparison base. |
+| `docs/rest-textbook-theory` | Active documentation PR #17; reconciled with current development and validated at the exact head above. Do not delete before the PR is resolved. |
+| `forge/fsm-rest-documentation-and-capability-flow` | Historical candidate; 16 commits ahead / 586 behind development. |
+| `forge/fsm-rest-functional-standard` | Historical candidate; 14 commits ahead / 587 behind development. |
+| `release-prep/fsm-rest-1.0.0` | Historical candidate; 13 commits ahead / 571 behind development. |
 
-Counts come from GitHub's compare endpoint with `development` as the base. A changed-file list does not prove that a branch's version is missing from development. These are history comparisons, not merge recommendations.
+The three historical comparisons were freshly queried against `development` on 2026-11-05. Their commit counts are history comparisons, not proof that every changed file is unique or that deletion is authorized.
 
-## Candidate work to inspect and preserve
+## Historical branch review
 
 ### `forge/fsm-rest-documentation-and-capability-flow`
 
-Reported changed paths include `README.md`, `docs/MICROBUNDLE.md`, `docs/REFLECTION.md`, `docs/THEORY.md`, three capability/composition/execution SVGs, `src/FSM_REST/RestRequestFactory.cs`, `Program.cs`, and `tests/FSM_REST.Tests/RestDescriptorTests.cs`.
-
-The current development tree already contains the named documentation, SVG assets, and request-factory path. The active request factory and tests include path/query/header/cookie binding and rejection cases, including rejection of base URIs containing query or fragment components. Do not replace current richer documentation or implementation with an older branch snapshot. Review branch-only commits for precise explanations or tests still absent from development.
+The prior review found its major documentation, SVG, request-factory, and test paths already represented in current development. Its remaining 16 branch-only commits should be regarded as historical review material; no wholesale overlay is appropriate. Current comparison: 16 ahead / 586 behind.
 
 ### `forge/fsm-rest-functional-standard`
 
-Reported changed paths include the build workflow, README, core project metadata, core descriptor/transport files, and descriptor/transport tests. These paths overlap the current implementation. The previous direct file comparison found `tests/FSM_REST.Tests/RestTransportTests.cs` identical to development at that time, including request/response capture, non-success status preservation, cancellation, and null-client/request cases. Recheck any claimed unique behavior against the current head before porting; do not overwrite active files wholesale.
+The prior review found substantial overlap with the active core descriptor, transport, workflow, and test implementation. A previously compared transport test file was identical to development at that review point. Current comparison: 14 ahead / 587 behind. Do not restore historical source snapshots over active code.
 
 ### `release-prep/fsm-rest-1.0.0`
 
-Unique candidates reported by the previous review:
-- `docs/RELEASE_1_0.md` — release checklist skeleton.
-- `docs/assets/release-frontier.svg` — capability recipe → operation descriptor → runtime binding → request/transport → changing remote data.
+The previous review harvested durable release criteria into `docs/RELEASE_CHECKLIST.md`. The historical branch's release-frontier visual carried unverified 1.0.0 and stable-prerequisite claims and should not be reused without correcting its claims and provenance. Its old placement of COS adapters under the core project is superseded by `src/FSM_REST.COS/`. Current comparison: 13 ahead / 571 behind.
 
-The durable checklist criteria have already been harvested into `docs/RELEASE_CHECKLIST.md`: restore/build/test/coverage, XML docs, package dependencies and contents, practical README examples, architecture boundaries, exact-SHA CI, and explicit owner approval before publication. The old SVG asserts `FSM_REST 1.0.0` and a stable `FSM_COS 1.0.0` prerequisite; those are not verified current facts. If its visual is reused, revise those labels and identify whether it is conceptual or source-checked.
+## Current documentation integration
 
-The historical branch also places `RestApiDescriptorExtensions.cs` and `RestMicroBundle.cs` under the core-project path. Current architecture keeps these adapters in `src/FSM_REST.COS/`; do not restore them to core based on the historical branch.
+PR [#17](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/pull/17) adds the living REST textbook, four theory chapters, teaching SVGs, the documentation checklist, and a source-anchor-checked REST contract diagram. The integration commit has both the original textbook branch and current development as parents; its tree was based on current development before the textbook additions were applied.
 
-### `architecture/decouple-rest-microbundle-from-core`
+The exact-head CI run passed the documentation contract, diagram anchor check, architecture checks, UML link checks, build, tests, deterministic samples, package audit, and source-integrated build/tests. The PR remains open and draft. The workflow does not publish NuGet packages on this PR event.
 
-GitHub reports zero commits ahead of development and 277 behind. There are no branch-only commits according to the current compare endpoint, so this branch has no identified unique commit work to harvest. Owner should perform a final history check before manually deleting it.
+**Branding validation caveat:** `scripts/verify_markdown_branding.py` exists, but the current `.github/workflows/build.yml` does not yet invoke it. Do not treat repository-wide branding verification as a CI-enforced gate until that step is added and a full run passes. The shared canonical assets remain:
+- Moniker: `https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg`
+- Footer PNG: `https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png`
 
-## Release boundary reminder
+## Sith policy status and owner action
 
-The current development projects configure:
-- Core `TheSingularityWorkshop.FSM_Rest`: `0.1.0-alpha.5`
-- Optional `TheSingularityWorkshop.FSM_Rest.OpenApi`: `0.1.0-alpha.1`
-- Optional `TheSingularityWorkshop.FSM_Rest.COS`: `0.1.0-alpha.1`
+<badge-placeholder>
 
-These are source-configured candidate versions, not proof of their current NuGet.org publication status. The latest successful workflow is build/test/package-artifact evidence only; its publish job was skipped. Verify NuGet version availability and inspect the exact release artifacts before proposing a publication run. No publication, tag, merge, force-push, or branch deletion is authorized by this ledger.
+The permanent branch policy is currently **NON-COMPLIANT**: six live branches exist, not two. The three historical candidates above are ready for final owner-side review. After you manually remove those three historical branches, the expected remaining set is `master`, `development`, and the still-active PR branch `docs/rest-textbook-theory`; that PR branch must be resolved before the repository can reach the exact two-branch state.
+
+The Sith policy workflow run [41998747731](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/41998747731) failed closed because the live branch count was not exactly two. This is expected enforcement, not a code/test failure.
+
+## Release boundary
+
+Current development package versions and publication status must be checked independently at the release gate. Build, test, pack, artifact upload, and package audit are not publication. NuGet publication remains prohibited unless the repository owner explicitly authorizes it and the live branch gate passes.
 
 ## Manual completion checklist
 
-- [ ] Inspect branch-only commits, not only changed-file summaries, for the three diverged branches.
-- [ ] Confirm the request-factory behavior and test coverage against current development before deciding whether any test intent is missing.
-- [ ] Confirm no useful release criteria or accurate visual explanation remain only in the historical release branch.
-- [ ] Re-run the full workflow after any source or documentation change and record exact-SHA evidence.
-- [ ] Verify candidate versions on NuGet.org and inspect packed artifacts before release approval.
-- [ ] Owner manually deletes only branches whose unique work has been reconciled.
+- [ ] Owner reviews and manually deletes the three historical branches only after deciding their branch-only history is fully reconciled.
+- [ ] Resolve PR #17; do not delete its active branch before the PR is merged or closed.
+- [ ] Re-run exact-head CI after any further change.
+- [ ] Finish repository-wide Markdown branding reconciliation, enable the branding verifier in CI, and validate it before claiming the standard is enforced.
+- [ ] Confirm the live remote branch set is exactly `master` and `development` before any authorized publication workflow.
+- [ ] Obtain explicit owner authorization before NuGet publication.
 
-**No publication or release action is authorized by this ledger.**
+**No branch deletion, PR merge, tag, deployment, force-push, or NuGet publication is authorized by this ledger.**
+
+---
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>
