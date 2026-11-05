@@ -393,7 +393,7 @@ Authentication, credential acquisition, concrete GUI rendering, application-stat
 
 ## Optional HTTP client factory integration
 
-The core package accepts a caller-owned HttpClient and offers direct builder/handler construction without a Microsoft.Extensions dependency. Applications using named IHttpClientFactory clients can add the separate TheSingularityWorkshop.FSM_Rest.HttpClientFactory package. See [the integration guide](src/FSM_REST.HttpClientFactory/README.md).
+The core package accepts a caller-owned HttpClient and offers direct builder/handler construction without a Microsoft.Extensions dependency. Applications using named IHttpClientFactory clients can add the separate TheSingularityWorkshop.FSM_Rest.HttpClientFactory package. See [the integration guide](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/src/FSM_REST.HttpClientFactory/README.md).
 
 ## Development
 
