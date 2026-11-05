@@ -52,7 +52,6 @@ The exact-head CI run passed the documentation contract, diagram anchor check, a
 
 ## Sith policy status and owner action
 
-<badge-placeholder>
 
 The permanent branch policy is currently **NON-COMPLIANT**: six live branches exist, not two. The three historical candidates above are ready for final owner-side review. After you manually remove those three historical branches, the expected remaining set is `master`, `development`, and the still-active PR branch `docs/rest-textbook-theory`; that PR branch must be resolved before the repository can reach the exact two-branch state.
 
