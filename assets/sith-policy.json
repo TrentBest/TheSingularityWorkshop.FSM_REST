@@ -8,14 +8,12 @@
   "actual_branches": [
     "development",
     "docs/rest-textbook-theory",
-    "forge/fsm-rest-documentation-and-capability-flow",
-    "forge/fsm-rest-functional-standard",
     "master",
     "release-prep/fsm-rest-1.0.0"
   ],
-  "branch_count": 6,
+  "branch_count": 4,
   "status": "NON-COMPLIANT",
-  "evaluated_at": "2026-11-05T07:41:20Z",
-  "workflow_run": "https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/41988958293",
-  "triggering_commit": "e852340a845b1148310732b5ce8f32d6c5788d86"
+  "evaluated_at": "2026-11-05T09:45:58Z",
+  "workflow_run": "https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/42005061432",
+  "triggering_commit": "aeffcb988df4d18c6ed95a0a2bf402b8f4a04a18"
 }
