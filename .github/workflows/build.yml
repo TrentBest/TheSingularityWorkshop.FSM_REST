@@ -90,6 +90,7 @@ jobs:
       - name: Pack
         run: |
           dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --no-build --output ./artifacts
+          dotnet pack src/FSM_REST.HttpClientFactory/FSM_REST.HttpClientFactory.csproj --configuration Release --no-build --output ./artifacts
           dotnet pack src/FSM_REST.OpenApi/FSM_REST.OpenApi.csproj --configuration Release --no-build --output ./artifacts
           dotnet pack src/FSM_REST.COS/FSM_REST.COS.csproj --configuration Release --no-build --output ./artifacts
 
@@ -106,6 +107,12 @@ jobs:
           from xml.etree import ElementTree as ET
 
           expected = {
+              "TheSingularityWorkshop.FSM_Rest.HttpClientFactory": {
+                  "version": "0.1.0-alpha.5",
+                  "dll_prefix": "lib/net8.0/",
+                  "required_files": ["README.md", "LICENSE.txt"],
+                  "required_dependencies": ["TheSingularityWorkshop.FSM_Rest", "Microsoft.Extensions.Http"],
+              },
               "TheSingularityWorkshop.FSM_Rest": {
                   "version": "0.1.0-alpha.5",
                   "dll_prefix": "lib/net8.0/",
