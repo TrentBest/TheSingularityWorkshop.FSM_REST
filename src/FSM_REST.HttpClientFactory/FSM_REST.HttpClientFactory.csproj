@@ -1,0 +1,29 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net8.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <IsPackable>true</IsPackable>
+    <PackageId>TheSingularityWorkshop.FSM_Rest.HttpClientFactory</PackageId>
+    <Version>0.1.0-alpha.5</Version>
+    <Authors>Trent Best</Authors>
+    <Company>The Singularity Workshop</Company>
+    <Description>Optional IHttpClientFactory and dependency-injection integration for FSM_REST.</Description>
+    <PackageTags>REST;API;HttpClientFactory;DependencyInjection;FSM;TheSingularityWorkshop</PackageTags>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <PackageLicenseFile>LICENSE.txt</PackageLicenseFile>
+    <PackageProjectUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NoWarn>$(NoWarn);CS1591</NoWarn>
+  </PropertyGroup>
+  <ItemGroup>
+    <None Include="README.md" Pack="true" PackagePath="" />
+    <None Include="../../LICENSE.txt" Pack="true" PackagePath="" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="../FSM_REST/FSM_REST.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Http" Version="8.0.1" />
+  </ItemGroup>
+</Project>

@@ -391,13 +391,17 @@ Authentication, credential acquisition, concrete GUI rendering, application-stat
 - [RestOperationDescriptor class card](docs/UML/RestOperationDescriptor.UML.md) — focused class responsibilities and use cases.
 - [Request execution UML](docs/UML/Architecture/RestRequestExecution.UML.md) — request construction, transport substitution, response handling, and test coverage.
 
+## Optional HTTP client factory integration
+
+The core package accepts a caller-owned HttpClient and offers direct builder/handler construction without a Microsoft.Extensions dependency. Applications using named IHttpClientFactory clients can add the separate TheSingularityWorkshop.FSM_Rest.HttpClientFactory package. See [the integration guide](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/src/FSM_REST.HttpClientFactory/README.md).
+
 ## Development
 
 ~~~bash
 dotnet restore TheSingularityWorkshop.FSM_REST.slnx
 dotnet build TheSingularityWorkshop.FSM_REST.slnx --configuration Release
 dotnet test tests/FSM_REST.Tests/FSM_REST.Tests.csproj --configuration Release
-dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --output ./artifacts
+dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --output ./artifacts\ndotnet pack src/FSM_REST.HttpClientFactory/FSM_REST.HttpClientFactory.csproj --configuration Release --output ./artifacts
 dotnet pack src/FSM_REST.OpenApi/FSM_REST.OpenApi.csproj --configuration Release --output ./artifacts
 dotnet pack src/FSM_REST.COS/FSM_REST.COS.csproj --configuration Release --output ./artifacts
 ~~~

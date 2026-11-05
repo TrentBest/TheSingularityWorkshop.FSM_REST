@@ -10,7 +10,7 @@
 - Return status, reason phrase, headers, and body as `RestResponse`.
 
 ## Boundaries
-The host configures and owns the supplied `HttpClient`. This adapter does not define authentication, retries, caching, or domain interpretation. A header that cannot be applied is rejected instead of silently discarded.
+The one-argument constructor wraps a host-configured HttpClient without taking ownership. The overload accepting ownsClient makes ownership explicit for construction adapters: when true, disposing the transport disposes the client. This framework-neutral ownership switch allows optional integration packages to adapt factory-created clients without adding framework dependencies to core. The adapter does not define authentication, retries, caching, or domain interpretation. A header that cannot be applied is rejected instead of silently discarded.
 
 ## Source and verification
 - Source: [HttpClientRestTransport.cs](HttpClientRestTransport.cs)
