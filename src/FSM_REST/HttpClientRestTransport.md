@@ -1,6 +1,3 @@
-<!-- The Singularity Workshop moniker -->
-<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
-
 # HttpClientRestTransport
 
 **Workshop moniker:** @TrentBest  
@@ -13,7 +10,7 @@
 - Return status, reason phrase, headers, and body as `RestResponse`.
 
 ## Boundaries
-The host configures and owns the supplied `HttpClient`. This adapter does not define authentication, retries, caching, or domain interpretation. A header that cannot be applied is rejected instead of silently discarded.
+The one-argument constructor wraps a host-configured HttpClient without taking ownership. The overload accepting ownsClient makes ownership explicit for construction adapters: when true, disposing the transport disposes the client. This framework-neutral ownership switch allows optional integration packages to adapt factory-created clients without adding framework dependencies to core. The adapter does not define authentication, retries, caching, or domain interpretation. A header that cannot be applied is rejected instead of silently discarded.
 
 ## Source and verification
 - Source: [HttpClientRestTransport.cs](HttpClientRestTransport.cs)
@@ -21,6 +18,3 @@ The host configures and owns the supplied `HttpClient`. This adapter does not de
 - UML: [Core architecture](../../docs/UML/FSM_REST.Core.UML.md), [request execution](../../docs/UML/RestRequestExecution.UML.md)
 - Tests: [FSM_REST tests](../../tests/FSM_REST.Tests/)
 - Provenance: manually authored companion.
-
-<!-- THE SINGULARITY WORKSHOP FOOTER -->
-<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

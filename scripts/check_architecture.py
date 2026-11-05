@@ -20,6 +20,14 @@ def refs(path):
 
 core = "src/FSM_REST/FSM_REST.csproj"
 core_refs = refs(core)
+if any("Microsoft.Extensions.Http" in item or "Microsoft.Extensions.DependencyInjection" in item for item in core_refs):
+    errors.append("Core must not depend on Microsoft.Extensions HTTP or DI integration packages.")
+
+factory_refs = refs("src/FSM_REST.HttpClientFactory/FSM_REST.HttpClientFactory.csproj")
+if not any("FSM_REST.csproj" in item for item in factory_refs):
+    errors.append("Optional HttpClientFactory integration must reference neutral core.")
+if not any("Microsoft.Extensions.Http" in item for item in factory_refs):
+    errors.append("Optional HttpClientFactory integration must declare Microsoft.Extensions.Http itself.")
 for reference in core_refs:
     if any(token.lower() in reference.lower() for token in (
         "fsm_rest.cos", "fsm_rest.gui", "fsm_rest.openapi",
@@ -60,4 +68,4 @@ if errors:
         print(f" - {error}")
     sys.exit(1)
 
-print("Architecture boundary check passed: core remains neutral; OpenAPI, GUI, and COS integrations stay outside core.")
+print("Architecture boundary check passed: core remains neutral; HttpClientFactory, OpenAPI, GUI, and COS integrations stay outside core.")

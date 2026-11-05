@@ -1,6 +1,3 @@
-<!-- The Singularity Workshop moniker -->
-<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
-
 # Consuming FSM_REST
 
 This guide shows the supported path from an API description to one outbound request and one observed response. The optional `TheSingularityWorkshop.FSM_Rest.OpenApi` package includes an initial OpenAPI 3.x JSON importer, but it is not a complete OpenAPI runtime, authentication system, or domain client.
@@ -76,6 +73,30 @@ RestResponse response = await RestGuiOperationExecutor.ExecuteAsync(
 The example's `applicationState` is your host's own state service; FSM_REST does not impose a state-container dependency. Deserialize the returned JSON into an application-owned model before publishing if the GUI expects typed data.
 
 The mapping constructor rejects undeclared or duplicate operation parameters. It deliberately does not evaluate arbitrary data paths, execute operations, deserialize payloads, or bypass authorization: those are responsibilities of the GUI/data-context adapter and host policy.
+
+## Optional IHttpClientFactory integration
+
+The core package has no dependency on Microsoft.Extensions.Http or Microsoft.Extensions.DependencyInjection. Hosts that use the standard .NET HTTP client factory can add the separate TheSingularityWorkshop.FSM_Rest.HttpClientFactory package.
+
+~~~csharp
+using Microsoft.Extensions.DependencyInjection;
+using TheSingularityWorkshop.FSM_REST;
+using TheSingularityWorkshop.FSM_REST.HttpClientFactory;
+
+services.AddHttpClient("CatalogApi", client =>
+{
+    client.BaseAddress = new Uri("https://catalog.example.test/");
+    client.Timeout = TimeSpan.FromSeconds(15);
+});
+services.AddHttpClientRestTransportFactory();
+
+var factory = serviceProvider.GetRequiredService<HttpClientRestTransportFactory>();
+using IRestTransport transport = factory.Create("CatalogApi");
+~~~
+
+The optional package depends on core plus Microsoft.Extensions.Http. Its singleton-safe factory creates a transport for each requested client; each transport disposes the returned HttpClient, while IHttpClientFactory retains ownership of pooled handlers. Hosts that do not use this integration can continue to supply a caller-owned HttpClient directly or use the core builder's UseClient / UseHandler paths.
+
+See [optional factory integration](../src/FSM_REST.HttpClientFactory/README.md) for package and lifetime guidance.
 
 ## The invocation lifecycle
 
@@ -160,6 +181,48 @@ This helper returns the same raw `RestResponse` as the transport. It does not ad
 
 Use `response.Deserialize<T>()` when the response is JSON and the consuming application owns a suitable target type. This is JSON deserialization, not validation against the imported API schema. Your host or domain capability decides how to handle authentication, authorization, cancellation, timeouts, retries, backoff, rate limits, caching, telemetry, schema validation, and domain-specific errors. The host also owns the lifetime and configuration of the supplied `HttpClient`.
 
+## Construct the HTTP transport fluently
+
+Use `HttpClientRestTransportBuilder` when you want a concise construction path without replacing the `IRestTransport` boundary.
+
+Create and configure a client owned by the transport:
+
+```csharp
+using TheSingularityWorkshop.FSM_REST;
+
+using var transport = HttpClientRestTransportBuilder.Create()
+    .ConfigureClient(client =>
+    {
+        client.BaseAddress = new Uri("https://api.example.com/");
+        client.Timeout = TimeSpan.FromSeconds(20);
+    })
+    .Build();
+
+RestResponse response = await transport.SendAsync(
+    new RestRequest("GET", new Uri("https://api.example.com/users")),
+    cancellationToken);
+```
+
+Or pass a client that your host already configures and owns:
+
+```csharp
+using var client = new HttpClient(handler: myHandler, disposeHandler: false);
+// Configure shared headers, credentials, proxy, and other host policy here.
+using var transport = HttpClientRestTransportBuilder.Create()
+    .UseClient(client)
+    .Build();
+```
+
+Disposing a transport built with `UseClient` does **not** dispose the supplied client. The client remains the host's responsibility. `ConfigureClient` is intentionally rejected with `UseClient` so the builder cannot silently mutate shared defaults.
+
+For a custom handler, use `UseHandler(handler, disposeHandler: true)`; the builder creates and owns the resulting client. Set `disposeHandler: false` only when the handler is owned elsewhere.
+
+### Use the optional factory package
+
+For named IHttpClientFactory clients and DI registration, install TheSingularityWorkshop.FSM_Rest.HttpClientFactory and follow the [optional integration guide](../src/FSM_REST.HttpClientFactory/README.md). The core builder intentionally does not expose factory-specific methods or dependencies.
+
+The builder is a construction convenience for the existing adapter, not a new transport contract. Direct construction with new HttpClientRestTransport(client) remains supported and does not transfer client ownership. The current RestResponse.Body is still a string; this builder does not add streaming or bounded-memory body handling.
+
 ## Scope and limitations
 
 FSM_REST core provides a neutral descriptor/binding/request/transport/response path. The optional `TheSingularityWorkshop.FSM_Rest.OpenApi` package provides `OpenApiJsonImporter` for OpenAPI 3.x JSON and `OpenApiRestApiConnection` for loading a definition URL and invoking imported operations. The importer reads operation paths, parameters, request-body media/schema hints, and response metadata. It does not itself:
@@ -180,6 +243,3 @@ Optional composition integrations belong in their own integration package; the c
 ## Verify locally
 
 From the repository root, run the test suite and build commands documented in the README and CI workflow. Add regression tests whenever an adapter changes encoding, header handling, status handling, cancellation, or other observable request semantics.
-
-<!-- THE SINGULARITY WORKSHOP FOOTER -->
-<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>

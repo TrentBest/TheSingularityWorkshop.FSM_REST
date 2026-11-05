@@ -5,6 +5,7 @@
 
 # TheSingularityWorkshop.FSM_REST
 
+[![Sith Policy](https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.FSM_REST/master/assets/sith-policy.svg)](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/workflows/sith-policy.yml)
 ## ✳️ 00 Identity
 
 FSM_REST is the framework-neutral REST capability and transport substrate for The Singularity Workshop. It describes operations and constructs requests; it does not claim ownership of a remote API's domain behavior.
@@ -45,7 +46,7 @@ Run the [deterministic end-to-end demo](https://github.com/TrentBest/TheSingular
 
 ## Learn the theory
 
-Start with the [REST Systems: A Living Textbook](docs/REST_TEXTBOOK.md) for instructor-editable chapters on resources and representations, network uncertainty, capability composition, and the evidence needed to justify claims about remote outcomes. The chapters include editable SVG illustrations, discussion prompts, and links to deterministic examples. The illustrations are conceptual teaching models, not live telemetry.
+Start with the [REST Systems: A Living Textbook](docs/REST_TEXTBOOK.md), an instructor-editable learning path covering resources and representations, network uncertainty, capability composition, and the evidence needed to justify claims about remote outcomes. The chapters include editable conceptual SVG illustrations, discussion prompts, and deterministic examples. The illustrations are teaching models, not live telemetry.
 
 ## Detailed guide
 
@@ -395,13 +396,17 @@ Authentication, credential acquisition, concrete GUI rendering, application-stat
 - [RestOperationDescriptor class card](docs/UML/RestOperationDescriptor.UML.md) — focused class responsibilities and use cases.
 - [Request execution UML](docs/UML/Architecture/RestRequestExecution.UML.md) — request construction, transport substitution, response handling, and test coverage.
 
+## Optional HTTP client factory integration
+
+The core package accepts a caller-owned HttpClient and offers direct builder/handler construction without a Microsoft.Extensions dependency. Applications using named IHttpClientFactory clients can add the separate TheSingularityWorkshop.FSM_Rest.HttpClientFactory package. See [the integration guide](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/blob/development/src/FSM_REST.HttpClientFactory/README.md).
+
 ## Development
 
 ~~~bash
 dotnet restore TheSingularityWorkshop.FSM_REST.slnx
 dotnet build TheSingularityWorkshop.FSM_REST.slnx --configuration Release
 dotnet test tests/FSM_REST.Tests/FSM_REST.Tests.csproj --configuration Release
-dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --output ./artifacts
+dotnet pack src/FSM_REST/FSM_REST.csproj --configuration Release --output ./artifacts\ndotnet pack src/FSM_REST.HttpClientFactory/FSM_REST.HttpClientFactory.csproj --configuration Release --output ./artifacts
 dotnet pack src/FSM_REST.OpenApi/FSM_REST.OpenApi.csproj --configuration Release --output ./artifacts
 dotnet pack src/FSM_REST.COS/FSM_REST.COS.csproj --configuration Release --output ./artifacts
 ~~~
