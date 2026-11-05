@@ -15,6 +15,8 @@
 [![Coverage](https://codecov.io/gh/TrentBest/TheSingularityWorkshop.FSM_REST/graph/badge.svg)](https://codecov.io/gh/TrentBest/TheSingularityWorkshop.FSM_REST)
 [![License](https://img.shields.io/badge/license-MIT-yellow.svg)](LICENSE.txt)
 
+[![Sith Policy](assets/sith-policy.svg)](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/workflows/sith-policy.yml)
+
 FSM_REST is intentionally **not an implementation of a REST API**, and it is not a container for every REST description format.
 
 It provides the reusable forms from which REST capabilities can be composed:
@@ -43,7 +45,6 @@ The important architectural rule is:
 <p align="center">
   <img src="docs/assets/fsm-rest-capability-recipe.svg" alt="REST capability recipe flowing from a MicroBundle into a request and current remote data" width="900">
 </p>
-
 
 This README follows the Workshop's shared [Documentation Standard](https://github.com/TrentBest/TheSingularityWorkshop.FSM_COS/blob/master/DOCUMENTATION_STANDARD.md), while keeping this repository's own purpose and implementation authoritative.
 
