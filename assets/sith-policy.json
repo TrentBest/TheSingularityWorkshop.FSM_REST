@@ -11,14 +11,11 @@
     "forge/fsm-rest-documentation-and-capability-flow",
     "forge/fsm-rest-functional-standard",
     "master",
-    "release-prep/fsm-rest-1.0.0",
-    "work/ciai-evidence-lane",
-    "work/httpclient-builder",
-    "work/sith-publish-gate"
+    "release-prep/fsm-rest-1.0.0"
   ],
-  "branch_count": 9,
+  "branch_count": 6,
   "status": "NON-COMPLIANT",
-  "evaluated_at": "2026-11-05T07:32:16Z",
-  "workflow_run": "https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/41987907013",
-  "triggering_commit": "bc791b6b4b32cf820db2aa0d9b3a9a6f1c3e060b"
+  "evaluated_at": "2026-11-05T07:41:10Z",
+  "workflow_run": "https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/41988953560",
+  "triggering_commit": "e852340a845b1148310732b5ce8f32d6c5788d86"
 }
