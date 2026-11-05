@@ -1,0 +1,24 @@
+{
+  "repository": "TrentBest/TheSingularityWorkshop.FSM_REST",
+  "policy": "exactly-master-and-development",
+  "required_branches": [
+    "development",
+    "master"
+  ],
+  "actual_branches": [
+    "development",
+    "docs/rest-textbook-theory",
+    "forge/fsm-rest-documentation-and-capability-flow",
+    "forge/fsm-rest-functional-standard",
+    "master",
+    "release-prep/fsm-rest-1.0.0",
+    "work/ciai-evidence-lane",
+    "work/httpclient-builder",
+    "work/sith-publish-gate"
+  ],
+  "branch_count": 9,
+  "status": "NON-COMPLIANT",
+  "evaluated_at": "2026-11-05T04:32:02Z",
+  "workflow_run": "https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/41968375283",
+  "triggering_commit": "b990d077a5fa9a9aaa1f9de2d318a023b8c6566d"
+}
