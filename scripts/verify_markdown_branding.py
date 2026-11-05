@@ -1,12 +1,12 @@
 #!/usr/bin/env python3
-"""Enforce the canonical Workshop moniker header and static avatar-only footer on every Markdown file."""
+"""Enforce the canonical Workshop moniker header and static Workshop footer image on every Markdown file."""
 
 from pathlib import Path
 import sys
 
 ROOT = Path(__file__).resolve().parents[1]
 MONIKER_URL = "https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg"
-AVATAR = "https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png"
+FOOTER_IMAGE_URL = "https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png"
 FOOTER_MARKER = "<!-- THE SINGULARITY WORKSHOP FOOTER -->"
 EXCLUDED_PARTS = {".git", "bin", "obj", "_dependencies", "TestResults", "artifacts"}
 
@@ -28,8 +28,8 @@ for path in markdown_files:
         errors.append(f"{relative}: expected exactly one Workshop footer marker.")
     footer = text.split(FOOTER_MARKER, 1)[-1].strip()
     expected_footer = (
-        f'<p align="center"><img src="{AVATAR}" '
-        'alt="The Singularity Workshop avatar" width="200" /></p>'
+        f'<p align="center"><img src="{FOOTER_IMAGE_URL}" '
+        'alt="The Singularity Workshop" width="200" /></p>'
     )
     if footer != expected_footer:
         errors.append(
@@ -44,5 +44,5 @@ if errors:
 
 print(
     f"Markdown branding validated: {len(markdown_files)} files have the canonical "
-    "moniker header and static avatar-only footer."
+    "moniker header and static Workshop footer image."
 )
