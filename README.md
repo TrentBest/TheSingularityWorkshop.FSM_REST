@@ -5,6 +5,7 @@
 
 # TheSingularityWorkshop.FSM_REST
 
+[![Sith Policy](assets/sith-policy.svg)](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/workflows/sith-policy.yml)
 ## ✳️ 00 Identity
 
 FSM_REST is the framework-neutral REST capability and transport substrate for The Singularity Workshop. It describes operations and constructs requests; it does not claim ownership of a remote API's domain behavior.
