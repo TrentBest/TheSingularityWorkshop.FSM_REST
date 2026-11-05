@@ -637,6 +637,52 @@ public sealed class RestTransportTests
             HttpClientRestTransportBuilder.Create().ConfigureClient(null!));
     }
 
+    [Fact]
+    public async Task TransportPreservesRepeatedSetCookieValuesWithoutCommaJoining()
+    {
+        var handler = new StubHandler(_ =>
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Headers.TryAddWithoutValidation(
+                "Set-Cookie",
+                new[] { "session=abc; Path=/; HttpOnly", "preference=dark; Path=/" });
+            return response;
+        });
+
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        var result = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/cookies")));
+
+        Assert.Equal(
+            new[] { "session=abc; Path=/; HttpOnly", "preference=dark; Path=/" },
+            result.HeaderValues["set-cookie"]);
+        Assert.Equal(
+            new[] { "session=abc; Path=/; HttpOnly", "preference=dark; Path=/" },
+            result.HeaderValues["Set-Cookie"]);
+    }
+
+    [Fact]
+    public async Task TransportPreservesRepeatedValuesForOrdinaryResponseHeaders()
+    {
+        var handler = new StubHandler(_ =>
+        {
+            var response = new HttpResponseMessage(HttpStatusCode.OK);
+            response.Headers.TryAddWithoutValidation("X-Workshop-Trace", new[] { "first", "second" });
+            return response;
+        });
+
+        using var client = new HttpClient(handler);
+        var transport = new HttpClientRestTransport(client);
+
+        var result = await transport.SendAsync(
+            new RestRequest("GET", new Uri("https://example.test/headers")));
+
+        Assert.Equal(new[] { "first", "second" }, result.HeaderValues["X-Workshop-Trace"]);
+        Assert.Equal("first, second", result.Headers["X-Workshop-Trace"]);
+    }
+
     private sealed class DelegateTransport(
         Func<RestRequest, CancellationToken, Task<RestResponse>> send) : IRestTransport
     {

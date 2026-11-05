@@ -1,3 +1,5 @@
+using System.Collections.ObjectModel;
+
 namespace TheSingularityWorkshop.FSM_REST;
 
 /// <summary>Adapts <see cref="HttpClient"/> to the framework-neutral <see cref="IRestTransport"/> contract.</summary>
@@ -57,16 +59,48 @@ public sealed class HttpClientRestTransport : IRestTransport, IDisposable
 
         using var response = await _client.SendAsync(message, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
         var headers = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase);
+        var headerValues = new Dictionary<string, List<string>>(StringComparer.OrdinalIgnoreCase);
 
-        foreach (var header in response.Headers)
-            AddResponseHeader(headers, header.Key, header.Value);
-        foreach (var header in response.Content.Headers)
-            AddResponseHeader(headers, header.Key, header.Value);
+        CaptureHeaders(response.Headers, headers, headerValues);
+        CaptureHeaders(response.Content.Headers, headers, headerValues);
 
         var body = await response.Content.ReadAsStringAsync(cancellationToken);
-        return new RestResponse((int)response.StatusCode, response.ReasonPhrase, headers, body);
+        var immutableHeaderValues = new ReadOnlyDictionary<string, IReadOnlyList<string>>(
+            headerValues.ToDictionary(
+                pair => pair.Key,
+                pair => (IReadOnlyList<string>)Array.AsReadOnly(pair.Value.ToArray()),
+                StringComparer.OrdinalIgnoreCase));
+
+        return new RestResponse((int)response.StatusCode, response.ReasonPhrase, headers, body)
+        {
+            HeaderValues = immutableHeaderValues
+        };
     }
 
+
+    private static void CaptureHeaders(
+        System.Net.Http.Headers.HttpHeaders source,
+        IDictionary<string, string> flattened,
+        IDictionary<string, List<string>> values)
+    {
+        foreach (var header in source)
+        {
+            var currentValues = header.Value.ToArray();
+            var flattenedValue = string.Join(", ", currentValues);
+            if (flattened.TryGetValue(header.Key, out var existing))
+                flattened[header.Key] = string.IsNullOrEmpty(existing) ? flattenedValue : $"{existing}, {flattenedValue}";
+            else
+                flattened[header.Key] = flattenedValue;
+
+            if (!values.TryGetValue(header.Key, out var collected))
+            {
+                collected = new List<string>();
+                values.Add(header.Key, collected);
+            }
+
+            collected.AddRange(currentValues);
+        }
+    }
 
     private static void AddResponseHeader(
         IDictionary<string, string> headers,

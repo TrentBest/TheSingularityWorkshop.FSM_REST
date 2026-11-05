@@ -1,3 +1,4 @@
+using System.Collections.ObjectModel;
 using System.Text.Json;
 
 namespace TheSingularityWorkshop.FSM_REST;
@@ -14,6 +15,20 @@ public sealed record RestResponse(
     string Body)
 {
     private static readonly JsonSerializerOptions DefaultJsonOptions = new(JsonSerializerDefaults.Web);
+
+    /// <summary>
+    /// Gets response and content headers with each field value preserved separately.
+    /// Header names are compared case-insensitively. Unlike <see cref="Headers"/>,
+    /// this representation does not combine repeated values with commas.
+    /// </summary>
+    /// <remarks>
+    /// This is especially important for headers such as <c>Set-Cookie</c>, whose
+    /// repeated values cannot safely be reconstructed from a comma-joined string.
+    /// Responses constructed directly retain an empty collection unless values are supplied.
+    /// </remarks>
+    public IReadOnlyDictionary<string, IReadOnlyList<string>> HeaderValues { get; init; } =
+        new ReadOnlyDictionary<string, IReadOnlyList<string>>(
+            new Dictionary<string, IReadOnlyList<string>>(StringComparer.OrdinalIgnoreCase));
 
     /// <summary>Gets whether the response status is in the HTTP 2xx success range.</summary>
     public bool IsSuccessStatusCode => StatusCode is >= 200 and < 300;
