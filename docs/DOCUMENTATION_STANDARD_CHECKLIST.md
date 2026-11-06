@@ -7,12 +7,15 @@
 
 ## 1. Branding and Markdown hygiene
 
-- [ ] Every Markdown document has the animated Workshop moniker in its first eight lines.
-- [ ] Every Markdown document ends with exactly one canonical Workshop footer marker.
+The shared standard explicitly says existing documents are migrated to the canonical branding when they are next edited. Apply the branding gate to every Markdown document created or substantively edited by the current change; do not fail a change solely because an untouched legacy document has not yet been migrated.
+
+- [ ] Every Markdown document created or substantively edited in this change has the animated Workshop moniker in its first eight lines.
+- [ ] Every Markdown document created or substantively edited in this change ends with exactly one canonical Workshop footer marker.
 - [ ] The footer marker is followed only by the centered canonical static image paragraph:
   `<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>`
-- [ ] No profile avatar, alternate footer artwork, duplicate moniker, or extra content follows the canonical footer.
-- [ ] The branding verifier runs in CI and checks every repository Markdown file, not only the files changed in a pull request.
+- [ ] No profile avatar, alternate footer artwork, duplicate moniker, or extra content follows the canonical footer in documents within this change's scope.
+- [ ] The full repository Markdown inventory is tracked as a migration backlog; untouched documents are migrated when next edited, in accordance with the shared standard.
+- [ ] CI validates branding for the Markdown files in the change scope. Repository-wide enforcement is enabled only after the migration policy and inventory support that scope; do not silently impose an all-files gate that contradicts the shared standard.
 
 ## 2. README and reader journey
 
@@ -60,7 +63,7 @@
 - [ ] Examples are runnable or clearly labeled as conceptual.
 - [ ] One authoritative home exists for each detailed contract; other documents link to it rather than copying stale versions.
 - [ ] Public guides teach users; internal audit ledgers and release evidence remain clearly identified and are not accidentally shipped as package documentation.
-- [ ] CI validates documentation contracts and branding alongside code tests.
+- [ ] CI validates documentation contracts and changed-document branding alongside code tests.
 - [ ] NuGet publication, deployment, merges, and branch cleanup remain separately authorized operations; documentation work does not imply permission to perform them.
 
 ## Review outcome
