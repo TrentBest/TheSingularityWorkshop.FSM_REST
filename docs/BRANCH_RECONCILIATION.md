@@ -4,7 +4,7 @@
 # FSM_REST Branch Reconciliation Ledger
 
 **Snapshot date:** 2026-11-06  
-**Comparison base:** `development` at `49bcc764f416deca5cff589143a3da4988fa961d`  
+**Comparison base:** `development` at `f9325f1b96bd0c05bfd04f2d490276c45eac6c68`  
 **Purpose:** Reconcile the live branch inventory and preserve unique work before the repository owner manually removes surplus branches. This ledger is evidence, not authorization to delete, merge, release, or publish.
 
 > **Sith policy:** `development` is the active work branch; `master` is the released baseline. The desired steady state is exactly those two branches. The repository owner performs branch deletion manually after review. No branch was deleted during this reconciliation.
@@ -18,7 +18,7 @@ GitHub's live branch search returned exactly four branches:
 | `master` | Protected/released baseline; not compared as a cleanup candidate | Keep. Do not modify as part of this work. |
 | `development` | Active baseline, SHA `49bcc764f416deca5cff589143a3da4988fa961d` | Keep. All implementation work targets this branch. |
 | `docs/rest-textbook-theory` | 51 commits ahead, 0 behind; merge base is the current development SHA | Active head for open draft PR [#17](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/pull/17). Do not delete or merge as part of branch cleanup. |
-| `release-prep/fsm-rest-1.0.0` | 13 commits ahead, 571 behind; merge base `6c1f52ae4f614a63b1cccc82fc498e4d13667641` | Historical candidate. Unique release checklist intent is preserved in `docs/RELEASE_CHECKLIST.md`; the old release contract and visual are superseded/outdated. Complete final branch-only commit audit before marking ready for owner deletion. |
+| `release-prep/fsm-rest-1.0.0` | 13 commits ahead, 575 behind; merge base `6c1f52ae4f614a63b1cccc82fc498e4d13667641` | Historical candidate. Unique release checklist intent is preserved in `docs/RELEASE_CHECKLIST.md`; the old release contract and visual are superseded/outdated. Complete final branch-only commit audit before marking ready for owner deletion. |
 
 The branch inventory above supersedes older snapshots in this document's history and issue #16. The live endpoint response, not an earlier issue body or historical table, is the current inventory evidence.
 
@@ -42,7 +42,7 @@ The branch inventory above supersedes older snapshots in this document's history
 
 ## Historical release branch review
 
-Comparison of `development...release-prep/fsm-rest-1.0.0` reports 13 branch-only commits and 571 commits behind development. The file comparison shows:
+Comparison of `development...release-prep/fsm-rest-1.0.0` reports 13 branch-only commits and 575 commits behind development. The file comparison shows:
 
 - `docs/RELEASE_1_0.md` and `docs/assets/release-frontier.svg` are present on the historical branch. The checklist's durable criteria—restore/build/test/coverage, XML documentation, package contents/dependencies, practical examples, architecture boundaries, exact-SHA CI, and explicit owner approval—are already represented in the active `docs/RELEASE_CHECKLIST.md`.
 - The old release contract repeats current architecture boundaries but asserts a 1.0.0 release contract. The SVG labels FSM_REST 1.0.0 and FSM_COS 1.0.0 as a stable prerequisite. Those version/stability claims are not verified current facts; do not copy the SVG without correcting its labels and evidence status.
