@@ -44,7 +44,7 @@ PR [#17](https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/pull/17) a
 
 The prior exact-head CI run passed the documentation contract, diagram anchor check, architecture checks, UML link checks, build, tests, deterministic samples, package audit, and source-integrated build/tests. The latest verifier terminology correction is awaiting its own exact-head CI result. The PR remains open and draft. The workflow does not publish NuGet packages on this PR event.
 
-**Branding validation caveat:** `scripts/verify_markdown_branding.py` exists, but the current `.github/workflows/build.yml` does not yet invoke it. Its footer terminology was corrected in commit `caff90dc0bde37c6b7292e4ca65e1dc973c5bd80`; it now calls the canonical PNG a static Workshop footer image rather than an avatar. The complete 81-file inventory remains uncertified. Do not treat repository-wide branding verification as a CI-enforced gate until that step is added and a full run passes. The shared canonical assets remain:
+**Branding validation caveat:** `.github/workflows/build.yml` invokes `scripts/verify_markdown_branding.py` for changed Markdown files in the PR/push diff. This is a changed-file gate, not a repository-wide certification: the complete 81-file inventory has not been validated as a whole. The script's no-argument mode supports a full-inventory audit, but CI does not currently run that mode. Do not claim repository-wide branding compliance until the full inventory passes. The shared canonical assets remain:
 - Moniker: `https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg`
 - Footer PNG: `https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png`
 
