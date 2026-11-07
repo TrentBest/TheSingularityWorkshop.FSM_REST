@@ -23,9 +23,36 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
 
       - name: Check documentation contract
         run: python3 scripts/check_documentation.py
+
+      - name: Verify branding on changed Markdown documents
+        shell: bash
+        env:
+          EVENT_NAME: ${{ github.event_name }}
+          PR_BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          PUSH_BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          base_sha="$PR_BASE_SHA"
+          if [[ "$EVENT_NAME" != "pull_request" ]]; then
+            base_sha="$PUSH_BEFORE_SHA"
+          fi
+          if [[ -z "$base_sha" || "$base_sha" =~ ^0+$ ]]; then
+            base_sha="$(git rev-parse HEAD^)"
+          fi
+          mapfile -t changed_markdown < <(git diff --diff-filter=ACMRT --name-only "$base_sha"...HEAD -- '*.md' | sort -u)
+          if (( ${#changed_markdown[@]} > 0 )); then
+            python3 scripts/verify_markdown_branding.py "${changed_markdown[@]}"
+          else
+            echo "No changed Markdown documents; branding check has no files in scope."
+          fi
+
+      - name: Verify source-anchor-checked REST contract diagram
+        run: python3 scripts/generate_rest_contract_diagram.py --check
 
       - name: Check architecture boundaries
         run: python3 scripts/check_architecture.py
