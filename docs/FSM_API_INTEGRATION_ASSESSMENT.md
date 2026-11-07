@@ -47,11 +47,11 @@ A transport exception must remain the primary exception. Lifecycle-recording fai
 
 ### 4. Shared definition identity and global registry need explicit protection
 
-The definition name and processing group are fixed strings in a process-wide FSM_API registry. FSM_API's builder can return a builder for an existing definition with the same name/group. The current names are appropriately namespaced, but the integration should still verify that it never mutates a definition owned by another component and that initialization is safe when multiple consumers initialize concurrently.
+The definition name and processing group are fixed strings in a process-wide FSM_API registry. FSM_API's builder can return a builder for an existing definition with the same name/group. The current names are appropriately namespaced, but the collision risk is real: FSM_API's `CreateFiniteStateMachine` returns a builder for an existing name/group, and `FSMBuilder.BuildDefinition` registers the resulting definition under that same key. A collision can therefore replace a shared definition. The integration needs an explicit ownership/compatibility check rather than relying only on a long name.
 
 ### 5. Concurrency guarantees are not yet established
 
-The current REST test verifies that two concurrent calls return their own responses. That does not prove that FSM_API's shared definition registry, instance collections, error bookkeeping, and create/destroy operations are safe under concurrent continuations. FSM_REST must either establish the required FSM_API concurrency guarantees, serialize only the lifecycle-registry operations, or explicitly document a narrower guarantee. Do not add a broad global lock around network I/O.
+The source review confirms a concurrency concern, not just a missing test: FSM_API's `GetOrCreateBucketProcessingGroup` and `Register` directly mutate ordinary `Dictionary` instances, while `CreateInstance`/`DestroyInstance` mutate per-definition `List<FSMHandle>` collections. These operations are not protected by synchronization in the reviewed methods. REST requests can complete on different continuations, so concurrent create/step/destroy activity can overlap. The existing REST concurrency test proves response independence, not registry safety. A lock local to FSM_REST cannot protect the same process-wide registry from other FSM_API consumers; the durable fix belongs in FSM_API's shared registry/lifecycle contract. Until that is addressed or a safe usage boundary is proven, FSM_REST must not claim arbitrary concurrent FSM lifecycle safety. Never hold a registry lock across network I/O.
 
 ### 6. Context ownership is correctly per invocation
 
