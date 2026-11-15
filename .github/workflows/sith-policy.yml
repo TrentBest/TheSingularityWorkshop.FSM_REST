@@ -157,7 +157,7 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           event_deleted="$(jq -r '.deleted // false' "$GITHUB_EVENT_PATH")"
-          if [[ "$GITHUB_REF" == "refs/heads/$DEFAULT_BRANCH" || "$GITHUB_REF" == "refs/heads/development" || "$GITHUB_EVENT_NAME" == "delete" || "$event_deleted" == "true" ]]; then
+          if [[ "$GITHUB_REF" == "refs/heads/$DEFAULT_BRANCH" || "$GITHUB_EVENT_NAME" == "delete" || "$event_deleted" == "true" ]]; then
             mapfile -t target_branches < <(printf '%s\n' "$DEFAULT_BRANCH" development | sort -u)
             for target_branch in "${target_branches[@]}"; do
               git fetch origin "refs/heads/$target_branch:refs/remotes/origin/$target_branch"
