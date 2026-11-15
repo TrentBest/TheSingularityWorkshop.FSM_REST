@@ -36,7 +36,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.0.x
 
       - name: Restore
         run: dotnet restore TheSingularityWorkshop.FSM_REST.slnx
@@ -109,26 +109,26 @@ jobs:
           expected = {
               "TheSingularityWorkshop.FSM_Rest.HttpClientFactory": {
                   "version": "0.1.0-alpha.5",
-                  "dll_prefix": "lib/net8.0/",
+                  "dll_prefix": "lib/net10.0/",
                   "required_files": ["README.md", "LICENSE.txt"],
                   "required_dependencies": ["TheSingularityWorkshop.FSM_Rest", "Microsoft.Extensions.Http"],
               },
               "TheSingularityWorkshop.FSM_Rest": {
                   "version": "0.1.0-alpha.5",
-                  "dll_prefix": "lib/net8.0/",
+                  "dll_prefix": "lib/net10.0/",
                   "required_files": ["README.md", "LICENSE.txt"],
                   "required_dependencies": ["TheSingularityWorkshop.FSM_API"],
                   "forbidden_dependencies": ["TheSingularityWorkshop.MicroBundleDomain", "TheSingularityWorkshop.FSM_COS"],
               },
               "TheSingularityWorkshop.FSM_Rest.OpenApi": {
                   "version": "0.1.0-alpha.1",
-                  "dll_prefix": "lib/net8.0/",
+                  "dll_prefix": "lib/net10.0/",
                   "required_files": ["README.md", "LICENSE.txt"],
                   "required_dependencies": ["TheSingularityWorkshop.FSM_Rest"],
               },
               "TheSingularityWorkshop.FSM_Rest.COS": {
                   "version": "0.1.0-alpha.1",
-                  "dll_prefix": "lib/net8.0/",
+                  "dll_prefix": "lib/net10.0/",
                   "required_files": ["README.md", "LICENSE.txt"],
                   "required_dependencies": ["TheSingularityWorkshop.MicroBundleDomain", "TheSingularityWorkshop.FSM_Rest"],
               },
@@ -198,7 +198,7 @@ jobs:
                           if resolved_path.lower() not in lower_names:
                               raise SystemExit(f"{package_id}: README link target is not packaged: {target} -> {resolved_path}")
                   if not any(name.startswith(rule["dll_prefix"]) and name.endswith(".dll") for name in names):
-                      raise SystemExit(f"{package_id}: missing net8.0 assembly")
+                      raise SystemExit(f"{package_id}: missing net10.0 assembly")
                   if not any(name.startswith(rule["dll_prefix"]) and name.endswith(".xml") for name in names):
                       raise SystemExit(f"{package_id}: missing XML API documentation")
                   if not (value("license") or value("licenseUrl")):
@@ -246,7 +246,7 @@ jobs:
       - name: Setup .NET
         uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 8.0.x
+          dotnet-version: 10.0.x
 
       - name: Restore source-integrated solution
         working-directory: FSM_REST
