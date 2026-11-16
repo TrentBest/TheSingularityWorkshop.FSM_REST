@@ -6,14 +6,15 @@
     "master"
   ],
   "actual_branches": [
+    "chore/net10-dependency-alignment",
     "development",
     "docs/rest-textbook-theory",
     "master",
     "release-prep/fsm-rest-1.0.0"
   ],
-  "branch_count": 4,
+  "branch_count": 5,
   "status": "NON-COMPLIANT",
-  "evaluated_at": "2026-11-15T11:57:08Z",
-  "workflow_run": "https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/43711367612",
-  "triggering_commit": "eab7cb5e8937b6f581022e14b1e0ef4e5c177c6d"
+  "evaluated_at": "2026-11-16T12:45:23Z",
+  "workflow_run": "https://github.com/TrentBest/TheSingularityWorkshop.FSM_REST/actions/runs/43869423630",
+  "triggering_commit": "9f28001fb2cec3cbb4a947cd2edc4c9237d11cac"
 }
