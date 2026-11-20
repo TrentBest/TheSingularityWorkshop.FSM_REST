@@ -1,4 +1,10 @@
+<!-- The Singularity Workshop moniker -->
+<p align="center"><a href="https://github.com/TrentBest"><img src="https://raw.githubusercontent.com/TrentBest/TheSingularityWorkshop.Visualize/development/docs/assets/moniker.svg" alt="The Singularity Workshop animated moniker" width="720" /></a></p>
 # FSM_REST Theory
+
+**Maintainer:** @TrentBest
+
+For a chapter-based, instructor-editable introduction, start with the [REST Systems: A Living Textbook](REST_TEXTBOOK.md). It progresses from resource representations through network failure and capability composition to the evidence required for trustworthy claims.
 
 ## Form before implementation
 
@@ -256,3 +262,11 @@ The same applies to response metadata: media types and basic schema type/format 
 ## The practical design rule
 
 Use FSM_REST when you want to model a reusable REST operation and execute one request through a replaceable communication boundary. Add a provider when you need a source format, an adapter when you need a particular transport policy, and a host/domain layer when you need authentication, authorization, validation, retries, persistence, or business meaning. Keep those decisions explicit so the small core remains dependable and independently consumable.
+
+
+## Teaching the evidence boundary
+
+The textbook expands the distinction between declared capability, constructed request, attempted transport, observed response, domain validation, and reconciliation. These are evidence levels for reasoning, not additional runtime states. See [Chapter 4 — Promises, observations, and evidence](theory/Chapter-04-Promises-Observations-Evidence.md) and its [conceptual evidence-boundary visual](assets/rest-textbook-evidence-boundary.svg).
+
+<!-- THE SINGULARITY WORKSHOP FOOTER -->
+<p align="center"><img src="https://raw.githubusercontent.com/TrentBest/FSM_API/master/Documentation/Branding/TheSingularityWorkshop.png" alt="The Singularity Workshop avatar" width="200" /></p>
